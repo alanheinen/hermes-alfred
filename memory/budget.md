@@ -24,3 +24,11 @@
 | Date | Est. Cost | Notes |
 |------|-----------|-------|
 | 2026-02-13 | ~$2-3 | First day setup, Opus heavy (initial config + repo review) |
+| 2026-02-14 | ~$2-4 | 3 cron jobs + main + 3 group chats, ALL on Opus ⚠️ |
+
+## ⚠️ Issue (2026-02-15)
+All 7 sessions are running claude-opus-4-6 — including cron jobs (git backup, memory review, daily-review) and group chats. This directly contradicts the cost strategy. Cron jobs and group chats should be Sonnet or Haiku.
+
+Estimated balance: ~$19-21 remaining (from $25.08 start)
+At current Opus-everywhere burn rate: ~$2-4/day → runs out in ~5-10 days
+At proper tiered rate (Sonnet default): ~$0.50-1.50/day → lasts 2-4 weeks
