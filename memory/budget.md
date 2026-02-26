@@ -25,11 +25,10 @@
 |------|-----------|-------|
 | 2026-02-13 | ~$2-3 | First day setup, Opus heavy (initial config + repo review) |
 | 2026-02-14 | ~$2-4 | 3 cron jobs + main + 3 group chats, ALL on Opus ⚠️ |
-| 2026-02-15 to 02-24 | ~$1-2/day | Low activity — group chats idle since Feb 15, only git-backup cron active daily. Still all Opus. |
+| 2026-02-15 to 02-24 | ~$1-2/day | Low activity — group chats idle, only git-backup cron daily. All Opus. |
+| 2026-02-25 | ~$0.50-1 | Switched 6 sessions to Sonnet. Only main stays Opus. |
 
-## ⚠️ Issue (2026-02-15)
-All 7 sessions are running claude-opus-4-6 — including cron jobs (git backup, memory review, daily-review) and group chats. This directly contradicts the cost strategy. Cron jobs and group chats should be Sonnet or Haiku.
-
-Estimated balance: ~$7-14 remaining (as of 2026-02-24)
-⚠️ Possibly approaching $5 warning threshold.
-All sessions STILL on Opus — never switched to tiered pricing.
+## Status (2026-02-25)
+✅ Model tiering implemented (Feb 25): 6 sessions → Sonnet, main → Opus
+Estimated balance: ~$6-13 remaining
+Expected new burn rate: ~$0.50-1/day → should last 1-3+ weeks
