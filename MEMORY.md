@@ -13,9 +13,10 @@
 
 ## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
-- **Estimated remaining:** ~$30-38 (after $25 top-up on 2026-02-26)
+- **Top-up:** $25.00 (2026-02-26) ✅ Confirmed
+- **Current estimate:** ~$29-36 (as of Feb 27)
 - **Thresholds:** Warning at $5, Critical at $2
-- **Status:** Stable after tiering fix
+- **Status:** Stable — tiering effective
 - **Tracking:** Detailed log maintained in `memory/budget.md`
 
 ### ✅ Model Tiering Implemented (Feb 25)
@@ -27,19 +28,21 @@
 - **Burn rate improvement:** 
   - Feb 13-14: ~$2-4/day (heavy setup, all Opus)
   - Feb 15-24: ~$1-2/day (low activity, all Opus)
-  - Feb 25+: ~$0.50-1/day (tiered pricing) ✅
-- **Expected runway:** 1-3+ weeks at current activity level
+  - Feb 25-27: ~$0.50/day (tiered pricing) ✅
+- **Expected runway:** 2-4+ weeks at current activity level
 
-### Activity Status
+### Activity Status (as of Feb 27)
 - Group chats: Idle since Feb 15
-- Main session: Periodic use
-- Cron jobs: git-backup running daily, memory review running
+- Main session: Sporadic use (budget checks, config)
+- Cron jobs: git-backup daily, memory-review daily (both Sonnet)
+- Overall activity: Low — system stable, monitoring active
 
 ## Memory & Tracking
-- **Daily logs:** Only 2026-02-13.md exists; no daily files for Feb 14-24
-- **Budget tracking:** `memory/budget.md` actively maintained with daily estimates
+- **Daily logs:** Still only 2026-02-13.md exists (no logs Feb 14-27)
+- **Budget tracking:** `memory/budget.md` actively maintained, accurate through Feb 26
 - **Error log:** `memory/error-log.md` created but underutilized
-- **Need:** Resume daily memory/*.md practice for session continuity
+- **Gap:** Two weeks without daily memory files — continuity relies entirely on MEMORY.md
+- **Note:** Low activity period means less to log, but practice should resume when activity picks up
 
 ## Initial Setup (2026-02-13)
 - Identity files created (SOUL.md, IDENTITY.md, USER.md, MEMORY.md)
