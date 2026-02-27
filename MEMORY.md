@@ -11,21 +11,24 @@
 - Likes dry wit and snark — no corporate pleasantries
 - Values disaster recovery planning
 
-## Budget Situation ⚠️
+## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
-- **Estimated remaining:** ~$7-14 (as of 2026-02-24)
+- **Estimated remaining:** ~$30-38 (after $25 top-up on 2026-02-26)
 - **Thresholds:** Warning at $5, Critical at $2
-- **Status:** Possibly approaching warning threshold
+- **Status:** Stable after tiering fix
 - **Tracking:** Detailed log maintained in `memory/budget.md`
 
-### Critical Issue: All Sessions Running Opus
-- **7 total sessions:** 3 cron jobs + main + 3 group chats
-- **All on claude-opus-4-6** — never switched to tiered pricing
-- **Should be:** Sonnet for main, Haiku for crons/simple tasks, Opus only when needed
-- **Actual burn rate:** 
-  - Feb 13-14: ~$2-4/day (heavy setup + all sessions active)
-  - Feb 15-24: ~$1-2/day (low activity — group chats idle, only git-backup cron daily)
-  - **Optimal:** ~$0.25-0.50/day with proper tiering
+### ✅ Model Tiering Implemented (Feb 25)
+- **Previous issue:** All 7 sessions were on Opus (expensive!)
+- **Fixed:** 6 sessions switched to Sonnet, only main stays on Opus
+- **Current setup:** 
+  - Main session: Opus (claude-opus-4-6)
+  - 6 other sessions (crons + group chats): Sonnet (claude-sonnet-4-5)
+- **Burn rate improvement:** 
+  - Feb 13-14: ~$2-4/day (heavy setup, all Opus)
+  - Feb 15-24: ~$1-2/day (low activity, all Opus)
+  - Feb 25+: ~$0.50-1/day (tiered pricing) ✅
+- **Expected runway:** 1-3+ weeks at current activity level
 
 ### Activity Status
 - Group chats: Idle since Feb 15
