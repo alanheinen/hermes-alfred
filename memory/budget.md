@@ -28,7 +28,8 @@
 | 2026-02-14 | ~$2-4 | 3 cron jobs + main + 3 group chats, ALL on Opus ⚠️ |
 | 2026-02-15 to 02-24 | ~$1-2/day | Low activity — group chats idle, only git-backup cron daily. All Opus. |
 | 2026-02-25 | ~$0.50-1 | Switched 6 sessions to Sonnet. Only main stays Opus. |
-| 2026-02-26 | ~$0.05 so far | 4 cron jobs ran (Sonnet): ~$0.05 total. Main session: this report (Opus). |
+| 2026-02-26 | ~$0.20 | 4 cron jobs (Sonnet ~$0.05) + main session budget report & commit (Opus ~$0.15) |
+| 2026-02-27 | ~$0.05 so far | 3 overnight crons (Sonnet ~$0.05). Main: this report (Opus). |
 
 ## Status (2026-02-26)
 ✅ Model tiering active: 6 sessions → Sonnet, main → Opus
