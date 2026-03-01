@@ -36,14 +36,14 @@
 - Main session: Sporadic use (budget checks, config)
 - Cron jobs: git-backup daily, memory-review daily (both Sonnet)
 - Overall activity: Low — system stable, monitoring active
-- Feb 27-28: Only automated cron jobs running, no main session activity
+- **Burn rate update:** Feb 28 shows ~$0.20-0.50/day (tiering very effective)
 
 ## Memory & Tracking
-- **Daily logs:** Still only 2026-02-13.md exists (no logs Feb 14-27)
-- **Budget tracking:** `memory/budget.md` actively maintained, accurate through Feb 26
-- **Error log:** `memory/error-log.md` created but underutilized
-- **Gap:** Two weeks without daily memory files — continuity relies entirely on MEMORY.md
-- **Note:** Low activity period means less to log, but practice should resume when activity picks up
+- **Daily logs:** 2026-02-13.md (initial setup), 2026-02-28.md (resumed logging)
+- **Budget tracking:** `memory/budget.md` actively maintained
+- **Error log:** `memory/error-log.md` exists but underutilized
+- **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md` (repo not on this machine)
+- **Gap note:** Two-week gap (Feb 14-27) due to low activity; daily logging practice resumed Feb 28
 
 ## Initial Setup (2026-02-13)
 - Identity files created (SOUL.md, IDENTITY.md, USER.md, MEMORY.md)
