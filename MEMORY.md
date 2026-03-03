@@ -14,9 +14,9 @@
 ## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
 - **Top-up:** $25.00 (2026-02-26) ✅ Confirmed
-- **Current estimate:** ~$29-36 (as of Feb 27)
+- **Current estimate:** ~$28-35 (as of Mar 2)
 - **Thresholds:** Warning at $5, Critical at $2
-- **Status:** Stable — tiering effective
+- **Status:** Stable — tiering effective, 2-4+ month runway
 - **Tracking:** Detailed log maintained in `memory/budget.md`
 
 ### ✅ Model Tiering Implemented (Feb 25)
@@ -31,19 +31,20 @@
   - Feb 25-27: ~$0.50/day (tiered pricing) ✅
 - **Expected runway:** 2-4+ weeks at current activity level
 
-### Activity Status (as of Feb 28)
+### Activity Status (as of Mar 2)
 - Group chats: Idle since Feb 15
-- Main session: Sporadic use (budget checks, config)
-- Cron jobs: git-backup daily, memory-review daily (both Sonnet)
-- Overall activity: Low — system stable, monitoring active
-- **Burn rate update:** Feb 28 shows ~$0.20-0.50/day (tiering very effective)
+- Main session: Sporadic use (budget checks, memory maintenance)
+- Cron jobs: git-backup, memory-review, daily-review, usage-report (all Sonnet)
+- Overall activity: Low — system stable, no issues
+- **Burn rate:** Consistently ~$0.20-0.50/day (tiering very effective)
+- **Runway:** 2-4+ months at current activity level
 
 ## Memory & Tracking
-- **Daily logs:** 2026-02-13.md (initial setup), 2026-02-28.md (resumed logging)
+- **Daily logs:** 2026-02-13.md (initial setup), 2026-02-28.md (last entry)
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` exists but underutilized
 - **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md` (repo not on this machine)
-- **Gap note:** Two-week gap (Feb 14-27) due to low activity; daily logging practice resumed Feb 28
+- **Note:** Daily logging sporadic; system stable with low activity since late Feb
 
 ## Initial Setup (2026-02-13)
 - Identity files created (SOUL.md, IDENTITY.md, USER.md, MEMORY.md)
