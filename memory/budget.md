@@ -32,9 +32,10 @@
 | 2026-02-27 | ~$0.25 | 3 crons (Sonnet ~$0.05) + main session: budget report, k8s repo search (Opus ~$0.20) |
 | 2026-02-28 | ~$0.10 | Crons (Sonnet) + main session memory resume (Opus) |
 | 2026-03-01 | ~$0.10 | 3 crons (Sonnet) + main usage report (Opus). |
-| 2026-03-02 | ~$0.15+ | Daily report cron (Opus). Day in progress. |
+| 2026-03-02 | ~$0.15 | Daily report cron (Opus). Low activity. |
+| 2026-03-03 | ~$0.15+ | Daily report cron (Opus). Day in progress. |
 
-## Status (2026-03-02)
+## Status (2026-03-03)
 ✅ Model tiering active: crons → Sonnet, main → Opus
 Estimated balance: ~$28-35 remaining
 Burn rate (Feb 25–Mar 2): ~$0.15-0.30/day
