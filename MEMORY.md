@@ -14,37 +14,34 @@
 ## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
 - **Top-up:** $25.00 (2026-02-26) ✅ Confirmed
-- **Current estimate:** ~$28-35 (as of Mar 2)
+- **Current estimate:** ~$28-35 (as of Mar 3)
 - **Thresholds:** Warning at $5, Critical at $2
-- **Status:** Stable — tiering effective, 2-4+ month runway
+- **Status:** Stable — tiering highly effective, 3-6+ month runway
 - **Tracking:** Detailed log maintained in `memory/budget.md`
 
 ### ✅ Model Tiering Implemented (Feb 25)
-- **Previous issue:** All 7 sessions were on Opus (expensive!)
-- **Fixed:** 6 sessions switched to Sonnet, only main stays on Opus
+- **Fixed issue:** All 7 sessions were on Opus → now 6 switched to Sonnet
 - **Current setup:** 
   - Main session: Opus (claude-opus-4-6)
   - 6 other sessions (crons + group chats): Sonnet (claude-sonnet-4-5)
 - **Burn rate improvement:** 
-  - Feb 13-14: ~$2-4/day (heavy setup, all Opus)
-  - Feb 15-24: ~$1-2/day (low activity, all Opus)
-  - Feb 25-27: ~$0.50/day (tiered pricing) ✅
-- **Expected runway:** 2-4+ weeks at current activity level
+  - Feb 13-24: ~$1-4/day (setup + all Opus)
+  - Feb 25+: ~$0.15-0.30/day (tiered pricing) ✅
+- **Expected runway:** 3-6+ months at current activity level
 
-### Activity Status (as of Mar 2)
+### Activity Status (as of Mar 4)
 - Group chats: Idle since Feb 15
 - Main session: Sporadic use (budget checks, memory maintenance)
 - Cron jobs: git-backup, memory-review, daily-review, usage-report (all Sonnet)
 - Overall activity: Low — system stable, no issues
-- **Burn rate:** Consistently ~$0.20-0.50/day (tiering very effective)
-- **Runway:** 2-4+ months at current activity level
+- **Burn rate:** Consistently ~$0.15-0.30/day (tiering very effective)
 
 ## Memory & Tracking
 - **Daily logs:** 2026-02-13.md (initial setup), 2026-02-28.md (last entry)
-- **Budget tracking:** `memory/budget.md` actively maintained
+- **Budget tracking:** `memory/budget.md` actively maintained through Mar 3
 - **Error log:** `memory/error-log.md` exists but underutilized
 - **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md` (repo not on this machine)
-- **Note:** Daily logging sporadic; system stable with low activity since late Feb
+- **Note:** Daily logging resumed Feb 28 per Al's request, then stopped again. System stable with low activity through early Mar.
 
 ## Initial Setup (2026-02-13)
 - Identity files created (SOUL.md, IDENTITY.md, USER.md, MEMORY.md)
@@ -53,4 +50,4 @@
 - PAT rotation done securely
 
 ## Updates
-- **March 3, 2026:** No recent daily logs available for the past 2-3 days, making it difficult to assess new project updates or decisions. Current state remains stable with low activity and effective model tiering in place.
+- **March 4, 2026:** No daily logs created for March 1-4. Budget.md shows continued stability (~$0.15-0.30/day burn). System healthy, low activity. Al requested daily logging resume on Feb 28, but practice hasn't continued into March yet.
