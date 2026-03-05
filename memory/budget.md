@@ -34,9 +34,10 @@
 | 2026-03-01 | ~$0.10 | 3 crons (Sonnet) + main usage report (Opus). |
 | 2026-03-02 | ~$0.15 | Daily report cron (Opus). Low activity. |
 | 2026-03-03 | ~$0.15+ | Daily report cron (Opus). Day in progress. |
+| 2026-03-04 | ~$0.20+ | Daily report cron + Al resumed daily logging (Opus). Crons (Sonnet). |
 
-## Status (2026-03-03)
+## Status (2026-03-04)
 ✅ Model tiering active: crons → Sonnet, main → Opus
 Estimated balance: ~$28-35 remaining
-Burn rate (Feb 25–Mar 2): ~$0.15-0.30/day
+Burn rate (Feb 25–Mar 4): ~$0.15-0.30/day
 Runway: 3-6+ months at current rate
