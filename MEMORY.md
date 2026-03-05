@@ -21,16 +21,17 @@
 
 ### ✅ Model Tiering Implemented (Feb 25)
 - **Fixed issue:** All 7 sessions were on Opus → now 6 switched to Sonnet
-- **Current setup:** 
+- **Current setup (updated Mar 4):** 
   - Main session: Opus (claude-opus-4-6)
-  - 6 other sessions (crons + group chats): Sonnet (claude-sonnet-4-5)
+  - 3 cron sessions: Sonnet (claude-sonnet-4-5)
 - **Burn rate improvement:** 
   - Feb 13-24: ~$1-4/day (setup + all Opus)
   - Feb 25+: ~$0.15-0.30/day (tiered pricing) ✅
 - **Expected runway:** 3-6+ months at current activity level
 
-### Activity Status (as of Mar 4)
-- Group chats: Idle since Feb 15
+### Activity Status (as of Mar 5)
+- **Session count:** 4 total (1 Opus main + 3 Sonnet crons)
+- **Group chats:** Deleted Mar 4 — 3 idle Telegram groups removed (passive-income, automated-ops, network-performance)
 - Main session: Sporadic use (budget checks, memory maintenance)
 - Cron jobs: git-backup, memory-review, daily-review, usage-report (all Sonnet)
 - Overall activity: Low — system stable, no issues
@@ -50,4 +51,4 @@
 - PAT rotation done securely
 
 ## Updates
-- **March 4, 2026:** No daily logs created for March 1-4. Budget.md shows continued stability (~$0.15-0.30/day burn). System healthy, low activity. Al requested daily logging resume on Feb 28, but practice hasn't continued into March yet.
+- **March 5, 2026:** Session cleanup completed Mar 4 — deleted 3 idle Telegram group sessions. Session count reduced from 7→4 (1 main + 3 crons). Al requested daily logging resume again on Mar 4. System continues stable operation with low burn rate.
