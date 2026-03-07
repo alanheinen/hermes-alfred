@@ -41,7 +41,7 @@
 - **Daily logs:** 2026-02-13.md (initial setup), 2026-02-28.md, 2026-03-04.md, 2026-03-06.md (latest)
 - **Budget tracking:** `memory/budget.md` actively maintained through Mar 3
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
-- **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md` (repo not on this machine)
+- **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md` — repo cloned to workspace (issue resolved Mar 5)
 - **Note:** Daily logging resumed Mar 4 per Al's request. Error logging active for cron failures.
 
 ## Projects & Active Work

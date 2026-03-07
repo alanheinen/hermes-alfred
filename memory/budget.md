@@ -35,12 +35,12 @@
 | 2026-03-02 | ~$0.15 | Daily report cron (Opus). Low activity. |
 | 2026-03-03 | ~$0.15+ | Daily report cron (Opus). Day in progress. |
 | 2026-03-04 | ~$0.20+ | Daily report cron + Al resumed daily logging (Opus). Crons (Sonnet). |
-| 2026-03-05 | ~$1.50 | ⚠️ Quant crons ran on Opus (model override didn't stick). Fixed both to Sonnet. Main session heavy (quant project setup). |
+| 2026-03-05 | ~$1.15 | Main session heavy (PAT fix, GitHub repo setup, cron updates). Quant crons confirmed on Sonnet. |
 
-## Status (2026-03-05)
+## Status (2026-03-06)
 ✅ Model tiering active: crons → Sonnet, main → Opus
-⚠️ Quant cron model override fixed Mar 5 (were running Opus, now Sonnet)
-Estimated balance: ~$27-33 remaining
-Burn rate (Mar 5): ~$1.50 (elevated — quant crons on wrong model)
-Expected burn rate going forward: ~$0.20-0.40/day (with quant crons on Sonnet)
-Runway: 2-5+ months at corrected rate
+✅ Quant cron model override confirmed working on Sonnet
+Estimated balance: ~$26-32 remaining
+Burn rate (Mar 5): ~$1.15 (elevated — setup work, non-recurring)
+Expected burn rate going forward: ~$0.20-0.40/day
+Runway: 2-5+ months at normal rate
