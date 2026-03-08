@@ -38,23 +38,21 @@
 - **Burn rate:** Consistently ~$0.15-0.30/day (tiering very effective)
 
 ## Memory & Tracking
-- **Daily logs:** 2026-02-13.md (initial setup), 2026-02-28.md, 2026-03-04.md, 2026-03-06.md (latest)
-- **Budget tracking:** `memory/budget.md` actively maintained through Mar 3
+- **Daily logs:** 2026-02-13.md (reviewed ✓), 2026-02-28.md, 2026-03-04.md, 2026-03-06.md (latest)
+- **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
-- **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md` — repo cloned to workspace (issue resolved Mar 5)
-- **Note:** Daily logging resumed Mar 4 per Al's request. Error logging active for cron failures.
+- **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md`
+- **Note:** Daily logging resumed Mar 4 per Al's request
 
 ## Projects & Active Work
 
 ### Quant Backtest (siloed-quant-repo)
-- **Status:** Active but failing (as of Mar 6)
+- **Status:** ✅ Operational (as of Mar 6)
 - **Daily cron:** quant-backtest-daily (Sonnet, 2:00 AM EST)
-- **Issue:** Yield curve data fetch broken
-  - ^TWO (2Y Treasury) delisted/unavailable on yfinance
-  - ^IRX (3M) fallback also failing
-  - No FRED_API_KEY configured for alternative source
-  - Script crashes on empty DataFrame → daily backtest skipped
-- **Fix needed:** Set FRED_API_KEY or improve error handling with cached fallback
+- **Infrastructure:** 3-layer fallback for T10Y2Y spread data (FRED API → yfinance → CSV)
+- **Resolution:** Added CSV fallback after ^TWO ticker delisted, backtest now runs reliably
+- **Current findings:** Rotation strategy underperforms SPY by ~200 bps/year (8.25% vs 10.35% CAGR), no meaningful downside protection
+- **Next focus:** ISSUE-002 (bond-equity correlation regime analysis for 2022 instability)
 
 ## Initial Setup (2026-02-13)
 - Identity files created (SOUL.md, IDENTITY.md, USER.md, MEMORY.md)
@@ -63,5 +61,5 @@
 - PAT rotation done securely
 
 ## Updates
-- **March 6, 2026:** quant-backtest-daily cron failing since Mar 6 due to Treasury data fetch issues (^TWO delisted, no FRED key). Error logged, needs fix.
-- **March 5, 2026:** Session cleanup completed Mar 4 — deleted 3 idle Telegram group sessions. Session count reduced from 7→4 (1 main + 3 crons). Al requested daily logging resume again on Mar 4. System continues stable operation with low burn rate.
+- **March 6, 2026:** ✅ Quant backtest infrastructure fixed — added 3-layer fallback (FRED API → yfinance → CSV) to handle Treasury ticker delisting. Daily cron now operational. Strategy analysis shows 200 bps underperformance vs SPY; next focus is correlation regime analysis.
+- **March 4, 2026:** Session cleanup — deleted 3 idle Telegram group sessions (passive-income, automated-ops, network-performance). Session count reduced from 7→4 (1 Opus main + 3 Sonnet crons). Daily logging resumed per Al's request. System stable with ~$0.15-0.30/day burn rate.
