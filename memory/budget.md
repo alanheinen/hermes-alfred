@@ -37,13 +37,14 @@
 | 2026-03-04 | ~$0.20+ | Daily report cron + Al resumed daily logging (Opus). Crons (Sonnet). |
 | 2026-03-05 | ~$1.15 | Main session heavy (PAT fix, GitHub repo setup, cron updates). Quant crons confirmed on Sonnet. |
 | 2026-03-06 | ~$0.20 | Crons (Sonnet) + light main session. Normal day. |
-| 2026-03-07 | ~$0.12+ | 5 crons (Sonnet) + usage report (Opus). Day in progress. |
+| 2026-03-07 | ~$0.15 | 5 crons (Sonnet) + usage report (Opus). Quiet day. |
+| 2026-03-08 | ~$0.27+ | 5 crons (Sonnet ~$0.09) + usage report (Opus ~$0.18). Day in progress. |
 
-## Status (2026-03-07)
+## Status (2026-03-08)
 ✅ Model tiering active: crons → Sonnet, main → Opus
-✅ All 5 cron jobs healthy, quant-meeting added
-Estimated balance: ~$25-31 remaining
-Burn rate (Mar 6): ~$0.15-0.25 (normal — crons only, minimal main usage)
-Burn rate (Mar 7 so far): ~$0.12 (5 crons + this report)
-Expected burn rate going forward: ~$0.20-0.40/day
-Runway: 2-5+ months at normal rate
+✅ All 6 cron jobs healthy (backtest, quant-meeting, git-backup, memory-review, daily-review, usage-report)
+Estimated balance: ~$24-30 remaining
+Burn rate (Mar 7): ~$0.15 (normal)
+Burn rate (Mar 8 so far): ~$0.27 (crons + this report)
+Expected burn rate going forward: ~$0.15-0.30/day
+Runway: 3-6+ months at normal rate

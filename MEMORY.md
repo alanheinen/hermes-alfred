@@ -29,30 +29,34 @@
   - Feb 25+: ~$0.15-0.30/day (tiered pricing) ✅
 - **Expected runway:** 3-6+ months at current activity level
 
-### Activity Status (as of Mar 6)
+### Activity Status (as of Mar 8)
 - **Session count:** 4 total (1 Opus main + 3 Sonnet crons)
-- **Group chats:** Deleted Mar 4 — 3 idle Telegram groups removed (passive-income, automated-ops, network-performance)
-- Main session: Sporadic use (budget checks, memory maintenance)
-- Cron jobs: git-backup, memory-review, daily-review, usage-report, quant-backtest-daily (all Sonnet)
-- Overall activity: Low — system stable, backtest cron has data fetch issues
+- **Group chats:** Deleted Mar 4 — 3 idle Telegram groups removed
+- Main session: Light use (quant meetings, budget checks, memory maintenance)
+- Active cron jobs: git-backup, memory-review, daily-review, usage-report, quant-backtest-daily (all Sonnet)
+- **Recent work:** Quant backtest infrastructure hardening (Day 3 completed Mar 6)
 - **Burn rate:** Consistently ~$0.15-0.30/day (tiering very effective)
 
 ## Memory & Tracking
-- **Daily logs:** 2026-02-13.md (reviewed ✓), 2026-02-28.md, 2026-03-04.md, 2026-03-06.md (latest)
+- **Daily logs:** Active practice — most recent: 2026-03-06.md
+  - Reviewed: 2026-02-13.md ✓, 2026-02-28.md ✓
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
 - **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md`
-- **Note:** Daily logging resumed Mar 4 per Al's request
 
 ## Projects & Active Work
 
 ### Quant Backtest (siloed-quant-repo)
 - **Status:** ✅ Operational (as of Mar 6)
 - **Daily cron:** quant-backtest-daily (Sonnet, 2:00 AM EST)
-- **Infrastructure:** 3-layer fallback for T10Y2Y spread data (FRED API → yfinance → CSV)
-- **Resolution:** Added CSV fallback after ^TWO ticker delisted, backtest now runs reliably
-- **Current findings:** Rotation strategy underperforms SPY by ~200 bps/year (8.25% vs 10.35% CAGR), no meaningful downside protection
-- **Next focus:** ISSUE-002 (bond-equity correlation regime analysis for 2022 instability)
+- **Infrastructure:** Production-ready 3-layer fallback for T10Y2Y data (FRED API → yfinance → CSV)
+  - CSV fallback is permanent infrastructure (6180 observations, 2002-2026)
+  - Survives ticker delistings and API outages
+- **Current findings:** Rotation strategy underperforms SPY by ~200 bps/year (8.25% vs 10.35% CAGR)
+  - Only 4 rotations in 19 years (73% equities, 26% bonds)
+  - Max drawdown: -55.2% (same as SPY) — no downside protection
+- **Active focus:** ISSUE-002 (bond-equity correlation regime analysis for 2022 instability)
+- **Deferred:** ISSUE-001 (real returns) — medium priority, ISSUE-003 (survivorship bias) — low priority
 
 ## Initial Setup (2026-02-13)
 - Identity files created (SOUL.md, IDENTITY.md, USER.md, MEMORY.md)
@@ -60,6 +64,8 @@
 - Git backup and daily auto-backup cron configured
 - PAT rotation done securely
 
-## Updates
-- **March 6, 2026:** ✅ Quant backtest infrastructure fixed — added 3-layer fallback (FRED API → yfinance → CSV) to handle Treasury ticker delisting. Daily cron now operational. Strategy analysis shows 200 bps underperformance vs SPY; next focus is correlation regime analysis.
-- **March 4, 2026:** Session cleanup — deleted 3 idle Telegram group sessions (passive-income, automated-ops, network-performance). Session count reduced from 7→4 (1 Opus main + 3 Sonnet crons). Daily logging resumed per Al's request. System stable with ~$0.15-0.30/day burn rate.
+## Recent Updates
+- **March 6, 2026:** Quant backtest infrastructure hardened with production-ready 3-layer fallback (Day 3 complete). Strategy underperforms SPY by 200 bps/year with no downside protection. Focus shifted to correlation regime analysis (ISSUE-002).
+- **March 4, 2026:** Session cleanup — reduced from 7→4 sessions (deleted 3 idle Telegram groups). Daily logging resumed. System stable.
+- **February 28, 2026:** Daily memory logging practice resumed after 2-week gap.
+- **February 26, 2026:** Budget top-up ($25.00) confirmed. Model tiering highly effective.
