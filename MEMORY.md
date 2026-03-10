@@ -14,7 +14,7 @@
 ## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
 - **Top-up:** $25.00 (2026-02-26) ✅ Confirmed
-- **Current estimate:** ~$28-35 (as of Mar 3)
+- **Current estimate:** ~$24-30 (as of Mar 8)
 - **Thresholds:** Warning at $5, Critical at $2
 - **Status:** Stable — tiering highly effective, 3-6+ month runway
 - **Tracking:** Detailed log maintained in `memory/budget.md`
@@ -39,7 +39,7 @@
 
 ## Memory & Tracking
 - **Daily logs:** Active practice — most recent: 2026-03-06.md
-  - Reviewed: 2026-02-13.md ✓, 2026-02-28.md ✓
+  - Reviewed: 2026-02-13.md ✓, 2026-02-28.md ✓, 2026-03-04.md ✓, 2026-03-06.md ✓
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
 - **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md`
