@@ -47,17 +47,19 @@
 ## Projects & Active Work
 
 ### Quant Backtest (siloed-quant-repo)
-- **Status:** ✅ Operational (as of Mar 6)
+- **Status:** ✅ Production-ready v2.0 (as of Mar 10)
 - **Daily cron:** quant-backtest-daily (Sonnet, 2:00 AM EST)
 - **Infrastructure:** Production-ready 3-layer fallback for T10Y2Y data (FRED API → yfinance → CSV)
   - CSV fallback is permanent infrastructure (6180 observations, 2002-2026)
-  - Survives ticker delistings and API outages
-- **Current findings:** Rotation strategy underperforms SPY by ~200 bps/year (8.25% vs 10.35% CAGR)
-  - Only 4 rotations in 19 years (73% equities, 26% bonds)
-  - Max drawdown: -55.2% (same as SPY) — no downside protection
-  - **Day 5 (Mar 8):** 3-state model (SPY/IEF/BIL) tested and rejected — underperforms 2-state by 72 bps
-- **Active focus:** ISSUE-002 (correlation regime analysis), Day 6 momentum overlay upcoming
-- **Deferred:** ISSUE-001 (real returns) — medium priority, ISSUE-003 (survivorship bias) — low priority
+  - FRED API key configured (.env) — unlocks real returns analysis
+- **Strategy v2.0 (Momentum Overlay):** 11.21% CAGR / 0.61 Sharpe / -51.5% MaxDD
+  - Signal: Rotate to bonds only when spread < 0.50% AND SPY < 200-day MA
+  - 5.1% time in bonds (vs 26% in v1.0) — filters false signals during late-cycle melt-ups
+  - Beats v1.0 by ~300 bps/year, trails SPY by only 46 bps with better Sharpe
+  - MA window sensitivity validated: robust across 100-300 day windows
+- **Closed:** ISSUE-002 (correlation regimes), ISSUE-004 (signal lag), ISSUE-005 (MA sensitivity)
+- **Open:** ISSUE-001 (real returns, now unblocked with FRED key) — medium priority
+- **Rejected:** 3-state SPY/IEF/BIL model (Day 5) — cash filter worsened returns
 
 ## Initial Setup (2026-02-13)
 - Identity files created (SOUL.md, IDENTITY.md, USER.md, MEMORY.md)
@@ -66,7 +68,8 @@
 - PAT rotation done securely
 
 ## Recent Updates
-- **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models (Sonnet→GPT-5.4→GPT-5.2→GPT-5). Quant Day 5: 3-state model rejected (-72 bps vs 2-state). GroupPolicy lesson learned: empty allowlist is correct posture when no active groups.
+- **March 10, 2026:** FRED API key configured in siloed-quant-repo (.env, gitignored). Attribution added per FRED ToS. Quant Days 6-7: Momentum overlay breakthrough (+300 bps over v1.0), MA sensitivity validated. Strategy upgraded to v2.0.
+- **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models (Sonnet→GPT-5.4→GPT-5.2→GPT-5). GroupPolicy lesson: empty allowlist is correct posture when no active groups.
 - **March 6, 2026:** Quant backtest infrastructure hardened with production-ready 3-layer fallback (Day 3 complete). Strategy underperforms SPY by 200 bps/year with no downside protection. Focus shifted to correlation regime analysis (ISSUE-002).
 - **March 4, 2026:** Session cleanup — reduced from 7→4 sessions (deleted 3 idle Telegram groups). Daily logging resumed. System stable.
 - **February 28, 2026:** Daily memory logging practice resumed after 2-week gap.
