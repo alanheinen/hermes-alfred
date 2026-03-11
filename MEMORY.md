@@ -32,14 +32,14 @@
 ### Activity Status (as of Mar 8)
 - **Session count:** 4 total (1 Opus main + 3 Sonnet crons)
 - **Group chats:** Deleted Mar 4 — 3 idle Telegram groups removed
-- Main session: Light use (quant meetings, budget checks, memory maintenance)
+- Main session: Light use (quant meetings, security audit, memory maintenance)
 - Active cron jobs: git-backup, memory-review, daily-review, usage-report, quant-backtest-daily (all Sonnet)
-- **Recent work:** Quant backtest infrastructure hardening (Day 3 completed Mar 6)
+- **Recent work:** Security audit complete (0 critical issues), quant backtest Days 3-5
 - **Burn rate:** Consistently ~$0.15-0.30/day (tiering very effective)
 
 ## Memory & Tracking
-- **Daily logs:** Active practice — most recent: 2026-03-06.md
-  - Reviewed: 2026-02-13.md ✓, 2026-02-28.md ✓, 2026-03-04.md ✓, 2026-03-06.md ✓
+- **Daily logs:** Active practice — most recent: 2026-03-08.md
+  - Reviewed: 2026-02-13.md ✓, 2026-02-28.md ✓, 2026-03-04.md ✓, 2026-03-06.md ✓, 2026-03-08.md ✓
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
 - **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md`
@@ -55,7 +55,8 @@
 - **Current findings:** Rotation strategy underperforms SPY by ~200 bps/year (8.25% vs 10.35% CAGR)
   - Only 4 rotations in 19 years (73% equities, 26% bonds)
   - Max drawdown: -55.2% (same as SPY) — no downside protection
-- **Active focus:** ISSUE-002 (bond-equity correlation regime analysis for 2022 instability)
+  - **Day 5 (Mar 8):** 3-state model (SPY/IEF/BIL) tested and rejected — underperforms 2-state by 72 bps
+- **Active focus:** ISSUE-002 (correlation regime analysis), Day 6 momentum overlay upcoming
 - **Deferred:** ISSUE-001 (real returns) — medium priority, ISSUE-003 (survivorship bias) — low priority
 
 ## Initial Setup (2026-02-13)
@@ -65,6 +66,7 @@
 - PAT rotation done securely
 
 ## Recent Updates
+- **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models (Sonnet→GPT-5.4→GPT-5.2→GPT-5). Quant Day 5: 3-state model rejected (-72 bps vs 2-state). GroupPolicy lesson learned: empty allowlist is correct posture when no active groups.
 - **March 6, 2026:** Quant backtest infrastructure hardened with production-ready 3-layer fallback (Day 3 complete). Strategy underperforms SPY by 200 bps/year with no downside protection. Focus shifted to correlation regime analysis (ISSUE-002).
 - **March 4, 2026:** Session cleanup — reduced from 7→4 sessions (deleted 3 idle Telegram groups). Daily logging resumed. System stable.
 - **February 28, 2026:** Daily memory logging practice resumed after 2-week gap.

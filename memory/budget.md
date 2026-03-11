@@ -39,14 +39,15 @@
 | 2026-03-06 | ~$0.20 | Crons (Sonnet) + light main session. Normal day. |
 | 2026-03-07 | ~$0.15 | 5 crons (Sonnet) + usage report (Opus). Quiet day. |
 | 2026-03-08 | ~$0.40 | 5 crons (Sonnet ~$0.09) + main session security audit & config work (Opus ~$0.30). Heavier day. |
-| 2026-03-09 | ~$0.10+ | 4 crons (Sonnet ~$0.08) + usage report (Opus ~$0.02). Day in progress. |
+| 2026-03-09 | ~$0.15 | 4 crons (Sonnet ~$0.10) + usage report + cron announcements (Opus ~$0.05). Normal day. |
+| 2026-03-10 | ~$0.15+ | 4 crons (Sonnet ~$0.10) + usage report (Opus ~$0.05). Day in progress. |
 
-## Status (2026-03-09)
+## Status (2026-03-10)
 ✅ Model tiering active: crons → Sonnet, main → Opus
 ✅ Fallback chain trimmed to frontier-only (Sonnet → GPT-5.4 → GPT-5.2 → GPT-5)
 ✅ Security audit clean: 0 critical findings
-Estimated balance: ~$23-29 remaining
-Burn rate (Mar 8): ~$0.40 (elevated — security audit session)
-Burn rate (Mar 9 so far): ~$0.10
+Estimated balance: ~$23-28 remaining
+Burn rate (Mar 9): ~$0.15 (normal)
+Burn rate (Mar 10 so far): ~$0.15
 Expected burn rate going forward: ~$0.15-0.30/day
 Runway: 3-5+ months at normal rate
