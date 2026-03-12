@@ -38,7 +38,7 @@
 - **Burn rate:** Consistently ~$0.15-0.30/day (tiering very effective)
 
 ## Memory & Tracking
-- **Daily logs:** Active practice — most recent: 2026-03-08.md
+- **Daily logs:** Active practice — most recent: 2026-03-11.md
   - Reviewed: 2026-02-13.md ✓, 2026-02-28.md ✓, 2026-03-04.md ✓, 2026-03-06.md ✓, 2026-03-08.md ✓
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
@@ -56,7 +56,8 @@
   - Signal: Rotate to bonds only when spread < 0.50% AND SPY < 200-day MA
   - 5.1% time in bonds (vs 26% in v1.0) — filters false signals during late-cycle melt-ups
   - Beats v1.0 by ~300 bps/year, trails SPY by only 46 bps with better Sharpe
-  - MA window sensitivity validated: robust across 100-300 day windows
+  - MA window sensitivity validated: robust across 100-300 day windows (Day 7)
+  - Monthly rebalancing validated as optimal (Day 8) — weekly adds overhead with no CAGR gain
 - **Closed:** ISSUE-002 (correlation regimes), ISSUE-004 (signal lag), ISSUE-005 (MA sensitivity)
 - **Open:** ISSUE-001 (real returns, now unblocked with FRED key) — medium priority
 - **Rejected:** 3-state SPY/IEF/BIL model (Day 5) — cash filter worsened returns
@@ -68,6 +69,7 @@
 - PAT rotation done securely
 
 ## Recent Updates
+- **March 11, 2026:** Quant Day 8: Rebalancing frequency validated — monthly optimal (weekly adds overhead, no CAGR benefit). Strategy v2.0 finalized.
 - **March 10, 2026:** FRED API key configured in siloed-quant-repo (.env, gitignored). Attribution added per FRED ToS. Quant Days 6-7: Momentum overlay breakthrough (+300 bps over v1.0), MA sensitivity validated. Strategy upgraded to v2.0.
 - **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models (Sonnet→GPT-5.4→GPT-5.2→GPT-5). GroupPolicy lesson: empty allowlist is correct posture when no active groups.
 - **March 6, 2026:** Quant backtest infrastructure hardened with production-ready 3-layer fallback (Day 3 complete). Strategy underperforms SPY by 200 bps/year with no downside protection. Focus shifted to correlation regime analysis (ISSUE-002).
