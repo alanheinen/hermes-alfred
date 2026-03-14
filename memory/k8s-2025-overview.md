@@ -1,6 +1,6 @@
 # k8s-2025 Repository Overview
 
-**Location:** `/home/aheinen/k8s-2025`
+**Location:** `/home/aheinen/.openclaw/workspace/k8s-2025`
 **Purpose:** Production-grade HA Kubernetes cluster on Proxmox homelab infrastructure
 **Last reviewed:** 2026-02-13
 

@@ -14,32 +14,29 @@
 ## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
 - **Top-up:** $25.00 (2026-02-26) ✅ Confirmed
-- **Current estimate:** ~$24-30 (as of Mar 8)
+- **Current estimate:** ~$22-27 remaining (as of Mar 12)
 - **Thresholds:** Warning at $5, Critical at $2
-- **Status:** Stable — tiering highly effective, 3-6+ month runway
+- **Status:** Stable — model tiering is working, runway still measured in months
 - **Tracking:** Detailed log maintained in `memory/budget.md`
 
-### ✅ Model Tiering Implemented (Feb 25)
-- **Fixed issue:** All 7 sessions were on Opus → now 6 switched to Sonnet
-- **Current setup (updated Mar 4):** 
-  - Main session: Opus (claude-opus-4-6)
-  - 3 cron sessions: Sonnet (claude-sonnet-4-5)
-- **Burn rate improvement:** 
-  - Feb 13-24: ~$1-4/day (setup + all Opus)
-  - Feb 25+: ~$0.15-0.30/day (tiered pricing) ✅
-- **Expected runway:** 3-6+ months at current activity level
+### ✅ Model Tiering
+- **Fixed issue (Feb 25):** all sessions were effectively premium-priced; automated work was moved off Opus
+- **Current posture:** main session uses Opus when the work actually warrants it; cron/automation work runs on Sonnet
+- **Fallback chain (Mar 8):** trimmed to frontier-only models — Sonnet → GPT-5.4 → GPT-5.2 → GPT-5
+- **Burn rate improvement:**
+  - Feb 13-24: roughly ~$1-4/day during setup and all-Opus usage
+  - Feb 25+: roughly ~$0.15-0.30/day after tiering ✅
+- **Expected runway:** ~3-5+ months at current activity
 
-### Activity Status (as of Mar 8)
-- **Session count:** 4 total (1 Opus main + 3 Sonnet crons)
+### Activity Status (as of Mar 13)
 - **Group chats:** Deleted Mar 4 — 3 idle Telegram groups removed
-- Main session: Light use (quant meetings, security audit, memory maintenance)
-- Active cron jobs: git-backup, memory-review, daily-review, usage-report, quant-backtest-daily (all Sonnet)
-- **Recent work:** Security audit complete (0 critical issues), quant backtest Days 3-5
-- **Burn rate:** Consistently ~$0.15-0.30/day (tiering very effective)
+- **Active automation:** git-backup, memory-review, daily-review, usage-report, quant-backtest-daily, quant-meeting-daily
+- **Main work lately:** quant research, security hardening, and memory maintenance
+- **Burn rate:** holding around ~$0.15-0.30/day
 
 ## Memory & Tracking
-- **Daily logs:** Active practice — most recent: 2026-03-11.md
-  - Reviewed: 2026-02-13.md ✓, 2026-02-28.md ✓, 2026-03-04.md ✓, 2026-03-06.md ✓, 2026-03-08.md ✓
+- **Daily logs:** Active practice — most recent: `2026-03-12.md`
+  - Reviewed/distilled: `2026-02-13.md` ✓, `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
 - **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md`
@@ -47,19 +44,20 @@
 ## Projects & Active Work
 
 ### Quant Backtest (siloed-quant-repo)
-- **Status:** ✅ Production-ready v2.0 (as of Mar 10)
+- **Status:** ✅ Production-ready v2.2 research baseline established
 - **Daily cron:** quant-backtest-daily (Sonnet, 2:00 AM EST)
-- **Infrastructure:** Production-ready 3-layer fallback for T10Y2Y data (FRED API → yfinance → CSV)
+- **Infrastructure:** production-ready 3-layer fallback for T10Y2Y data (FRED API → yfinance → CSV)
   - CSV fallback is permanent infrastructure (6180 observations, 2002-2026)
-  - FRED API key configured (.env) — unlocks real returns analysis
-- **Strategy v2.0 (Momentum Overlay):** 11.21% CAGR / 0.61 Sharpe / -51.5% MaxDD
-  - Signal: Rotate to bonds only when spread < 0.50% AND SPY < 200-day MA
-  - 5.1% time in bonds (vs 26% in v1.0) — filters false signals during late-cycle melt-ups
-  - Beats v1.0 by ~300 bps/year, trails SPY by only 46 bps with better Sharpe
-  - MA window sensitivity validated: robust across 100-300 day windows (Day 7)
-  - Monthly rebalancing validated as optimal (Day 8) — weekly adds overhead with no CAGR gain
-- **Closed:** ISSUE-002 (correlation regimes), ISSUE-004 (signal lag), ISSUE-005 (MA sensitivity)
-- **Open:** ISSUE-001 (real returns, now unblocked with FRED key) — medium priority
+  - FRED API key configured in `.env` (gitignored)
+  - CPIAUCSL CSV fallback added, so real-return reporting now works even without the API key
+- **Strategy v2.2 (Inflation-Guard MA300):** 10.93% CAGR / 0.58 Sharpe / -46.0% MaxDD
+  - Default rule: when spread < 0.50% **and** SPY < MA300, use **BIL instead of IEF** if YoY CPI > 4%
+  - Real-return snapshot: 8.40% CAGR / 0.45 Sharpe / -44.4% MaxDD
+  - Fewer defensive mistakes during inflation shocks; default output/docs now aligned with shipped strategy
+  - MA sensitivity validated across 100-300 day windows (Day 7): not obviously overfit
+  - Monthly rebalancing was validated under the earlier stack, but cadence needs re-check under the corrected true-T10Y2Y data path
+- **Closed:** ISSUE-001 (real returns), ISSUE-002 (correlation regimes), ISSUE-004 (signal lag), ISSUE-005 (MA sensitivity), ISSUE-006 (weekly rebalance rejected under old stack), ISSUE-007 (default MA selection)
+- **Open:** ISSUE-003 (pre-2002 bond proxy / inception bias), ISSUE-008 (re-validate cadence under corrected data stack)
 - **Rejected:** 3-state SPY/IEF/BIL model (Day 5) — cash filter worsened returns
 
 ## Initial Setup (2026-02-13)
@@ -69,10 +67,12 @@
 - PAT rotation done securely
 
 ## Recent Updates
-- **March 11, 2026:** Quant Day 8: Rebalancing frequency validated — monthly optimal (weekly adds overhead, no CAGR benefit). Strategy v2.0 finalized.
-- **March 10, 2026:** FRED API key configured in siloed-quant-repo (.env, gitignored). Attribution added per FRED ToS. Quant Days 6-7: Momentum overlay breakthrough (+300 bps over v1.0), MA sensitivity validated. Strategy upgraded to v2.0.
-- **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models (Sonnet→GPT-5.4→GPT-5.2→GPT-5). GroupPolicy lesson: empty allowlist is correct posture when no active groups.
-- **March 6, 2026:** Quant backtest infrastructure hardened with production-ready 3-layer fallback (Day 3 complete). Strategy underperforms SPY by 200 bps/year with no downside protection. Focus shifted to correlation regime analysis (ISSUE-002).
-- **March 4, 2026:** Session cleanup — reduced from 7→4 sessions (deleted 3 idle Telegram groups). Daily logging resumed. System stable.
-- **February 28, 2026:** Daily memory logging practice resumed after 2-week gap.
-- **February 26, 2026:** Budget top-up ($25.00) confirmed. Model tiering highly effective.
+- **March 13, 2026:** Quant Day 10 promoted the inflation-guard MA300 model to the new default (v2.2). ISSUE-001 closed via CPI CSV fallback, so real-return reporting now works even without FRED API access.
+- **March 12, 2026:** Automated quant run promoted MA300 as the default momentum filter and aligned repo outputs/docs with that baseline.
+- **March 11, 2026:** Quant Day 8 validated monthly rebalancing as optimal under the earlier data stack; that conclusion is now being re-checked after the true-T10Y2Y path was restored.
+- **March 10, 2026:** FRED API key configured in siloed-quant-repo (`.env`, gitignored). Attribution added per FRED ToS. Quant Days 6-7 captured the momentum overlay breakthrough (+300 bps over v1.0) and closed MA sensitivity work.
+- **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models. Group policy lesson: empty allowlist is the correct posture when no groups are active.
+- **March 6, 2026:** Quant backtest infrastructure hardened with production-ready 3-layer fallback (Day 3 complete). Strategy underperformed SPY by ~200 bps/year with no downside protection, which shifted focus to regime analysis.
+- **March 4, 2026:** Session cleanup — deleted 3 idle Telegram group sessions. Daily logging resumed and overall system state stayed stable.
+- **February 28, 2026:** Daily memory logging practice resumed after a 2-week gap.
+- **February 26, 2026:** Budget top-up ($25.00) confirmed. Model tiering proved highly effective.
