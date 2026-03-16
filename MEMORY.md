@@ -28,16 +28,17 @@
   - Feb 25+: roughly ~$0.15-0.30/day after tiering ✅
 - **Expected runway:** ~3-5+ months at current activity
 
-### Activity Status (as of Mar 14)
+### Activity Status (as of Mar 15)
 - **Group chats:** Deleted Mar 4 — 3 idle Telegram groups removed
 - **Active automation:** git-backup, memory-review, daily-review, usage-report, quant-backtest-daily, quant-meeting-daily
-- **Automation posture:** cron noise trimmed on Mar 13 — git-backup and memory-review direct announces disabled; usage-report no longer targets the main session
+- **Automation posture:** cron noise trimmed on Mar 13; routine jobs explicitly pinned to Sonnet, git-backup and memory-review direct announces disabled, and usage-report no longer targets the main session
 - **Main work lately:** quant research, security hardening, and memory maintenance
 - **Burn rate:** holding around ~$0.15-0.30/day
 
 ## Memory & Tracking
 - **Daily logs:** Active practice — most recent: `2026-03-13.md`
-  - Reviewed/distilled: `2026-02-13.md` ✓, `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓
+  - Reviewed/distilled: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓
+  - Purged after distillation: `2026-02-13.md` (removed 2026-03-15)
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
 - **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md`
