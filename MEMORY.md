@@ -28,7 +28,7 @@
   - Feb 25+: roughly ~$0.15-0.30/day after tiering ✅
 - **Expected runway:** ~3-5+ months at current activity
 
-### Activity Status (as of Mar 15)
+### Activity Status (as of Mar 16)
 - **Group chats:** Deleted Mar 4 — 3 idle Telegram groups removed
 - **Active automation:** git-backup, memory-review, daily-review, usage-report, quant-backtest-daily, quant-meeting-daily
 - **Automation posture:** cron noise trimmed on Mar 13; routine jobs explicitly pinned to Sonnet, git-backup and memory-review direct announces disabled, and usage-report no longer targets the main session
@@ -36,8 +36,9 @@
 - **Burn rate:** holding around ~$0.15-0.30/day
 
 ## Memory & Tracking
-- **Daily logs:** Active practice — most recent: `2026-03-13.md`
-  - Reviewed/distilled: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓
+- **Daily logs:** Active practice — most recent file: `2026-03-13.md`
+  - Older-than-7-day logs reviewed/distilled through `2026-03-08.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓
+  - Mar 11-13 quant/admin updates were distilled into MEMORY.md during the Mar 16 review
   - Purged after distillation: `2026-02-13.md` (removed 2026-03-15)
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
@@ -70,9 +71,8 @@
 - PAT rotation done securely
 
 ## Recent Updates
-- **March 13, 2026:** Quant Day 10 promoted the inflation-guard MA300 model to the new default (v2.2). ISSUE-001 closed via CPI CSV fallback, so real-return reporting now works even without FRED API access. Admin cleanup also reduced cron noise by disabling direct announces for git-backup/memory-review and moving usage-report off the main-session target.
+- **March 13, 2026:** Quant Day 10 promoted the inflation-guard MA300 model to the new default (v2.2). ISSUE-001 closed via CPI CSV fallback, so real-return reporting now works even without FRED API access. The corrected T10Y2Y path also reopened the cadence question, so ISSUE-008 now tracks weekly-vs-monthly re-validation. Admin cleanup reduced cron noise by disabling direct announces for git-backup/memory-review and moving usage-report off the main-session target.
 - **March 12, 2026:** Automated quant run showed MA300 as the strongest nominal baseline (11.93% CAGR / 0.61 Sharpe / -46.0% MaxDD), setting up the v2.2 promotion.
-- **March 11, 2026:** Monthly rebalancing looked best under the earlier data stack, but that conclusion is now provisional after the true-T10Y2Y path was restored.
 - **March 10, 2026:** FRED API key configured in siloed-quant-repo (`.env`, gitignored). Attribution added per FRED ToS. Quant Days 6-7 captured the momentum overlay breakthrough (+300 bps over v1.0) and closed MA sensitivity work.
 - **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models. Group policy lesson: empty allowlist is the correct posture when no groups are active.
 - **March 6, 2026:** Quant backtest infrastructure hardened with production-ready 3-layer fallback (Day 3 complete). Strategy underperformed SPY by ~200 bps/year with no downside protection, which shifted focus to regime analysis.
