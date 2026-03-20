@@ -2,7 +2,7 @@
 
 **Location:** `/home/aheinen/.openclaw/workspace/k8s-2025`
 **Purpose:** Production-grade HA Kubernetes cluster on Proxmox homelab infrastructure
-**Last reviewed:** 2026-02-13
+**Last reviewed:** 2026-03-20
 
 ---
 
@@ -98,6 +98,7 @@
 | Uptime Kuma | Infrastructure monitoring |
 | MeshCommander | Intel AMT management |
 | ntfy | Push notifications |
+| Frigate | NVR deployment with Coral TPU support |
 | linuxmag / adminmag | Documentation apps with PVCs |
 | Scanopy | App with PostgreSQL backend |
 | Network Audit | CronJobs for daily network scanning + weekly diff |
