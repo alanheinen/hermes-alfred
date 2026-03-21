@@ -1,0 +1,3 @@
+[submodule "siloed-quant-repo"]
+	path = siloed-quant-repo
+	url = https://github.com/alanheinen/siloed-quant-repo.git

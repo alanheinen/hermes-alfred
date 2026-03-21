@@ -37,9 +37,9 @@
 
 ## Memory & Tracking
 - **Daily logs:** Active practice — most recent file: `2026-03-20.md`
-  - Older-than-7-day logs reviewed/distilled through `2026-03-13.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓, `2026-03-09.md` ✓, `2026-03-10.md` ✓, `2026-03-11.md` ✓, `2026-03-12.md` ✓, `2026-03-13.md` ✓
-  - Mar 14-19 quant/admin updates are distilled below
-  - Purged after distillation: `2026-02-13.md` (removed 2026-03-15)
+  - Older-than-7-day logs reviewed/distilled through `2026-03-18.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓, `2026-03-09.md` ✓, `2026-03-10.md` ✓, `2026-03-11.md` ✓, `2026-03-12.md` ✓, `2026-03-13.md` ✓, `2026-03-16.md` ✓, `2026-03-18.md` ✓
+  - Mar 19-20 quant/admin updates are distilled below
+  - Purged after distillation: `2026-02-13.md` (removed 2026-03-15), `2026-02-28.md` (removed 2026-03-21)
 - **Budget tracking:** `memory/budget.md` actively maintained
 - **Error log:** `memory/error-log.md` tracks cron failures and issues
 - **k8s-2025 overview:** Stored in `memory/k8s-2025-overview.md`
@@ -75,6 +75,7 @@
 - PAT rotation done securely
 
 ## Recent Updates
+- **March 20, 2026:** Quant daily committed as `5bc374a` with metrics at 12.53% CAGR / 0.74 Sharpe / -55.2% MaxDD through 2026-03-19. Admin cleanup fixed daily-usage-report cron payload mismatch, locked all cron jobs to Sonnet with no fallbacks, added k8s-2025 daily fast-forward pull to git maintenance, cleared stale Telegram delivery failures, and refreshed k8s overview after repo pull. Al added $25 budget top-up, bringing Anthropic balance to $23.82.
 - **March 19, 2026:** Daily quant refresh committed as `0a3fde4`; headline default metrics held steady at 12.59% CAGR / 0.75 Sharpe / -55.2% MaxDD through 2026-03-17, with 73 position changes after the latest rerun.
 - **March 18, 2026:** Recalibrated synthetic IEF/BIL proxy durations against ETF overlap, added `proxy_validation.csv` diagnostics, reran the full backtest stack, and pushed commit `c2b0852`. Calibration rerun metrics: 12.59% CAGR / 0.75 Sharpe / -55.2% MaxDD / 72 trades over 1994-02-04 to 2026-03-17.
 - **March 16, 2026:** Fixed stale hard-coded `END_DATE`, added synthetic Treasury proxies plus stale-CSV auto-refresh, extended the default sample back to 1994, and promoted the weekly MA150 inflation-guard baseline. Repo commits: `a9d4050` and `1927669`.
