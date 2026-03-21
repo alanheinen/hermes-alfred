@@ -3,6 +3,8 @@
 ## Balance
 - Starting balance: $25.08 (2026-02-13)
 - Top-up: $25.00 (2026-02-26)
+- Top-up: $25.00 (2026-03-20)
+- Current reported Anthropic balance: $23.82 (2026-03-20)
 - Warning threshold: $5.00
 - Critical threshold: $2.00
 

@@ -13,10 +13,10 @@
 
 ## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
-- **Top-up:** $25.00 (2026-02-26) ✅ Confirmed
-- **Current estimate:** ~$22-27 remaining (last explicit estimate Mar 14)
+- **Top-ups:** $25.00 (2026-02-26) ✅, $25.00 (2026-03-20) ✅
+- **Current explicit Anthropic balance:** $23.82 (reported 2026-03-20)
 - **Thresholds:** Warning at $5, Critical at $2
-- **Status:** Stable — model tiering is working, runway still measured in months
+- **Status:** Stable — Anthropic billing issue cleared, model tiering still keeps runway measured in months
 - **Tracking:** Detailed log maintained in `memory/budget.md`
 
 ### ✅ Model Tiering
