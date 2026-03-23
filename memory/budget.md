@@ -5,7 +5,7 @@
 - Top-up: $25.00 (2026-02-26)
 - Top-up: $25.00 (2026-03-20)
 - Top-up: $25.00 (2026-03-21)
-- Current reported Anthropic balance: $37.08 (2026-03-21)
+- Current reported Anthropic balance: $34.28 (2026-03-22 10:27 EDT)
 - Warning threshold: $5.00
 - Critical threshold: $2.00
 
@@ -55,31 +55,30 @@
 | 2026-03-18 | $0.25 | |
 | 2026-03-19 | — | No activity recorded |
 | 2026-03-20 | $1.34 | Memory review, quant cron, admin cleanup, credits top-up |
-| 2026-03-21 | $8.60+ | ⚠️ Heavy day — main session Opus ($5.89), quant Sonnet ($1.51), this report ($0.66+) |
+| 2026-03-21 | $12.91 | 🔴 Heaviest day yet — Opus $10.90, Sonnet $2.00 |
+| 2026-03-22 | $1.39+ | (so far, 9 AM) Sonnet $1.00, Opus $0.39 |
 
-## Status (2026-03-21)
+## Status (2026-03-22)
 
-⚠️ **Previous estimates were wildly low.** Switched to actual transcript-derived costs.
-
-**Reported Anthropic balance:** $23.82 (Mar 20, post $25 top-up)
-**Estimated spend since:** ~$9.94 (Mar 20 + Mar 21 so far)
-**Estimated current balance:** ~$13.88
+**Last known Anthropic balance:** $37.08 (Mar 21, post $25 top-up)
+**Estimated spend since:** ~$14.30 (Mar 21 $12.91 + Mar 22 $1.39 so far)
+**Estimated current balance:** ~$22.78
 **Warning threshold:** $5.00
 
 **Burn rates:**
-- Quiet days (Mar 14-18): ~$0.37/day → 37 day runway
-- 7-day average (Mar 14-21): ~$1.68/day → 8 day runway ⚠️
-- Heavy days (today, Mar 5/9): $5-9/day → 1-2 days 🔴
-- All-time average (36 days): ~$1.63/day
+- Quiet days (Mar 14-18): ~$0.37/day → months of runway
+- 7-day average (Mar 16-22): $2.36/day → ~10 day runway
+- Heavy days (Mar 21): $12.91/day → 1-2 days 🔴
+- All-time average (38 days): ~$1.88/day
 
 **Cost drivers:**
-- Main session on Opus is the #1 cost. Growing context + $15/$75 per M tokens.
-- Crons on Sonnet are cheap (~$0.08-0.15/run)
-- This usage report cron runs on Opus — should be Sonnet.
-- Cache writes on Opus are expensive ($18.75/M tokens)
+- Mar 21 was the single most expensive day. Opus main session burned $10.90 alone.
+- This daily-usage-report cron still runs on Opus — should be Sonnet.
+- Sonnet crons are cheap (~$0.08-0.20/run)
+- Opus cache writes are the silent killer ($18.75/M tokens)
 
 **Recommendations:**
-1. Switch this daily-usage-report cron to Sonnet (it's currently Opus ⚠️)
-2. Consider switching main session to Sonnet for routine work
-3. Heavy interactive sessions can spike to $5-9/day on Opus
-4. At current trajectory, balance could hit warning threshold in ~5-8 days
+1. **Switch this daily-usage-report cron to Sonnet** (still on Opus ⚠️)
+2. Keep main session on Sonnet unless complex reasoning needed
+3. Mar 21 spike needs investigation — was there an unusually long Opus session?
+4. At 7-day avg ($2.36/day), balance lasts ~10 days before warning threshold

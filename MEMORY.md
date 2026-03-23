@@ -14,7 +14,7 @@
 ## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
 - **Top-ups:** $25.00 (2026-02-26) ✅, $25.00 (2026-03-20) ✅, $25.00 (2026-03-21) ✅
-- **Current explicit Anthropic balance:** $37.08 (reported 2026-03-21)
+- **Current explicit Anthropic balance:** $34.28 (reported 2026-03-22)
 - **Thresholds:** Warning at $5, Critical at $2
 - **Status:** Stable — Anthropic billing issue cleared, model tiering still keeps runway measured in months
 - **Tracking:** Detailed log maintained in `memory/budget.md`
