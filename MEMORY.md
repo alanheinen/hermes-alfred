@@ -36,8 +36,8 @@
 - **Burn rate:** holding around ~$0.15-0.30/day
 
 ## Memory & Tracking
-- **Daily logs:** Active practice — most recent file: `2026-03-20.md`
-  - Older-than-7-day logs reviewed/distilled through `2026-03-20.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓, `2026-03-09.md` ✓, `2026-03-10.md` ✓, `2026-03-11.md` ✓, `2026-03-12.md` ✓, `2026-03-13.md` ✓, `2026-03-16.md` ✓, `2026-03-18.md` ✓, `2026-03-19.md` ✓, `2026-03-20.md` ✓
+- **Daily logs:** Active practice — most recent file: `2026-03-22.md`
+  - Older-than-7-day logs reviewed/distilled through `2026-03-22.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓, `2026-03-09.md` ✓, `2026-03-10.md` ✓, `2026-03-11.md` ✓, `2026-03-12.md` ✓, `2026-03-13.md` ✓, `2026-03-16.md` ✓, `2026-03-18.md` ✓, `2026-03-19.md` ✓, `2026-03-20.md` ✓, `2026-03-22.md` ✓
   - No daily logs are old enough (>30 days) to purge yet; earliest is `2026-03-04.md`
   - Purged after distillation: `2026-02-13.md` (removed 2026-03-15), `2026-02-28.md` (removed 2026-03-21)
 - **Budget tracking:** `memory/budget.md` actively maintained
@@ -75,8 +75,6 @@
 - PAT rotation done securely
 
 ## Recent Updates
-- **March 20, 2026:** Quant daily metrics: 12.53% CAGR / 0.74 Sharpe / -55.2% MaxDD. Admin cleanup: locked all cron jobs to Sonnet with no fallbacks, fixed usage-report cron, added k8s-2025 daily pull, cleared stale Telegram failures.
-- **March 16-19, 2026:** Extended quant backtest history to 1994 via synthetic Treasury proxies, recalibrated durations against ETF overlap, promoted weekly MA150 inflation-guard baseline (12.59% CAGR / 0.75 Sharpe / -55.2% MaxDD).
+- **March 16-20, 2026:** Extended quant backtest history to 1994 via synthetic Treasury proxies, recalibrated durations against ETF overlap, promoted weekly MA150 inflation-guard baseline (12.59% CAGR / 0.75 Sharpe / -55.2% MaxDD). Admin cleanup: locked all cron jobs to Sonnet with no fallbacks, fixed usage-report cron.
 - **March 13, 2026:** ISSUE-001 closed via CPI CSV fallback. Promoted 2002+ inflation-guard MA300 model (v2.2). Reduced cron noise, pinned routine jobs to Sonnet.
 - **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models.
-- **March 4, 2026:** Session cleanup — deleted 3 idle Telegram group sessions. Daily logging resumed.
