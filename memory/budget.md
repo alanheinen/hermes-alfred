@@ -56,29 +56,24 @@
 | 2026-03-19 | — | No activity recorded |
 | 2026-03-20 | $1.34 | Memory review, quant cron, admin cleanup, credits top-up |
 | 2026-03-21 | $12.91 | 🔴 Heaviest day yet — Opus $10.90, Sonnet $2.00 |
-| 2026-03-22 | $1.39+ | (so far, 9 AM) Sonnet $1.00, Opus $0.39 |
+| 2026-03-22 | $1.39 | Sonnet + Opus crons |
+| 2026-03-23 | $0.27 | Very quiet — crons only, all Sonnet |
+| 2026-03-24 | $0.75+ | (so far, 9 AM) Crons + this Opus report |
 
-## Status (2026-03-22)
+## Status (2026-03-24)
 
-**Last known Anthropic balance:** $37.08 (Mar 21, post $25 top-up)
-**Estimated spend since:** ~$14.30 (Mar 21 $12.91 + Mar 22 $1.39 so far)
-**Estimated current balance:** ~$22.78
+**Last known Anthropic balance:** $34.28 (Mar 22, 10:27 EDT)
+**Estimated spend since:** ~$2.41 (Mar 22 partial + Mar 23 $0.27 + Mar 24 $0.75 so far)
+**Estimated current balance:** ~$31.87
 **Warning threshold:** $5.00
 
 **Burn rates:**
-- Quiet days (Mar 14-18): ~$0.37/day → months of runway
-- 7-day average (Mar 16-22): $2.36/day → ~10 day runway
-- Heavy days (Mar 21): $12.91/day → 1-2 days 🔴
-- All-time average (38 days): ~$1.88/day
+- Last 3 days (Mar 22-24): ~$0.80/day → very comfortable
+- 7-day average (Mar 18-24): ~$0.67/day → ~40 day runway 🟢
+- All-time average (40 days): ~$1.66/day
 
-**Cost drivers:**
-- Mar 21 was the single most expensive day. Opus main session burned $10.90 alone.
-- This daily-usage-report cron still runs on Opus — should be Sonnet.
-- Sonnet crons are cheap (~$0.08-0.20/run)
-- Opus cache writes are the silent killer ($18.75/M tokens)
-
-**Recommendations:**
-1. **Switch this daily-usage-report cron to Sonnet** (still on Opus ⚠️)
-2. Keep main session on Sonnet unless complex reasoning needed
-3. Mar 21 spike needs investigation — was there an unusually long Opus session?
-4. At 7-day avg ($2.36/day), balance lasts ~10 days before warning threshold
+**Notes:**
+- Usage has been very low since the Mar 21 spike ($12.91)
+- Mar 23 was the cheapest active day since Mar 17
+- This daily-usage-report cron still runs on Opus — should be Sonnet
+- At current burn rate, balance is healthy with weeks of runway
