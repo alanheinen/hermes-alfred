@@ -36,8 +36,8 @@
 - **Burn rate:** holding around ~$0.15-0.30/day
 
 ## Memory & Tracking
-- **Daily logs:** Active practice — most recent file: `2026-03-23.md`
-  - Older-than-7-day logs reviewed/distilled through `2026-03-23.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓, `2026-03-09.md` ✓, `2026-03-10.md` ✓, `2026-03-11.md` ✓, `2026-03-12.md` ✓, `2026-03-13.md` ✓, `2026-03-16.md` ✓, `2026-03-18.md` ✓, `2026-03-19.md` ✓, `2026-03-20.md` ✓, `2026-03-22.md` ✓, `2026-03-23.md` ✓
+- **Daily logs:** Active practice — most recent file: `2026-03-24.md`
+  - Older-than-7-day logs reviewed/distilled through `2026-03-24.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓, `2026-03-09.md` ✓, `2026-03-10.md` ✓, `2026-03-11.md` ✓, `2026-03-12.md` ✓, `2026-03-13.md` ✓, `2026-03-16.md` ✓, `2026-03-18.md` ✓, `2026-03-19.md` ✓, `2026-03-20.md` ✓, `2026-03-22.md` ✓, `2026-03-23.md` ✓, `2026-03-24.md` ✓
   - No daily logs are old enough (>30 days) to purge yet; earliest is `2026-03-04.md`
   - Purged after distillation: `2026-02-13.md` (removed 2026-03-15), `2026-02-28.md` (removed 2026-03-21)
 - **Budget tracking:** `memory/budget.md` actively maintained
