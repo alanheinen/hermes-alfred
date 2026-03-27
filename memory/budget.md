@@ -5,7 +5,8 @@
 - Top-up: $25.00 (2026-02-26)
 - Top-up: $25.00 (2026-03-20)
 - Top-up: $25.00 (2026-03-21)
-- Current reported Anthropic balance: $34.28 (2026-03-22 10:27 EDT)
+- Top-up: $25.00 (2026-03-26)
+- Current reported Anthropic balance: $5.59 before top-up → ~$30.59 (2026-03-26 14:17 EDT)
 - Warning threshold: $5.00
 - Critical threshold: $2.00
 
@@ -59,27 +60,23 @@
 | 2026-03-22 | $1.39 | Sonnet + Opus crons |
 | 2026-03-23 | $0.27 | Very quiet — crons only, all Sonnet |
 | 2026-03-24 | $1.33 | Quiet day — Opus $0.43, Sonnet $0.90 |
-| 2026-03-25 | $7.82+ | 🟡 (9 AM) Main session Opus context = $6.72, crons $1.10 |
+| 2026-03-25 | ~$9.50 | 🟡 Main session Opus context $6.72 + crons ~$2.78 |
+| 2026-03-26 | ~$8.78+ | Heavy Opus main session — RCA investigation, ntfy listener, infra SSH work |
 
-## Status (2026-03-25)
+## Status (2026-03-26 14:17 EDT)
 
-**Last known Anthropic balance:** $34.28 (Mar 22, 10:27 EDT)
-**Estimated spend since:** ~$13.19 (Mar 22 post-check $4.04 + Mar 23 ~$0.27 + Mar 24 $1.33 + Mar 25 $7.82 so far)
-**Estimated current balance:** ~$21.09
-**Warning threshold:** $5.00
+**Anthropic balance:** ~$30.59 (after $25 top-up; $5.59 before top-up)
+**Total top-ups to date:** $125.08 ($25.08 initial + 4× $25.00)
+**Total spent to date:** ~$94.49
 
 **Burn rates:**
-- Last 3 days (Mar 23-25): ~$3.12/day ← Mar 25 spike pulling this up
-- 7-day average (Mar 19-25): ~$1.59/day
-- All-time average (41 days): ~$1.82/day
+- Today alone (active Opus session): ~$8.78 so far
+- 7-day average (Mar 20-26): ~$3.70/day
+- All-time average (42 days): ~$2.25/day
 
-**⚠️ Concern: Main session Opus context bloat**
-- Main session (c34a0c44) has grown to 164k tokens
-- Each turn costs ~$1.03 just in cache writes at Opus rates
-- Today's $6.72 for main session alone is unsustainable
-- **Recommendation:** Switch main session to Sonnet, or trigger compaction/rotation
-- This usage-report cron still runs on Opus ($0.38 today) — should be Sonnet
+**⚠️ Note:** Balance dropped from $14.37 to $5.59 in ~2 hours of active Opus main session work. Opus context is expensive — today's session involves SSH investigation, code writing, and long conversation history.
 
-**Runway:**
-- At current 7-day rate ($1.59/day): ~13 days
-- If main session stays on Opus at this pace: could burn through balance in <7 days
+**Runway (from $30.59):**
+- At 7-day avg ($3.70/day): ~7 days to warning threshold
+- Quiet days (crons only): ~$0.50/day → months of runway
+- Active Opus days: $5-10/day → 3-5 days to warning

@@ -37,4 +37,18 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ---
 
+### Infrastructure Access
+
+- **OPNsense:** `root@opnsense.lan` (172.16.1.1) — SSH, **read-only** (no changes permitted)
+- **vm01.lan:** `aheinen@vm01.lan` (172.16.1.141) — SSH, **read-only** except: may restart Frigate VM 105 (`sudo qm start 105`)
+- **dsp01.lan:** `aheinen@dsp01.lan` — camera feed kiosk display. Restart lightdm (`sudo systemctl restart lightdm`) after Frigate recovery.
+- **ntfy:** `https://ntfy.heinenshome.com` — alerts topic, polling + streaming
+
+### Services
+
+- **ntfy-alert-listener:** systemd user service on clawdbot.lan
+  - Streams `ntfy.heinenshome.com/alerts`, filters flaps (2 min window), alerts via Telegram
+  - Auto-restarts Frigate VM 105 on OOM kill (10 min cooldown), then restarts lightdm on dsp01.lan after 30s delay
+  - Script: `/home/aheinen/.openclaw/scripts/ntfy-alert-listener.py`
+
 Add whatever helps you do your job. This is your cheat sheet.

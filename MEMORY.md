@@ -13,10 +13,11 @@
 
 ## Budget Situation 💰
 - **Starting balance:** $25.08 (2026-02-13)
-- **Top-ups:** $25.00 (2026-02-26) ✅, $25.00 (2026-03-20) ✅, $25.00 (2026-03-21) ✅
-- **Current explicit Anthropic balance:** $34.28 (reported 2026-03-22)
+- **Top-ups:** $25.00 (2026-02-26) ✅, $25.00 (2026-03-20) ✅, $25.00 (2026-03-21) ✅, $25.00 (2026-03-26) ✅
+- **Total funded:** $125.08
+- **Current explicit Anthropic balance:** ~$30.59 (reported 2026-03-26 14:17 EDT, after top-up)
 - **Thresholds:** Warning at $5, Critical at $2
-- **Status:** Stable — Anthropic billing issue cleared, model tiering still keeps runway measured in months
+- **Status:** Needs monitoring — burn rate higher than originally estimated (~$1.50-3/day actual vs ~$0.15-0.30 earlier estimates). Crons now locked to Sonnet with no fallbacks.
 - **Tracking:** Detailed log maintained in `memory/budget.md`
 
 ### ✅ Model Tiering
@@ -36,8 +37,8 @@
 - **Burn rate:** holding around ~$0.15-0.30/day
 
 ## Memory & Tracking
-- **Daily logs:** Active practice — most recent file: `2026-03-24.md`
-  - Older-than-7-day logs reviewed/distilled through `2026-03-24.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓, `2026-03-09.md` ✓, `2026-03-10.md` ✓, `2026-03-11.md` ✓, `2026-03-12.md` ✓, `2026-03-13.md` ✓, `2026-03-16.md` ✓, `2026-03-18.md` ✓, `2026-03-19.md` ✓, `2026-03-20.md` ✓, `2026-03-22.md` ✓, `2026-03-23.md` ✓, `2026-03-24.md` ✓
+- **Daily logs:** Active practice — most recent file: `2026-03-25.md`
+  - Older-than-7-day logs reviewed/distilled through `2026-03-25.md`: `2026-02-28.md` ✓, `2026-03-04.md` ✓, `2026-03-06.md` ✓, `2026-03-08.md` ✓, `2026-03-09.md` ✓, `2026-03-10.md` ✓, `2026-03-11.md` ✓, `2026-03-12.md` ✓, `2026-03-13.md` ✓, `2026-03-16.md` ✓, `2026-03-18.md` ✓, `2026-03-19.md` ✓, `2026-03-20.md` ✓, `2026-03-22.md` ✓, `2026-03-23.md` ✓, `2026-03-24.md` ✓, `2026-03-25.md` ✓
   - No daily logs are old enough (>30 days) to purge yet; earliest is `2026-03-04.md`
   - Purged after distillation: `2026-02-13.md` (removed 2026-03-15), `2026-02-28.md` (removed 2026-03-21)
 - **Budget tracking:** `memory/budget.md` actively maintained
@@ -75,6 +76,8 @@
 - PAT rotation done securely
 
 ## Recent Updates
+- **March 26, 2026:** Deployed real-time ntfy infrastructure alert listener (systemd service, zero LLM cost). Investigated 3 outage incidents and filed 2 RCAs in k8s-2025 repo. Fixed cron delivery duplicates and confirmed model pinning after Al's manual gateway restart. Requested SSH access to OPNsense/vm01/switch/UPS for deeper investigation. Balance: $14.37.
+- **March 20-25, 2026:** Quant team published STRATEGY_PAPER.md (28KB, publication-ready) and began short-term S&P 500 trading research (Phase 2 complete — tactical momentum overlay candidate). Budget concern emerged: actual burn rate ~$1.50-3/day, significantly higher than earlier estimates.
 - **March 16-20, 2026:** Extended quant backtest history to 1994 via synthetic Treasury proxies, recalibrated durations against ETF overlap, promoted weekly MA150 inflation-guard baseline (12.59% CAGR / 0.75 Sharpe / -55.2% MaxDD). Admin cleanup: locked all cron jobs to Sonnet with no fallbacks, fixed usage-report cron.
 - **March 13, 2026:** ISSUE-001 closed via CPI CSV fallback. Promoted 2002+ inflation-guard MA300 model (v2.2). Reduced cron noise, pinned routine jobs to Sonnet.
 - **March 8, 2026:** Security audit complete — 0 critical issues. Model fallback chain trimmed to 4 frontier models.
