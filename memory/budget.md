@@ -6,7 +6,7 @@
 - Top-up: $25.00 (2026-03-20)
 - Top-up: $25.00 (2026-03-21)
 - Top-up: $25.00 (2026-03-26)
-- Current reported Anthropic balance: $5.59 before top-up → ~$30.59 (2026-03-26 14:17 EDT)
+- Current reported Anthropic balance: $14.37 (2026-03-26 reported by Al)
 - Warning threshold: $5.00
 - Critical threshold: $2.00
 
@@ -64,20 +64,21 @@
 | 2026-03-26 | ~$11.50 | Heavy Opus main session — RCA investigation, ntfy listener, infra SSH work |
 | 2026-03-27 | — | (in progress) |
 
-## Status (2026-03-27 09:00 EDT)
+## Status (2026-03-28 03:00 EDT)
 
-**Anthropic balance:** ~$19.09 (estimated: $30.59 - $11.50)
+**Anthropic balance:** ~$13-14 (estimated from $14.37 on Mar 26, minus light Mar 27 activity)
 **Total top-ups to date:** $125.08 ($25.08 initial + 4× $25.00)
-**Total spent to date:** ~$105.99
+**Total spent to date:** ~$111-112
 
 **Burn rates:**
-- Yesterday (Mar 26): ~$11.50 (heavy Opus investigation day)
-- 7-day average (Mar 21-27): ~$4.93/day
-- All-time average (43 days): ~$2.47/day
+- Mar 26: ~$11.50 (heavy Opus investigation day)
+- Mar 27: ~$0.50-1.00 est. (light activity, mostly automated)
+- 7-day average: ~$4.93/day (highly variable: $0.50 quiet days, $10-15 heavy Opus days)
+- All-time average: ~$2.55/day
 
-**Runway (from $19.09):**
-- At 7-day avg ($4.93/day): ~2.9 days to warning threshold ($5)
-- Quiet days (crons only): ~$0.50/day → 28 days to warning
-- Active Opus days: $10-15/day → 1-2 days to warning
+**Runway (from $13-14):**
+- At 7-day avg ($4.93/day): ~2 days to warning threshold ($5)
+- Quiet days (crons only): ~$0.50/day → 16-18 days to warning
+- Active Opus days: $10-15/day → 1 day to warning
 
-**⚠️ Status:** Balance approaching warning threshold. Heavy Opus usage days burn through balance quickly.
+**⚠️ Status:** Balance approaching warning threshold. Heavy Opus usage days burn through balance quickly. Top-up likely needed soon.
