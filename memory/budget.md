@@ -62,23 +62,24 @@
 | 2026-03-24 | $1.33 | Quiet day — Opus $0.43, Sonnet $0.90 |
 | 2026-03-25 | ~$9.50 | 🟡 Main session Opus context $6.72 + crons ~$2.78 |
 | 2026-03-26 | ~$11.50 | Heavy Opus main session — RCA investigation, ntfy listener, infra SSH work |
-| 2026-03-27 | — | (in progress) |
+| 2026-03-27 | ~$2.00 | Moderate — cron fixes, RCA filing, token optimization, listener updates |
+| 2026-03-28 | — | (in progress) |
 
-## Status (2026-03-28 03:00 EDT)
+## Status (2026-03-28 09:00 EDT)
 
-**Anthropic balance:** ~$13-14 (estimated from $14.37 on Mar 26, minus light Mar 27 activity)
+**Anthropic balance:** ~$12 (estimated from $14.37 on Mar 26, minus ~$2 Mar 27)
 **Total top-ups to date:** $125.08 ($25.08 initial + 4× $25.00)
-**Total spent to date:** ~$111-112
+**Total spent to date:** ~$113
 
 **Burn rates:**
 - Mar 26: ~$11.50 (heavy Opus investigation day)
-- Mar 27: ~$0.50-1.00 est. (light activity, mostly automated)
-- 7-day average: ~$4.93/day (highly variable: $0.50 quiet days, $10-15 heavy Opus days)
-- All-time average: ~$2.55/day
+- Mar 27: ~$2.00 (moderate — cron fixes, RCA, optimization)
+- 7-day avg (Mar 22-28): ~$4.14/day
+- All-time avg: ~$2.55/day
 
-**Runway (from $13-14):**
-- At 7-day avg ($4.93/day): ~2 days to warning threshold ($5)
-- Quiet days (crons only): ~$0.50/day → 16-18 days to warning
-- Active Opus days: $10-15/day → 1 day to warning
+**Runway (from ~$12):**
+- At 7-day avg ($4.14/day): ~2 days to warning ($5)
+- Quiet days (crons only): ~$0.50/day → 14 days to warning
+- Active Opus days ($10+): hits warning same day
 
-**⚠️ Status:** Balance approaching warning threshold. Heavy Opus usage days burn through balance quickly. Top-up likely needed soon.
+**⚠️ Status:** Balance low. One heavy Opus day could breach warning threshold. Top-up recommended.

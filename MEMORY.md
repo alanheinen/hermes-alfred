@@ -7,7 +7,7 @@
 
 ## Budget 💰
 - **Total funded:** $125.08 across 5 deposits (Feb 13 – Mar 26)
-- **Balance:** $14.37 (Mar 26 reported) → est. ~$13-14 (Mar 28). Warning at $5, critical at $2.
+- **Balance:** ~$12 (Mar 28 est). Warning at $5, critical at $2.
 - **Burn rate:** ~$0.50-15/day. Quiet cron-only days ~$0.50. Active Opus investigation days can hit $10-15.
 - **Tracking:** `memory/budget.md`
 
