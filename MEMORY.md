@@ -7,16 +7,16 @@
 
 ## Budget 💰
 - **Total funded:** $125.08 across 5 deposits (Feb 13 – Mar 26)
-- **Balance:** ~$12-14 (Mar 28 est). Warning at $5, critical at $2. ~2 days to warning at current burn.
-- **Burn rate:** ~$0.50-15/day. Quiet cron-only days ~$0.50. Active Opus investigation days can hit $10-15. 7-day avg: ~$4.14/day.
-- **⚠️ Note:** usage-report cron still on Opus — should migrate to Sonnet to reduce burn.
+- **Balance:** ~$9 (Mar 29 est). Warning at $5, critical at $2. 🔴 **Critically low** — ~1 day to warning at avg burn.
+- **Burn rate:** ~$0.50-15/day. Quiet cron-only days ~$0.50. Active Opus investigation days can hit $10-15. 7-day avg: ~$4.28/day.
+- **Status:** All 6 crons confirmed on Sonnet (no Opus fallbacks). One active Opus session will breach $5 warning. Top-up recommended.
 - **Tracking:** `memory/budget.md`
 
 ## Infrastructure
-- **Crons (6):** git-backup, memory-review, daily-review, usage-report, quant-backtest-daily, quant-meeting-daily — all Sonnet, no fallbacks
-- **ntfy-alert-listener:** systemd daemon on clawdbot.lan — streams ntfy alerts, flap filter, auto-restarts Frigate VM 105, auto-files RCAs. Source committed to k8s-2025/alfred/.
+- **Crons (6):** git-backup, memory-review, daily-review, usage-report, quant-backtest-daily, quant-meeting-daily — all Sonnet, no fallbacks (verified Mar 26)
+- **ntfy-alert-listener:** systemd daemon on clawdbot.lan — streams ntfy alerts, 2-min flap filter, auto-restarts Frigate VM 105 (10-min cooldown), auto-files RCAs. Source committed to k8s-2025/alfred/.
 - **SSH access:** OPNsense (root@172.16.1.1) and vm01.lan (aheinen@172.16.1.141) — read-only, exception for Frigate VM 105 restart
-- **Frigate:** Recurring OOM kills (~6 in 12 days through Mar 27). Auto-restart daemon deployed. **vm01 drive replacement** started Mar 27 evening — failing drive may have been causing I/O pressure contributing to OOM issues. Monitoring for improvement.
+- **Frigate OOM pattern:** Recurring kills (~6 in 12 days through Mar 27). Auto-restart deployed. **vm01 drive replacement** started Mar 27 — failing drive may have caused I/O pressure. Monitoring for improvement post-replacement.
 - **Report delivery:** Switched to announce mode Mar 27 after delivery failures.
 
 ## Quant Backtest (siloed-quant-repo)
@@ -29,6 +29,4 @@
 - Other tracking: `memory/budget.md`, `memory/error-log.md`, `memory/k8s-2025-overview.md`
 
 ## Recent Updates
-- **Mar 28:** k8s-2025 repo divergence: 21 local commits (auto-RCAs from network flap during drive replacement) vs 13 remote (Ansible/Proxmox work) — needs merge/rebase. Quant strategy paper enhanced with updated metrics (12.39% CAGR, 0.73 Sharpe, +187 bps over SPY), ASCII decision flowchart, corrected performance tables. Short-term strategy framework ready for research phase. Budget thin (~$12-14, 2 days to $5 warning).
-- **Mar 27:** vm01 drive replacement started (may resolve Frigate OOM issues). Token optimization: 59% context reduction. ntfy-listener now auto-files RCAs for flap-filtered events. Listener source committed to k8s-2025/alfred/. Report delivery fully fixed (announce mode).
-- **Mar 26:** Built ntfy-alert-listener systemd daemon with auto-restart, flap filtering, Telegram alerts. Investigated 3 outages, filed RCAs. Granted SSH access to OPNsense + vm01.lan.
+- **Mar 26-28:** Infrastructure monitoring week — deployed ntfy-alert-listener daemon (systemd, auto-restart, flap filtering), investigated Frigate OOM pattern (4th+ incident), auto-restart logic with 10-min cooldown, granted SSH access (OPNsense + vm01, read-only + Frigate restart exception), filed multiple RCAs. vm01 drive replacement started Mar 27 (may reduce OOM pressure). k8s-2025 repo divergence: 21 local vs 13 remote — needs merge. Token optimization: 59% context reduction. Quant strategy paper publication-ready (12.39% CAGR, 0.73 Sharpe, +187 bps over SPY). Budget thin (~$12-14).
