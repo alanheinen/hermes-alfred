@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "55c61585-bad3-4f0b-946d-04f8972c4752",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "Daily Memory Review & Cleanup",
+      "enabled": true,
+      "createdAtMs": 1774921680330,
+      "updatedAtMs": 1774936942259,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 1 * * *",
+        "tz": "America/Chicago"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"Daily Memory Review & Cleanup\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"Daily Memory Review & Cleanup\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"Daily Memory Review & Cleanup\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nDaily memory maintenance task:\n\n1. Read the last 2-3 days of memory files (memory/YYYY-MM-DD.md)\n2. Review MEMORY.md for current state\n3. Identify important project updates, decisions, and progress from recent daily logs\n4. Update MEMORY.md with significant learnings, consolidating similar information\n5. Remove outdated or redundant entries from MEMORY.md\n\nPURGE RULES:\n6. For daily logs OLDER than 7 days: ensure all significant insights are captured in MEMORY.md, then mark them as reviewed\n7. DELETE daily log files (memory/YYYY-MM-DD.md) older than 30 days — they should be fully distilled into MEMORY.md by then\n8. Clean up any stale entries in MEMORY.md that are no longer relevant (completed one-off tasks, resolved issues, outdated status)\n\nWrite a brief summary of what was updated and what was purged.",
+        "thinking": "medium",
+        "timeoutSeconds": 300
+      },
+      "delivery": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "8885d02e-f77b-4c91-83cc-c6d4f3425b92",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "quant-backtest-daily",
+      "enabled": true,
+      "createdAtMs": 1774921680360,
+      "updatedAtMs": 1774944061974,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 8 * * *",
+        "tz": "UTC"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nRun the daily backtest for the siloed-quant-repo. Script: /home/aheinen/.openclaw/workspace/siloed-quant-repo/strategy_backtest.py. Venv: /home/aheinen/.openclaw/workspace/siloed-quant-repo/.venv. Save output CSV and PNG chart. Commit all results to the git repo at /home/aheinen/.openclaw/workspace/siloed-quant-repo/ with a descriptive commit message including today's date."
+      },
+      "delivery": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "a9e8169d-9761-4158-b599-08d928d3a6b9",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "daily-git-backup",
+      "enabled": true,
+      "createdAtMs": 1774921680388,
+      "updatedAtMs": 1774970674908,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 2 * * *",
+        "tz": "America/Chicago"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"daily-git-backup\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"daily-git-backup\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"daily-git-backup\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nRun the daily git maintenance: first do `git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only` and note whether it updated anything. Then back up the live OpenClaw config by generating a REDACTED copy: `python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py /home/aheinen/.openclaw/openclaw.json /home/aheinen/.openclaw/workspace/backups/openclaw.json`. Do not commit live secrets. Then run the workspace backup: `cd /home/aheinen/.openclaw/workspace && git add -A`, check if there are changes to commit, and if yes commit with a brief summary and push. If nothing changed, just note that. Keep it short."
+      },
+      "delivery": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "1e1d1d6b-40bd-4583-9475-2d2f1b0bf0af",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "quant-meeting-daily",
+      "enabled": true,
+      "createdAtMs": 1774921680419,
+      "updatedAtMs": 1774966381977,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 12 * * *",
+        "tz": "UTC"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nRun the daily quant team meeting (60 min max). Repo: /home/aheinen/.openclaw/workspace/siloed-quant-repo/. Venv: /home/aheinen/.openclaw/workspace/siloed-quant-repo/.venv.\n\n## NEW PRIORITY 1: Short-term S&P 500 strategy\nThe quant team should now focus primarily on the short-term strategy track. Continue developing and testing short-horizon S&P 500 trading ideas with honest, rigorous evaluation. Improve `short_term_strategy.py` and related research artifacts. Explore signal families such as momentum, mean reversion, breakout, volatility, regime filters, and risk management variations. Favor realism over flattering results: explicit rules, transaction costs, sensible holding constraints, and walk-forward validation.\n\n## NEW PRIORITY 2: Brainstorming new strategy ideas\n\"New business\" should now spend its effort brainstorming genuinely new strategy directions rather than polishing existing documentation. Generate and evaluate fresh candidate ideas that are materially distinct from the current rotation strategy and the current short-term prototypes. Log ideas, hypotheses, and rejected paths clearly in `issue_tracker.log` or other appropriate research notes.\n\n## BACKBURNER / DE-PRIORITIZED\n- Existing rotation strategy maintenance should be backburnered unless a material issue appears in the latest daily run.\n- `STRATEGY_PAPER.md`, README polish, and other documentation work should only receive minimal maintenance if needed.\n- Do not spend substantial time refining the existing paper or repo presentation unless required by a significant strategy change.\n\n## MINIMAL ROTATION CHECK\nReview the latest rotation backtest only enough to confirm nothing is obviously broken. If a material issue appears, note it and address it; otherwise, leave it alone.\n\nCommit AND PUSH all meaningful repo changes.\n\nWhen done, write a concise summary report for Al on Telegram that emphasizes: 1) progress on the short-term strategy, 2) any new strategy ideas brainstormed, and 3) only brief status on the rotation strategy unless something important broke."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "bestEffort": true
+      }
+    },
+    {
+      "id": "60975e65-bc67-40cf-b1f1-0f0fd3d8541a",
+      "agentId": "main",
+      "sessionKey": "agent:main:main",
+      "name": "daily-review-and-optimize",
+      "enabled": true,
+      "createdAtMs": 1774921680453,
+      "updatedAtMs": 1774968739731,
+      "schedule": {
+        "kind": "cron",
+        "expr": "30 8 * * *",
+        "tz": "America/Chicago"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"daily-review-and-optimize\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"daily-review-and-optimize\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"daily-review-and-optimize\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nDaily review task:\n1) Check workspace git status for conflicts or uncommitted changes\n2) Review k8s-2025 repo for any conflicts or stale branches\n3) Check OpenClaw config for optimization opportunities\n4) Review memory files for inconsistencies or outdated info\n5) Scan logs for recurring errors or warnings\n6) Check message/delivery health: inspect delivery queue state and recent Telegram-related state/files for signs of failed or stuck deliveries\n7) Run a lightweight secret scan over relevant local files (workspace, OpenClaw config/backups, repo configs/docs/scripts), excluding bulky dependency trees and routine session transcript noise unless needed for diagnosis\n8) Suggest 2-3 actionable optimizations or fixes\n\nKeep the report concise and actionable. Include:\n- any actual errors or delivery issues found\n- any proposed fixes for those issues\n- any secret exposures found, grouped by severity (live config/active exposure vs historical residue/documentation)\n- note clearly when no meaningful problems are found."
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "bestEffort": true
+      }
+    }
+  ]
+}
