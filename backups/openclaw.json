@@ -183,7 +183,7 @@
     "telegram": {
       "enabled": true,
       "dmPolicy": "pairing",
-      "botToken": "8285239793:AAHIIGtcHToacXDQ0I1gNK2N_Cgn0TKfKEE",
+      "botToken": "REDACTED",
       "groups": {
         "*": {
           "requireMention": false
@@ -199,7 +199,7 @@
     "bind": "loopback",
     "auth": {
       "mode": "token",
-      "token": "fb2ed0590c0029b7f2ab6d00daea7b5ceaa6cc34b75a6438"
+      "token": "REDACTED"
     },
     "tailscale": {
       "mode": "off",
