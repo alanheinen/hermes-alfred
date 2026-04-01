@@ -6,7 +6,7 @@ Daily automated health monitoring, log analysis, and proactive maintenance for y
 ## Proposed Automation Layers
 
 ### 1. Daily Health Report (Morning Brief)
-**Time:** 7:00 AM CST daily
+**Time:** 7:00 AM America/Chicago daily
 **Components:**
 - Cluster status (K8s nodes, pod health, resource usage)
 - Storage health (TrueNAS, iSCSI, PV/PVC status)

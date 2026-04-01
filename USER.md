@@ -3,7 +3,7 @@
 - **Name:** Alan (Al)
 - **What to call them:** Al or Alan
 - **Pronouns:**
-- **Timezone:** CST (Central)
+- **Timezone:** America/Chicago
 - **Notes:**
 
 ## Context
