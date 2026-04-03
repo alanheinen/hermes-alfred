@@ -1,6 +1,6 @@
 # k8s-2025 Reorganization Proposal
 
-Last updated: 2026-04-01
+Last updated: 2026-04-02
 Status: Early proposal draft
 
 ## Goal
@@ -149,6 +149,56 @@ If moving Terraform out of root would cause too much churn right now, use a ligh
 - defer Terraform relocation to a later cleanup phase
 
 That likely gives most of the value with less breakage.
+
+## Refinement from 2026-04-02 Review
+
+### Stronger recommendation: separate by operator intent first, tool second
+Today’s targeted inventory supports a more opinionated rule:
+- first split by **what the operator is trying to do** (`provision`, `config`, `operations`, `recovery`)
+- then split by tool or mechanism inside that boundary (`ansible`, `scripts`, manifests, docs)
+
+That means the near-term proposal should avoid simply moving everything under a giant `provision/ansible/` bucket and calling it done. The real value comes from making deploy/configure/operate/recover boundaries visible.
+
+### Practical target layout for Ansible/AWX
+A more concrete Ansible target that fits the actual repo shape:
+
+```text
+provision/
+  ansible/
+    inventory/
+    roles/
+    vars/
+    playbooks/
+      deploy/
+      configure/
+      operate/
+      recover/
+    awx/
+      job-templates.yml
+      job-templates/
+```
+
+Why this variant looks better than the current structure:
+- top-level playbooks are no longer forced to coexist with patching and recovery tasks
+- the current `maintenance/` catch-all can be dissolved instead of preserved
+- AWX template definitions become an explicit operator surface rather than an implementation sidecar
+
+### Practical target layout for docs/history
+The docs review also suggests using a split that reflects document lifecycle more clearly than the first draft:
+- `docs/architecture/` — system architecture and design rationale
+- `docs/guides/` — setup, deployment, migration, and operator walkthroughs
+- `docs/reference/` — quick references, lookup material, config references
+- `docs/archive/` — completion summaries, historical milestone notes, superseded one-off summaries
+- `operations/incidents/` — incident and RCA files, kept near operations instead of buried in general docs
+
+### Practical target layout for scripts
+The scripts inventory suggests a modest rule set:
+- executable automation stays in a scripts area but should be grouped by intent (`bootstrap`, `deploy`, `ops`, `migrate`, `audit`, `sync`)
+- Markdown note files currently living under `scripts/` should move to `docs/reference/` unless they are tightly bound to a single script family
+- legacy one-off names like `proxmenux` should be normalized or explicitly documented as compatibility exceptions
+
+## Proposal Maturity
+This is still not fully presentation-ready, but it is no longer hand-wavy. The main structure is coherent, and the next refinement pass should focus on a concrete move map rather than inventing new buckets.
 
 ## First-Pass Placement Recommendations
 - `alfred/` should likely become `recovery/service-recovery/alfred/` unless it is an actively managed deployable service root

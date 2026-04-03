@@ -1,6 +1,6 @@
 # k8s-2025 Naming Conventions
 
-Last updated: 2026-04-01
+Last updated: 2026-04-02
 Status: Initial recommendations
 
 ## Goal
@@ -133,6 +133,54 @@ Avoid `README-topic.md` at the top level when a normal descriptive filename woul
 - normalize AWX names before or alongside path changes
 - batch renames by artifact family, not random file-by-file churn
 - document exceptions where external systems depend on a legacy name
+
+## Additional Evidence from 2026-04-02 Review
+
+### AWX templates now grouped by cleanup priority
+
+#### Priority 1: confirmed inconsistency or ambiguity
+- `Patch - Kubernetes Nodes` vs schedule references to `Patch - Kubernetes Node`
+- `Maintenance - Deploy PBS Server`
+- `Ad-hoc - Check Pending Updates`
+- `Distribute Clawdbot SSH Key`
+
+#### Priority 2: structurally inconsistent with preferred pattern
+- `Proxmox - Configure Node`
+- `Proxmox - Join Cluster`
+- `OctoPrint - Deploy/Configure`
+- `MotionEye - Deploy/Configure`
+- `MotionEye - Deploy camera2`
+- `MotionEye - Restart Services camera2`
+
+These are all understandable names, but they use different sorting logic and different levels of specificity.
+
+### Suggested canonical remaps for the most obvious examples
+- `Maintenance - Deploy PBS Server` → `Deploy - PBS - Server`
+- `Ad-hoc - Check Pending Updates` → `Audit - Infrastructure - Pending Updates`
+- `Distribute Clawdbot SSH Key` → `Operate - Clawdbot - Distribute SSH Key`
+- `Proxmox - Join Cluster` → `Operate - Proxmox - Join Cluster`
+- `Proxmox - Configure Node` → `Configure - Proxmox - Node`
+- `Patch - Kubernetes Nodes` → keep as family-level template name if one template truly handles plural scope, otherwise rename to something explicit like `Patch - Kubernetes - Rolling Nodes`
+
+### Playbook naming refinement
+Today’s inventory suggests the repo should distinguish at least four playbook families:
+- deploy/configure service playbooks (`clawdbot.yml`, `frigate.yml`, `pbs.yml`)
+- patch/audit/operate playbooks (`patch-debian.yml`, `check-updates.yml`)
+- recover/restore playbooks (`clawdbot-resurrection.yml`, `maintenance/restore.yml`)
+- cluster utility playbooks (`maintenance/join_proxmox_cluster.yml`, `maintenance/disable_wdmd.yml`)
+
+That supports a canonical naming pattern of:
+- `<system>-deploy.yml`
+- `<system>-configure.yml`
+- `<system>-operate-<task>.yml`
+- `<system>-recover-<task>.yml`
+- `<system>-patch.yml` or `<system>-patch-<scope>.yml`
+
+### Script naming refinement
+The scripts inventory suggests a small compatibility policy is needed:
+- normalize clear typos or historical names (`proxmenux`) when execution begins
+- keep compatibility wrappers only if external tooling depends on the old name
+- move Markdown notes out of `scripts/` unless they are script-family READMEs
 
 ## Initial Recommendation
 For this repo, prioritize AWX template naming and playbook naming first. Those are the operator-facing surfaces most likely to benefit immediately.

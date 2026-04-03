@@ -1,6 +1,6 @@
 # k8s-2025 Transition Plan
 
-Last updated: 2026-04-01
+Last updated: 2026-04-02
 Status: Initial staged transition draft
 
 ## Objective
@@ -23,6 +23,12 @@ Use a staged migration, not a heroic weekend of regret.
 - path reference inventory
 - move map (old path → new path)
 - rollback notes per stage
+- naming dependency inventory (template names, schedule names, documented launch names)
+
+### Preparation findings added on 2026-04-02
+- `ansible/awx-job-templates.yml` contains a live-looking naming dependency mismatch: daily schedules reference `Patch - Kubernetes Node`, while the defined template is `Patch - Kubernetes Nodes`
+- AWX and docs reference job template names directly, so naming changes must be staged with search/update validation rather than treated as harmless cosmetic edits
+- several scripts and playbooks have historical names (`proxmenux`, generic `backup.yml` / `restore.yml`) that will be easier to relocate safely if they are first mapped to canonical intent labels
 
 ## Stage 1 - Documentation-only restructuring
 Safest early win.
@@ -170,3 +176,15 @@ Rollback:
 - whether incidents stay under `docs/` or move to `operations/incidents/`
 - whether `alfred/` becomes recovery-only or remains a service deployment area
 - whether `scripts/` should remain globally visible or become domain-local
+- whether AWX naming should be normalized before path moves, or in the same execution wave per domain
+
+## Current Transition Bias
+Based on today’s evidence, the safest execution order still looks like:
+1. docs/history classification
+2. AWX/playbook/script naming normalization plan
+3. low-risk operations/recovery moves
+4. Ansible/AWX structural moves
+5. config tree moves
+6. optional Terraform relocation
+
+That sequence reduces the odds of compounding path churn with naming churn in the same fragile areas.

@@ -1,6 +1,6 @@
 # k8s-2025 Reorganization Assessment
 
-Last updated: 2026-04-01
+Last updated: 2026-04-02
 Status: Draft in progress
 
 ## Purpose
@@ -105,11 +105,70 @@ For planning purposes, current repo content appears to map into these concerns:
 - **history/evidence**: RCAs, completion summaries, audit logs
 
 ## Milestone Status
-- Phase 1 inventory/classification: in progress, good enough for first proposal draft
+- Phase 1 inventory/classification: in progress, now refined with targeted Ansible/AWX/script/doc evidence
 - Phase 2 pain points/overlaps: in progress, substantive findings captured
 - Phase 3 target information architecture: not yet finalized in this file
-- Phase 4 naming conventions: initial issues identified
+- Phase 4 naming conventions: in progress, with concrete artifact examples and one confirmed AWX schedule/template mismatch
 - Phase 5 transition sequencing: not started here
+
+## Additional Evidence from 2026-04-02 Run
+
+### Focus areas reviewed today
+- top-level repo inventory (sanity check against the first-pass classification)
+- `ansible/playbooks/` file layout
+- `ansible/job-templates/` contents
+- `ansible/awx-job-templates.yml` template and schedule naming details
+- `scripts/` file layout and naming patterns
+- flat `docs/` sample inventory
+
+### New observations
+
+#### 1. Ansible playbooks are split by host/service, patch task, and maintenance utility all in one directory
+Top-level `ansible/playbooks/` currently mixes several artifact types:
+- host/service deploy/configure playbooks: `clawdbot.yml`, `frigate.yml`, `pbs.yml`, `motioneye.yml`, `octoprint.yml`, `proxmox.yml`
+- patch/operate tasks: `patch-debian.yml`, `patch-kubernetes-node.yml`, `patch-proxmox.yml`, `check-updates.yml`
+- recovery/special operations: `clawdbot-resurrection.yml`, `distribute-clawdbot-ssh-key.yml`
+- generic maintenance utilities under `maintenance/`: `backup.yml`, `restore.yml`, `join_proxmox_cluster.yml`, `disable_wdmd.yml`, `install_argocd.yml`
+
+This strengthens the case for intent-based subdirectories because the current shape requires knowing repo lore rather than just operator intent.
+
+#### 2. `maintenance/` is a catch-all, not a true lifecycle boundary
+The `maintenance/` subtree currently includes:
+- backup/recovery (`backup.yml`, `restore.yml`)
+- cluster operations (`join_proxmox_cluster.yml`, `disable_wdmd.yml`)
+- provisioning/configuration (`install_argocd.yml`, `create_template.yml`, `generate_awx_ssh_key.yml`)
+
+So `maintenance` is really functioning as “miscellaneous operational leftovers,” which is useful evidence for replacing that label rather than preserving it.
+
+#### 3. AWX naming inconsistency is now confirmed, not just suspected
+Targeted review of `ansible/awx-job-templates.yml` confirmed several concrete issues:
+- the same file uses both action-first (`Deploy - Frigate NVR`) and system-first (`Proxmox - Configure Node`, `MotionEye - Deploy camera2`) naming families
+- `Maintenance - Deploy PBS Server` is clearly deployment/configuration work, not maintenance
+- `Ad-hoc - Check Pending Updates` is operator-facing routine audit/inspection, not truly generic ad-hoc execution
+- `Distribute Clawdbot SSH Key` has no domain prefix at all, so it sorts oddly beside the other templates
+- **confirmed mismatch:** schedules for daily Kubernetes patching reference `Patch - Kubernetes Node`, while the defined job template is `Patch - Kubernetes Nodes`
+
+That last mismatch is especially useful for the transition plan because it shows naming cleanup is not just cosmetic; it also reduces config drift and operator error.
+
+#### 4. Scripts show mostly decent imperative naming, with a few obvious historical outliers
+The `scripts/` tree is closer to a workable standard than AWX/playbooks, but it still mixes concerns and conventions:
+- solid imperative names: `backup-configs.sh`, `restore-configs.sh`, `check-cluster-status.sh`, `sync-awx-inventory.py`
+- lifecycle/setup-heavy names: `setup-pbs-user.sh`, `setup-python-env.sh`, `install-argocd.sh`
+- migration/audit families already present and useful: `migrate-to-kea.py`, `audit-network.py`
+- historical outliers: `install-proxmenux.sh`, `cleanup-old-proxmenux.sh`
+- non-runtime note files mixed directly into the executable tree: `PYTHON-SETUP.md`, `README-analyze-opnsense.md`, `UPTIME-KUMA-SYNC-FIX.md`
+
+This suggests the script plan should address both naming and placement, especially whether note/docs files should stay under `scripts/` or move under a docs/reference area.
+
+#### 5. Flat docs inventory reinforces the need for lifecycle-based doc buckets
+A quick sample of `docs/` shows at least five distinct doc types currently interleaved:
+- setup/deployment guides (`clawdbot-deployment.md`, `frigate-deployment-guide.md`, `pbs-setup-guide.md`)
+- quick references (`pbs-quick-reference.md`, `proxmenux-quick-reference.md`)
+- migration/planning docs (`opnsense-kea-migration-plan.md`)
+- design/summary/history docs (`ANSIBLE-IAC-SUMMARY.md`, `K8S-ANSIBLE-COMPLETE.md`)
+- incident/RCA files (`rca-*`, `frigate-outage-rca-2026-03-22.md`)
+
+The issue is not that any one document is misplaced; it is that the directory currently has almost no lifecycle boundaries at all.
 
 ## Open Questions
 1. Should this repo remain a single “everything homelab infra” repo, or should the reorg plan explicitly preserve room for later repo splits?
