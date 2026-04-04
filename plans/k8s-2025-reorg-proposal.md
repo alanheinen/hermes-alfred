@@ -1,7 +1,7 @@
 # k8s-2025 Reorganization Proposal
 
-Last updated: 2026-04-02
-Status: Early proposal draft
+Last updated: 2026-04-03
+Status: Proposal mostly realized in repo; now serving as validation baseline
 
 ## Goal
 Reorganize `k8s-2025` so operators can answer three questions quickly:
@@ -221,5 +221,35 @@ This is still not fully presentation-ready, but it is no longer hand-wavy. The m
 - Git history becomes slightly less intuitive for moved files unless documented well
 - A perfect taxonomy is less important than a stable, teachable one
 
+## 2026-04-03 Validation Update
+
+The proposal has been substantially realized in the repository already. The target shape described here is therefore best treated as a validation baseline and explanation of the current information architecture, not merely a future-state sketch.
+
+### What is now already true
+- Terraform has moved under `terraform/`
+- config/state trees have moved under `config/`
+- recovery content has moved under `recovery/`
+- incident and audit material have moved under `operations/`
+- docs are split into `architecture/`, `guides/`, `reference/`, and `archive/`
+- Ansible playbooks are split by intent under `ansible/playbooks/{bootstrap,deploy,operate,recover}`
+
+### Proposal adjustment
+The remaining value of this proposal is to:
+- explain why the current structure is sensible
+- identify any mismatches between the intended taxonomy and what actually landed
+- guide small second-pass refinements rather than a major first execution wave
+
+### Residual refinement candidates
+- decide whether `ansible/` should remain top-level long term or move under a broader provisioning bucket in a later cleanup
+- classify the remaining `docs/*.md` files at docs root with a bias toward:
+  - `docs/network-audit-process.md` → `docs/guides/` or `operations/runbooks/`
+  - `docs/opnsense-dns-dhcp-recommendations.md` → `docs/reference/` or `operations/audits/`
+- review whether playbook filenames should stay historically stable or be normalized further now that intent directories exist
+- decide whether top-level exceptions such as `cloud-init-templates/`, `scripts/`, and `kubernetes/` are worth folding into a stricter taxonomy, or should remain explicit pragmatic exceptions
+- verify that AWX naming normalization is complete enough for operators, rather than just technically less messy
+
+### Practical stance after follow-up validation
+The repo now looks best when treated as an intent-first structure with a few pragmatic top-level exceptions, not as a purity contest. In other words: keep the strong buckets, classify the remaining stray docs, and resist further churn unless it buys real discoverability.
+
 ## Proposal Maturity
-This is not yet presentation-ready by itself, but the structure is now coherent enough to refine rather than reinvent.
+This is now presentation-ready as an explanation of the reorganized structure and the rationale behind it. What remains is refinement, not invention.

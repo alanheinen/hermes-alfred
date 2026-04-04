@@ -1,7 +1,7 @@
 # k8s-2025 Reorganization Assessment
 
-Last updated: 2026-04-02
-Status: Draft in progress
+Last updated: 2026-04-03
+Status: Planning baseline updated after execution review
 
 ## Purpose
 Assess the current repository layout, identify mixed concerns and discoverability issues, and capture evidence that will drive a proposal-ready reorganization plan.
@@ -190,3 +190,49 @@ Reviewed today:
 What changed today:
 - created this assessment file
 - documented current structure, mixed concerns, naming inconsistency, and first-pass problem statements
+
+## 2026-04-03 Validation Update
+
+A targeted validation pass shows the repo is no longer in the pre-reorg state assumed by the earlier planning notes.
+
+### Current state confirmed in repo
+- root now already uses a cleaner high-level split: `terraform/`, `config/`, `operations/`, `recovery/`, `docs/`, `ansible/`, `alfred/`
+- recovery docs previously assumed to be at root have been moved:
+  - `recovery/backups/backup-and-restore-guide.md`
+  - `recovery/rebuild/rebuild-from-scratch.md`
+- incident and audit material are already separated from general docs:
+  - `operations/incidents/`
+  - `operations/audits/logs/`
+- config content is already consolidated under `config/` with intact subtrees:
+  - `config/applications/`
+  - `config/cluster-config/`
+  - `config/networking/`
+  - `config/storage/`
+- Ansible playbooks are already intent-split under `ansible/playbooks/`:
+  - `bootstrap/`, `deploy/`, `operate/`, `recover/`
+- `alfred/` remains an active service area, while Alfred recovery artifacts have been split out to `recovery/service-recovery/alfred/`
+
+### Evidence reviewed today
+- root listing and root markdown inventory
+- `alfred/README.md`
+- `config/cluster-config/README.md`
+- `config/cluster-config/argocd-apps/README.md`
+- `ansible/playbooks/README.md`
+- `docs/archive/reorg-execution-log-2026-04-02.md`
+
+### Assessment change
+The main planning problem has shifted from "design the target structure" to "validate the execution, document residual inconsistencies, and decide whether any second-pass cleanup is still worth the churn."
+
+### Residual pain points still visible
+- some planning docs in `workspace/plans/` still describe the older pre-execution layout and needed correction
+- docs are much better bucketed, but a few root-level docs under `docs/` still look like candidates for later reclassification
+- naming normalization appears partial rather than universal; playbook filenames were largely kept stable while directory intent improved
+- `alfred/` now clearly behaves as an active automation/service area, so older uncertainty about it being recovery-only should be retired
+- several top-level directories remain outside the newer taxonomy by design or deferral (`cloud-init-templates/`, `scripts/`, `kubernetes/`), so the repo is cleaner but not doctrinaire
+
+### Follow-up validation from later 2026-04-03 pass
+- `docs/network-audit-process.md` behaves like an operator guide/runbook and is the strongest candidate to move under `docs/guides/` or `operations/runbooks/` in a later tidy-up wave
+- `docs/opnsense-dns-dhcp-recommendations.md` behaves like generated reference/report output, so `docs/reference/` or `operations/audits/` is a better long-term fit than docs root
+- live AWX template naming is in much better shape than the earlier draft implied: the previously confirmed `Patch - Kubernetes Node` vs `Patch - Kubernetes Nodes` mismatch is gone, and purpose-first names dominate the file
+- the only remaining `Maintenance - ...` / `Ad-hoc - ...` strings in AWX config are commented examples, not active template definitions
+- the biggest remaining naming inconsistency is therefore not AWX but conservative playbook filenames such as `backup.yml`, `restore.yml`, and `check_cluster.yml`, which may now be acceptable because the intent directories already provide context

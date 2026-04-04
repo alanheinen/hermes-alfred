@@ -1,7 +1,7 @@
 # k8s-2025 Naming Conventions
 
-Last updated: 2026-04-02
-Status: Initial recommendations
+Last updated: 2026-04-03
+Status: Conventions drafted; partial repo adoption confirmed
 
 ## Goal
 Make files, playbooks, AWX templates, and docs easier to find, sort, and understand without needing to remember tribal lore.
@@ -182,5 +182,29 @@ The scripts inventory suggests a small compatibility policy is needed:
 - keep compatibility wrappers only if external tooling depends on the old name
 - move Markdown notes out of `scripts/` unless they are script-family READMEs
 
+## 2026-04-03 Validation Update
+
+A targeted post-execution check suggests the naming work is partly adopted:
+- AWX naming normalization was explicitly executed on 2026-04-02 per the repo execution log
+- directory-level clarity improved significantly because playbooks are now separated by intent
+- playbook filenames themselves appear intentionally conservative and historically stable (for example `backup.yml`, `restore.yml`, `check_cluster.yml`, `clawdbot.yml`), which means filename normalization was deferred more than directory normalization
+
+### Practical interpretation
+That is a defensible compromise:
+- operators now gain most discoverability from directory intent
+- existing AWX/script/doc references faced less churn
+- a second naming wave should only happen if the remaining filename inconsistencies still cause real friction
+
+### Remaining naming questions
+- should historically short filenames like `backup.yml` and `restore.yml` stay as-is because their directories now provide context?
+- should `check_cluster.yml` be normalized to `kubernetes-check-cluster.yml`, or is the current name now good enough inside `operate/`?
+- should `cloud-init-templates/` content adopt a more explicit naming/location convention later, or is the current host-focused file naming already adequate?
+
+### Follow-up validation from later 2026-04-03 pass
+- active AWX template names now appear consistently purpose-first; the prior `Patch - Kubernetes Node` mismatch has been corrected to `Patch - Kubernetes Nodes`
+- residual `Maintenance - ...` and `Ad-hoc - ...` strings in `ansible/awx/job-templates.yml` are commented examples, not live definitions
+- the practical naming debate has therefore shifted away from AWX and toward whether conservative playbook filenames deserve a second pass at all
+- current evidence argues for restraint: rename only if an operator-facing search/sort problem still exists after the directory split
+
 ## Initial Recommendation
-For this repo, prioritize AWX template naming and playbook naming first. Those are the operator-facing surfaces most likely to benefit immediately.
+For this repo, the immediate naming urgency has dropped. Prioritize only the residual operator-facing inconsistencies that still reduce sortability or cause launch mistakes; avoid renaming stable artifacts merely for aesthetic sport.

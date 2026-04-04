@@ -1,7 +1,7 @@
 # k8s-2025 Transition Plan
 
-Last updated: 2026-04-02
-Status: Initial staged transition draft
+Last updated: 2026-04-03
+Status: Transition largely executed; plan now tracks validation and residual cleanup
 
 ## Objective
 Move from the current mixed-layout repository to the proposed intent-based structure with minimal operator confusion and low breakage risk.
@@ -188,3 +188,35 @@ Based on today’s evidence, the safest execution order still looks like:
 6. optional Terraform relocation
 
 That sequence reduces the odds of compounding path churn with naming churn in the same fragile areas.
+
+## 2026-04-03 Validation Update
+
+The staged transition described above was largely executed on 2026-04-02, as documented in `k8s-2025/docs/archive/reorg-execution-log-2026-04-02.md`.
+
+### Stages effectively completed
+- Stage 1: docs/history classification
+- Stage 2: low-risk operations/recovery moves
+- Stage 3: Ansible / AWX structure
+- Stage 4: script-doc cleanup
+- Stage 5: conservative config tree consolidation
+- Stage 6: Terraform relocation
+- Stage 7: documentation hygiene and secret scrubbing
+- Stage 8: AWX template naming normalization
+
+### Transition-plan role now
+This file should now function as:
+- a record of the intended safe sequencing
+- a checklist for post-move validation and residual cleanup
+- a guide for any future second-pass tidy-up work
+
+### Remaining validation / cleanup items
+1. confirm whether any planning docs, runbooks, or archived summaries still over-describe the old layout in ways that confuse operators
+2. finish the low-risk docs-root classification pass:
+   - `docs/network-audit-process.md` is likely a guide/runbook
+   - `docs/opnsense-dns-dhcp-recommendations.md` is likely reference or audit output
+3. do a narrow residual naming audit focused on playbook filenames; AWX template names now appear largely normalized in active config
+4. decide whether there is any benefit in a later `ansible/` top-level relocation, or whether churn would now outweigh clarity gains
+5. decide whether remaining top-level exceptions (`cloud-init-templates/`, `scripts/`, `kubernetes/`) should be left as stable exceptions or folded into a later cleanup wave
+
+### Rollback note
+At this point the meaningful rollback path is Git history, not further planning. The structure has already crossed from proposal into lived reality.
