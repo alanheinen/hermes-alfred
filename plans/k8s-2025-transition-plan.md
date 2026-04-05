@@ -1,6 +1,6 @@
 # k8s-2025 Transition Plan
 
-Last updated: 2026-04-04
+Last updated: 2026-04-05
 Status: Transition largely executed; plan now tracks validation and residual cleanup
 
 ## Objective
@@ -236,3 +236,21 @@ The transition sequence now looks effectively complete enough that the next safe
 - the AWX config is no longer the fragile naming hotspot it was earlier in planning; active names now look consistent enough
 - the most likely low-risk cleanup is document relocation plus explanatory README updates
 - renaming conservative playbook filenames in the current tree would add churn but little safety or clarity, so it should stay below the line unless a real usability issue is found
+
+## 2026-04-05 Refinement Update
+
+### Residual transition sequence (tightened)
+The next safe wave is now even narrower than yesterday’s draft implied:
+1. classify `docs/network-audit-process.md`
+2. classify `docs/opnsense-dns-dhcp-recommendations.md`
+3. update `docs/README.md` to remove the temporary-holdout note if both moves happen
+4. replace `ansible/playbooks/README.md` with a true index of the current playbook intent split
+5. stop
+
+### Why this sequence is now preferred
+- `docs/README.md` is already truthful, so it only needs a small follow-up after the doc moves actually happen
+- `ansible/playbooks/README.md` is the main remaining explanatory drift and can be fixed independently of any path changes
+- no fresh evidence today suggests a need for further directory restructuring, playbook renaming, or AWX naming churn
+
+### Risk note
+If execution resumes later, avoid bundling the README rewrite with unrelated renames. A tiny doc-only commit series is the safest finish.

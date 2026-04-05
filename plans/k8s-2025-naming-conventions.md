@@ -1,6 +1,6 @@
 # k8s-2025 Naming Conventions
 
-Last updated: 2026-04-04
+Last updated: 2026-04-05
 Status: Conventions drafted; partial repo adoption confirmed
 
 ## Goal
@@ -241,3 +241,20 @@ Because the intent directories now provide strong context, these shorter filenam
 
 ### Practical rule going forward
 If the directory already answers the "what kind of thing is this?" question, the filename only needs to answer the narrower "which one?" question. That is a much saner standard than renaming half the repo for the aesthetic pleasure of symmetry.
+
+## 2026-04-05 Refinement Update
+
+### Naming conclusion from today’s review
+The remaining naming problem is not really filenames. It is **labeling and framing in human-facing index docs**.
+
+### Evidence
+- `docs/README.md` uses the current taxonomy correctly and describes the two remaining docs-root exceptions plainly.
+- `ansible/playbooks/README.md` still labels the area as "Maintenance Playbooks" even though it documents content from `bootstrap/`, `operate/`, and `recover/` and the live tree also includes `deploy/`.
+
+### Naming/labeling recommendation
+- keep current playbook filenames stable unless a real search ambiguity shows up
+- prioritize updating index/readme titles and section labels so they reflect the intent-based layout operators now see on disk
+- treat README titles, headings, and examples as part of the naming surface because they are often the first thing a human scans before opening files
+
+### Practical implication
+If a future cleanup wave only changes names in one place, it should change **human-facing labels first**, not filenames. That buys clarity with almost none of the breakage risk.

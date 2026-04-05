@@ -1,6 +1,6 @@
 # k8s-2025 Reorganization Proposal
 
-Last updated: 2026-04-04
+Last updated: 2026-04-05
 Status: Proposal mostly realized in repo; now serving as validation baseline
 
 ## Goal
@@ -276,3 +276,20 @@ Today’s pass sharpens the proposal in one specific way: it treats the remainin
 
 ### What would make the proposal materially better from here
 Not more buckets. Just a small move map for the two docs-root files plus a note that `ansible/playbooks/README.md` should be refreshed to match the post-reorg layout.
+
+## 2026-04-05 Refinement Update
+
+Today’s review reinforces that the proposal is already strong enough to present, and that the remaining refinements should stay boring on purpose.
+
+### Proposal refinement
+- Keep the current information architecture unchanged.
+- Treat `docs/README.md` as the canonical explanation of the docs split until the two root holdouts are reclassified.
+- Treat `ansible/playbooks/README.md` as a follow-up documentation fix, not as evidence that the playbook structure itself is unsettled.
+
+### Specific recommendation added today
+If Al wants one more cleanup pass before declaring victory, the highest-value sequence is:
+1. classify the two docs-root holdouts
+2. rewrite `ansible/playbooks/README.md` into an intent-based index for `bootstrap/`, `deploy/`, `operate/`, `recover/`, and `site.yml`
+3. stop
+
+That sequence improves operator orientation without reopening structural churn or gratuitous rename fever.

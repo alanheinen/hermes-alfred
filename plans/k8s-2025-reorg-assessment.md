@@ -1,6 +1,6 @@
 # k8s-2025 Reorganization Assessment
 
-Last updated: 2026-04-04
+Last updated: 2026-04-05
 Status: Planning baseline updated after execution review
 
 ## Purpose
@@ -262,3 +262,23 @@ The repo appears architecturally settled enough that remaining work should be tr
 1. classify the two remaining docs-root files
 2. refresh a few explanatory docs that still describe the pre-split Ansible layout
 3. leave conservative filenames alone unless a real search/sort problem is observed
+
+## 2026-04-05 Validation Update
+
+A narrow review today focused on whether the residual planning questions are still real, or whether the remaining work is mostly explanatory cleanup.
+
+### What was reviewed today
+- `docs/README.md`
+- root `docs/` file inventory
+- `ansible/playbooks/README.md`
+- current `ansible/playbooks/` directory/file layout
+
+### Additional findings
+- The `docs/` root is now very clearly bounded: only `README.md` plus the same two previously identified classification holdouts remain there.
+- `docs/README.md` accurately documents those two holdouts as temporary exceptions, which reinforces that docs-root sprawl is no longer a structural problem.
+- `ansible/playbooks/README.md` is now the clearest remaining documentation mismatch in the repo. Its title and framing still describe a "Maintenance Playbooks" area even though the live tree is split across `bootstrap/`, `deploy/`, `operate/`, and `recover/`.
+- That README is doubly misleading because it now documents examples from several intent directories while still presenting the directory as maintenance-centric. In other words, the file content partially knows the new world, but the heading and narrative still live in the old one.
+- The live playbook layout also confirms that conservative filenames are not currently blocking discovery; the intent directories are doing the heavy lifting.
+
+### Assessment adjustment
+The remaining planning value is now less about taxonomy design and more about identifying the smallest documentation alignment changes that would make the executed structure self-explanatory to future operators.
