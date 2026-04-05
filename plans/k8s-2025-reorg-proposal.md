@@ -1,6 +1,6 @@
 # k8s-2025 Reorganization Proposal
 
-Last updated: 2026-04-03
+Last updated: 2026-04-04
 Status: Proposal mostly realized in repo; now serving as validation baseline
 
 ## Goal
@@ -253,3 +253,26 @@ The repo now looks best when treated as an intent-first structure with a few pra
 
 ## Proposal Maturity
 This is now presentation-ready as an explanation of the reorganized structure and the rationale behind it. What remains is refinement, not invention.
+
+## 2026-04-04 Refinement Update
+
+Today’s pass sharpens the proposal in one specific way: it treats the remaining repo-root oddities as **intentional cleanup candidates**, not evidence that the broader structure is unfinished.
+
+### Recommended placement decisions
+- `docs/network-audit-process.md`
+  - preferred destination: `docs/guides/`
+  - rationale: it is a how-to/runbook style document covering execution, schedules, troubleshooting, and operational practice
+  - alternate destination: `operations/runbooks/` if Al wants all ongoing procedures grouped under operations rather than general guides
+- `docs/opnsense-dns-dhcp-recommendations.md`
+  - preferred destination: `operations/audits/`
+  - rationale: it is generated assessment output tied to an audit/analysis activity, not evergreen reader-facing guidance
+  - alternate destination: `docs/reference/` if he prefers keeping generated reference artifacts under docs instead of operations
+
+### Practical proposal stance
+- keep the current top-level architecture as-is; it already communicates provisioning/config/state, operations, recovery, and docs cleanly enough
+- accept a few pragmatic top-level exceptions (`scripts/`, `cloud-init-templates/`, `kubernetes/`) unless a future cleanup produces a concrete operator benefit
+- favor documentation alignment over further path churn
+- treat filename normalization as optional polish, not as required completion criteria
+
+### What would make the proposal materially better from here
+Not more buckets. Just a small move map for the two docs-root files plus a note that `ansible/playbooks/README.md` should be refreshed to match the post-reorg layout.

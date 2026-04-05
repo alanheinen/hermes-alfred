@@ -1,6 +1,6 @@
 # k8s-2025 Naming Conventions
 
-Last updated: 2026-04-03
+Last updated: 2026-04-04
 Status: Conventions drafted; partial repo adoption confirmed
 
 ## Goal
@@ -208,3 +208,36 @@ That is a defensible compromise:
 
 ## Initial Recommendation
 For this repo, the immediate naming urgency has dropped. Prioritize only the residual operator-facing inconsistencies that still reduce sortability or cause launch mistakes; avoid renaming stable artifacts merely for aesthetic sport.
+
+## 2026-04-04 Refinement Update
+
+### Naming conclusion from today’s pass
+The naming strategy should now explicitly distinguish between **operator-facing names that benefit from uniformity** and **internal filenames whose surrounding directory already supplies the missing context**.
+
+### Operator-facing names worth keeping tight
+- AWX job template names
+- workflow names
+- schedule names
+- major guide/reference titles that users browse directly
+
+These are searched and scanned by humans, so consistency pays off.
+
+### Filenames where restraint is now preferable
+Examples reviewed today:
+- `ansible/playbooks/operate/backup.yml`
+- `ansible/playbooks/operate/check_cluster.yml`
+- `ansible/playbooks/recover/restore.yml`
+- `ansible/playbooks/deploy/clawdbot.yml`
+
+Because the intent directories now provide strong context, these shorter filenames are no longer automatically a problem. A second rename wave should only happen if:
+- operators repeatedly misidentify them
+- AWX/playbook references become ambiguous
+- search results are materially worse than they should be
+
+### Remaining naming/documentation cleanup worth noting
+- `ansible/playbooks/README.md` still uses the old maintenance-oriented framing and should be updated when execution resumes
+- `docs/network-audit-process.md` would be easier to find if its placement matched its role as a guide/runbook
+- `docs/opnsense-dns-dhcp-recommendations.md` would be easier to reason about if its placement matched its role as audit/reference output
+
+### Practical rule going forward
+If the directory already answers the "what kind of thing is this?" question, the filename only needs to answer the narrower "which one?" question. That is a much saner standard than renaming half the repo for the aesthetic pleasure of symmetry.

@@ -1,6 +1,6 @@
 # k8s-2025 Transition Plan
 
-Last updated: 2026-04-03
+Last updated: 2026-04-04
 Status: Transition largely executed; plan now tracks validation and residual cleanup
 
 ## Objective
@@ -220,3 +220,19 @@ This file should now function as:
 
 ### Rollback note
 At this point the meaningful rollback path is Git history, not further planning. The structure has already crossed from proposal into lived reality.
+
+## 2026-04-04 Refinement Update
+
+The transition sequence now looks effectively complete enough that the next safe wave, if Al ever wants one, should be tiny and boring.
+
+### Suggested residual execution order
+1. move `docs/network-audit-process.md` to `docs/guides/` **or** `operations/runbooks/`
+2. move `docs/opnsense-dns-dhcp-recommendations.md` to `operations/audits/` **or** `docs/reference/`
+3. update `docs/README.md` so it no longer lists those docs as temporary root exceptions
+4. refresh `ansible/playbooks/README.md` so it describes the current `bootstrap/`, `deploy/`, `operate/`, and `recover/` split instead of the old maintenance-centric worldview
+5. stop there unless an operator-facing naming pain point remains visible
+
+### Validation notes from today
+- the AWX config is no longer the fragile naming hotspot it was earlier in planning; active names now look consistent enough
+- the most likely low-risk cleanup is document relocation plus explanatory README updates
+- renaming conservative playbook filenames in the current tree would add churn but little safety or clarity, so it should stay below the line unless a real usability issue is found

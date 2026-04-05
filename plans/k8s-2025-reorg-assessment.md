@@ -1,6 +1,6 @@
 # k8s-2025 Reorganization Assessment
 
-Last updated: 2026-04-03
+Last updated: 2026-04-04
 Status: Planning baseline updated after execution review
 
 ## Purpose
@@ -236,3 +236,29 @@ The main planning problem has shifted from "design the target structure" to "val
 - live AWX template naming is in much better shape than the earlier draft implied: the previously confirmed `Patch - Kubernetes Node` vs `Patch - Kubernetes Nodes` mismatch is gone, and purpose-first names dominate the file
 - the only remaining `Maintenance - ...` / `Ad-hoc - ...` strings in AWX config are commented examples, not active template definitions
 - the biggest remaining naming inconsistency is therefore not AWX but conservative playbook filenames such as `backup.yml`, `restore.yml`, and `check_cluster.yml`, which may now be acceptable because the intent directories already provide context
+
+## 2026-04-04 Validation Update
+
+A narrow follow-up pass focused on the remaining docs-root exceptions and the lived playbook structure, rather than re-inventorying the whole repo yet again.
+
+### What was reviewed today
+- `docs/README.md`
+- `docs/network-audit-process.md`
+- `docs/opnsense-dns-dhcp-recommendations.md`
+- `docs/guides/`, `docs/reference/`, and `operations/audits/` listings
+- `ansible/playbooks/README.md`
+- `ansible/playbooks/` file layout
+- `ansible/awx/job-templates.yml`
+
+### Additional findings
+- `docs/network-audit-process.md` behaves as an operator runbook/guide, not a root-level overview. It includes execution modes, schedules, troubleshooting, retention, and related commands, so `docs/guides/` is the best long-term home unless Al wants all day-2 procedures under `operations/runbooks/`.
+- `docs/opnsense-dns-dhcp-recommendations.md` is clearly generated audit/reference output, not general docs-root material. `operations/audits/` is the strongest fit, with `docs/reference/` as the fallback if he wants static lookup material centralized there.
+- `docs/README.md` already documents both files as temporary root holdouts, which is good evidence that the remaining cleanup is known and bounded rather than accidental sprawl.
+- The active Ansible structure now does most of the discoverability work. The residual naming debate is mainly about a few conservative filenames inside clear intent directories, not about broad structural confusion.
+- `ansible/playbooks/README.md` still carries the old "Maintenance Playbooks" framing even though the directory is now split across `bootstrap/`, `deploy/`, `operate/`, and `recover/`. That is a documentation alignment issue worth flagging for later execution, not a planning blocker.
+
+### Assessment adjustment
+The repo appears architecturally settled enough that remaining work should be treated as **classification and documentation alignment**, not as another structural redesign. The highest-value residual tasks now look like:
+1. classify the two remaining docs-root files
+2. refresh a few explanatory docs that still describe the pre-split Ansible layout
+3. leave conservative filenames alone unless a real search/sort problem is observed
