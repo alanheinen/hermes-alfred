@@ -16,7 +16,7 @@
 ## Infrastructure
 - **Cron posture (updated Mar 30):** Removed `daily-usage-report` and obsolete `ntfy-alert-monitor`; rebuilt cron jobs around OpenAI-first defaults and staggered enabled jobs so they do not collide in the same local hour.
 - **Cron logging:** Shared helper script at `workspace/scripts/log_cron_job.sh` writes apache-like START/END/ERROR entries to `~/.openclaw/logs/cron-jobs.log`.
-- **Cron delivery caveat (Apr 2-3):** Several announce-mode Telegram cron jobs can run successfully while delivery confirmation still comes back as `not-delivered` or `unknown`, because they use `delivery.mode = "announce"` without an explicit `delivery.to` target. This is an active config-cleanup item, not a transport outage.
+- **Cron delivery caveat (Apr 2-3, resolved):** Several announce-mode Telegram cron jobs previously ran successfully while delivery confirmation came back as `not-delivered` or `unknown`, because they lacked an explicit `delivery.to` target. That was a configuration problem, not a transport outage, and the current cron config now includes explicit Telegram targets for the report jobs.
 - **Backups:** Daily git backup now stores a **redacted** OpenClaw config snapshot via `scripts/redact_openclaw_config.py` -> `backups/openclaw.json`, not a raw secret-bearing copy.
 - **Secret hygiene follow-up (Apr 2):** Treat lingering local `openclaw.json` / `.bak` copies, live `auth-profiles.json`, and the PBS token exposed in `k8s-2025/docs/ansible-pbs-quick-reference.md` as unresolved cleanup/rotation items.
 - **ntfy-alert-listener:** systemd daemon on clawdbot.lan — streams ntfy alerts, 2-min flap filter, auto-restarts Frigate VM 105 (10-min cooldown), auto-files RCAs. Source committed to k8s-2025/alfred/.

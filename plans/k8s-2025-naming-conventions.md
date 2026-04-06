@@ -1,6 +1,6 @@
 # k8s-2025 Naming Conventions
 
-Last updated: 2026-04-05
+Last updated: 2026-04-06
 Status: Conventions drafted; partial repo adoption confirmed
 
 ## Goal
@@ -258,3 +258,26 @@ The remaining naming problem is not really filenames. It is **labeling and frami
 
 ### Practical implication
 If a future cleanup wave only changes names in one place, it should change **human-facing labels first**, not filenames. That buys clarity with almost none of the breakage risk.
+
+## 2026-04-06 Refinement Update
+
+Today’s targeted review narrows the naming problem even further.
+
+### What changed in the naming assessment
+- README and index labeling drift is no longer the main issue; the key index files now match the live structure.
+- The remaining naming inconsistencies are mostly legacy filenames, especially `proxmenux` in a few script/playbook names.
+- Those legacy names are noticeable, but not severe enough to justify blind cleanup without checking for external references first.
+
+### Updated naming recommendation
+Prioritize naming work in this order:
+1. operator-facing AWX/workflow/schedule names
+2. README/index headings and launch examples
+3. only then internal filenames with clear evidence of search/sort pain
+
+### Specific low-risk naming candidates
+- `scripts/install-proxmenux.sh`
+- `scripts/cleanup-old-proxmenux.sh`
+- `ansible/playbooks/operate/cleanup-old-proxmenux.yml`
+
+### Naming conclusion
+The naming plan is mature enough to present. The repo no longer needs a broad naming crusade; it just has a few elderly labels that may deserve retirement when convenient.

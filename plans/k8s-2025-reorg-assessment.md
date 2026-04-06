@@ -1,6 +1,6 @@
 # k8s-2025 Reorganization Assessment
 
-Last updated: 2026-04-05
+Last updated: 2026-04-06
 Status: Planning baseline updated after execution review
 
 ## Purpose
@@ -282,3 +282,25 @@ A narrow review today focused on whether the residual planning questions are sti
 
 ### Assessment adjustment
 The remaining planning value is now less about taxonomy design and more about identifying the smallest documentation alignment changes that would make the executed structure self-explanatory to future operators.
+
+## 2026-04-06 Validation Update
+
+A final targeted planning pass today checked whether the remaining top-level exceptions still look accidental, or whether they now read as reasonable and low-risk.
+
+### What was reviewed today
+- `docs/README.md`
+- `ansible/playbooks/README.md`
+- root directory inventory
+- current file listings for `ansible/playbooks/`, `scripts/`, `cloud-init-templates/`, and `kubernetes/`
+
+### Additional findings
+- `docs/README.md` and `ansible/playbooks/README.md` are now aligned with the executed structure. The earlier README-drift concern has effectively been resolved.
+- `docs/` root is now truly minimal: only `docs/README.md` remains at that level, which is exactly what a sane repo would do after a cleanup instead of hoarding stray markdown like a dragon with PDFs.
+- The remaining top-level exceptions look intentional rather than confused:
+  - `scripts/` remains a mixed but understandable operator/tooling surface with executable assets that are easier to discover globally than if scattered prematurely.
+  - `cloud-init-templates/` reads as a narrow provisioning artifact family with host-focused filenames; it does not currently create much ambiguity.
+  - `kubernetes/` is small and specialized enough that keeping it top-level is defensible, especially while `config/` already carries the broader declarative state trees.
+- The strongest remaining naming oddities are legacy product spellings such as `proxmenux` in a few script/playbook names, but those are polish items, not planning blockers.
+
+### Assessment conclusion
+The repo now appears structurally settled. Remaining work is optional refinement, not unresolved architecture. The planning package should therefore frame the current state as **proposal-ready and largely executed**, with only a short list of low-risk tidy-up candidates left if Al wants them later.

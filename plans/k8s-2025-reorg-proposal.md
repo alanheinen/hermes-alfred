@@ -1,6 +1,6 @@
 # k8s-2025 Reorganization Proposal
 
-Last updated: 2026-04-05
+Last updated: 2026-04-06
 Status: Proposal mostly realized in repo; now serving as validation baseline
 
 ## Goal
@@ -293,3 +293,30 @@ If Al wants one more cleanup pass before declaring victory, the highest-value se
 3. stop
 
 That sequence improves operator orientation without reopening structural churn or gratuitous rename fever.
+
+## 2026-04-06 Refinement Update
+
+Today’s review suggests the proposal can now be simplified further because the last major documentation holdouts have already been resolved.
+
+### Proposal stance now
+- Treat the current repo structure as the adopted target architecture.
+- Treat `scripts/`, `cloud-init-templates/`, and `kubernetes/` as deliberate top-level exceptions unless a future operator task demonstrates real pain.
+- Treat further structural consolidation as optional, not as unfinished business.
+
+### Recommended present-to-Al summary
+The repo now reads cleanly as:
+- `terraform/` for provisioning IaC
+- `config/` for durable declarative state
+- `ansible/` for operator automation, split by intent
+- `operations/` for audits/incidents/evidence
+- `recovery/` for backup/rebuild/service recovery
+- `docs/` for curated human-facing documentation
+- a few pragmatic top-level execution surfaces (`scripts/`, `cloud-init-templates/`, `kubernetes/`, `alfred/`)
+
+### Residual cleanup candidates, if he insists on one more pass
+1. normalize lingering `proxmenux` legacy names where the external dependency risk is low
+2. decide whether `cloud-init-templates/README-HOMEASSISTANT.md` should eventually become a normal guide/reference doc
+3. otherwise leave the structure alone and spend energy on content accuracy, not taxonomy theater
+
+## Proposal Maturity
+This proposal is ready to present as-is. Any further refinement should be framed as optional housekeeping, not necessary design work.

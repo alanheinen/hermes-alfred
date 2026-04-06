@@ -1,6 +1,6 @@
 # k8s-2025 Transition Plan
 
-Last updated: 2026-04-05
+Last updated: 2026-04-06
 Status: Transition largely executed; plan now tracks validation and residual cleanup
 
 ## Objective
@@ -254,3 +254,28 @@ The next safe wave is now even narrower than yesterday’s draft implied:
 
 ### Risk note
 If execution resumes later, avoid bundling the README rewrite with unrelated renames. A tiny doc-only commit series is the safest finish.
+
+## 2026-04-06 Refinement Update
+
+Today’s validation pass changes the transition plan in one important way: there is no longer an obvious mandatory "next wave."
+
+### Current transition status
+- the structure is already in the target neighborhood
+- the README/doc alignment issues previously called out are now resolved
+- the remaining oddities are mostly legacy names or pragmatic top-level exceptions rather than broken transitions
+
+### Recommended transition closure criteria
+Consider the reorganization transition effectively complete when Al agrees with these statements:
+1. the main operator surfaces are easy to find by intent
+2. no critical docs still describe the old layout in misleading ways
+3. remaining exceptions (`scripts/`, `cloud-init-templates/`, `kubernetes/`) are accepted as intentional
+4. any future renames are justified by concrete usability issues, not symmetry cravings
+
+### If a follow-up execution wave ever happens
+Keep it tiny and evidence-driven:
+1. rename lingering `proxmenux` artifacts only after checking for external references
+2. optionally re-home `cloud-init-templates/README-HOMEASSISTANT.md` if it behaves more like docs than a local package note
+3. stop again
+
+### Transition recommendation
+From a planning perspective, the transition plan is now complete enough to present. The next responsible move is review/approval, not more structural design.
