@@ -73,13 +73,12 @@ Recreate whichever auth modes Alfred should use now.
 Current expected posture:
 
 - primary: `openai-codex` OAuth / subscription-backed auth
-- fallback: Anthropic manual token if desired
+- fallback: `openai-codex/gpt-5.2` only
 
-Likely commands to run locally as `aheinen`:
+Likely command to run locally as `aheinen`:
 
 ```bash
 openclaw auth login openai-codex
-openclaw auth login anthropic
 ```
 
 If CLI prompts or command names drift, use:

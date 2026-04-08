@@ -10,8 +10,8 @@
 Primary: gpt-oss:20b (local, free) ✅ Already set
 Fallback chain:
   1. openai/gpt-4o-mini (cheap API)
-  2. anthropic/claude-sonnet-4-5 (mid-tier)
-  3. anthropic/claude-opus-4-6 (premium, emergency only)
+  2. openai-codex/gpt-5.2 (approved backup)
+  3. openai/gpt-4o (broader compatibility if needed)
 ```
 
 ### 2. Cron Job Optimization
@@ -30,8 +30,8 @@ Fallback chain:
 ### 3. Session-Specific Models
 **Main chat (you + me):**
 - Default: gpt-oss:20b (local)
-- Override to sonnet for complex work: `/model sonnet`
-- Override to opus only when needed: `/model opus`
+- Override to `gpt52-codex` for cheaper backup work when needed: `/model gpt52-codex`
+- Keep the main session on `gpt` unless there is a clear reason to switch
 
 **Telegram groups:**
 - Default: gpt-oss:20b (local)
@@ -40,7 +40,7 @@ Fallback chain:
 **Sub-agents:**
 - Simple tasks: gpt-oss:20b
 - Complex tasks: gpt-4o-mini
-- Critical tasks: sonnet (only when specified)
+- Critical tasks: stay on the approved OpenAI/OpenAI-Codex set unless policy changes
 
 ### 4. Context Management
 **Problem:** Large context = more input tokens = higher cost
@@ -77,10 +77,8 @@ Update config to prioritize cheap models:
         "primary": "custom-nas-lan-30068/gpt-oss:20b",
         "fallbacks": [
           "openai/gpt-4o-mini",
-          "anthropic/claude-haiku-4-5",
-          "anthropic/claude-sonnet-4-5",
-          "openai/gpt-4o",
-          "anthropic/claude-opus-4-6"
+          "openai-codex/gpt-5.2",
+          "openai/gpt-4o"
         ]
       }
     }
