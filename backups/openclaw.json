@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.8",
-    "lastTouchedAt": "2026-04-07T14:23:40.752Z"
+    "lastTouchedAt": "2026-04-13T00:52:16.757Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-31T01:42:18.142Z",
@@ -62,6 +62,46 @@
             "maxTokens": 4096
           }
         ]
+      },
+      "ollama-172-16-1-16-11434": {
+        "baseUrl": "http://172.16.1.16:11434/v1",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "gemma4:26b",
+            "name": "gemma4:26b (Ollama 172.16.1.16)",
+            "api": "openai-completions",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 4096,
+            "maxTokens": 4096
+          },
+          {
+            "id": "gemma4:e4b",
+            "name": "gemma4:e4b (Ollama 172.16.1.16)",
+            "api": "openai-completions",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 4096,
+            "maxTokens": 4096
+          }
+        ]
       }
     }
   },
@@ -70,7 +110,9 @@
       "model": {
         "primary": "openai-codex/gpt-5.4",
         "fallbacks": [
-          "openai-codex/gpt-5.2"
+          "openai-codex/gpt-5.2",
+          "ollama-172-16-1-16-11434/gemma4:26b",
+          "ollama-172-16-1-16-11434/gemma4:e4b"
         ]
       },
       "models": {
@@ -107,6 +149,12 @@
         },
         "openai-codex/gpt-5.1-codex": {
           "alias": "GPT"
+        },
+        "ollama-172-16-1-16-11434/gemma4:26b": {
+          "alias": "gemma4-26b-ollama"
+        },
+        "ollama-172-16-1-16-11434/gemma4:e4b": {
+          "alias": "gemma4-e4b-ollama"
         }
       },
       "workspace": "/home/aheinen/.openclaw/workspace",
