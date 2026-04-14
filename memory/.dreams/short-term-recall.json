@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-13T22:05:05.605Z",
+  "entries": {
+    "memory:memory/2026-04-03.md:129:138": {
+      "key": "memory:memory/2026-04-03.md:129:138",
+      "path": "memory/2026-04-03.md",
+      "startLine": 129,
+      "endLine": 138,
+      "source": "memory",
+      "snippet": "- **Quant follow-up:** the important durable change is not a new winner but a more honest test — real rolling 5-year train / next-year test. That made short-term results weaker, not stronger; `pullback_trend_reentry` remains the best in-sample candidate, but still not a usable edge. - **Network follow-up:** `Legion.lan` / `172.16.1.16` showed up again and still looks like an unmanaged or transient client, while `k8s6.lan` remains pingable but closed or unreachable on TCP/22 despite expectations. - **k8s reorg note:** no contradiction to the earlier morning update; planning remains in validation/refinement mode rather than active redesign. - **Recommended next fixes when doing changes with ap",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-13T22:05:05.605Z",
+      "lastRecalledAt": "2026-04-13T22:05:05.605Z",
+      "queryHashes": [
+        "a66ec4ac7635"
+      ],
+      "recallDays": [
+        "2026-04-13"
+      ],
+      "conceptTags": [
+        "network",
+        "follow-up",
+        "5-year",
+        "next-year",
+        "short-term",
+        "pullback-trend-reentry",
+        "in-sample",
+        "legion.lan"
+      ]
+    },
+    "memory:memory/2026-04-03.md:15:35": {
+      "key": "memory:memory/2026-04-03.md:15:35",
+      "path": "memory/2026-04-03.md",
+      "startLine": 15,
+      "endLine": 35,
+      "source": "memory",
+      "snippet": "- ✅ Added the **Apr 2 cron delivery caveat**: announce-mode Telegram jobs can show `not-delivered` if `delivery.to` is missing. - ✅ Added unresolved **secret-hygiene follow-up** items: local OpenClaw config/auth copies and the exposed PBS token note. - ✅ Refreshed **k8s-2025 reorg planning** status with the newer concrete findings and the note that the proposal still needs a move map before it is presentation-ready. - ✅ Added the latest **network inventory** signal (`Legion.lan` and `k8s6.lan` SSH issue). - ✅ Updated the **short-term quant** note so `pullback_trend_reentry` replaces the older best-candidate mention. - ✅ Trimmed/reworded recent updates to reduce duplication while keeping the",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-13T22:05:05.605Z",
+      "lastRecalledAt": "2026-04-13T22:05:05.605Z",
+      "queryHashes": [
+        "a66ec4ac7635"
+      ],
+      "recallDays": [
+        "2026-04-13"
+      ],
+      "conceptTags": [
+        "network",
+        "announce-mode",
+        "not-delivered",
+        "delivery.to",
+        "secret-hygiene",
+        "follow-up",
+        "config/auth",
+        "k8s-2025"
+      ]
+    },
+    "memory:memory/2026-04-03.md:124:130": {
+      "key": "memory:memory/2026-04-03.md:124:130",
+      "path": "memory/2026-04-03.md",
+      "startLine": 124,
+      "endLine": 130,
+      "source": "memory",
+      "snippet": "- `quant-meeting-daily` logged `python-missing-numpy-system-env`, then fell back and completed. Best cleanup is to call `/home/aheinen/.openclaw/workspace/siloed-quant-repo/.venv/bin/python` directly. - `network-inventory-scan-daily` logged one handled shell-formatting error, then completed successfully. Best cleanup is to fix the shell formatting so the job stops heckling itself every morning. - **Duplicate-run oddities:** `k8s-2025-reorg-planning-daily`, `network-inventory-scan-daily`, and `quant-backtest-daily` each show two runs today at old/new times. That points more toward schedule churn or stale run state than an actual missed run. - **Open high-severity cleanup items still uncha",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-13T22:05:05.605Z",
+      "lastRecalledAt": "2026-04-13T22:05:05.605Z",
+      "queryHashes": [
+        "a66ec4ac7635"
+      ],
+      "recallDays": [
+        "2026-04-13"
+      ],
+      "conceptTags": [
+        "network",
+        "quant-meeting-daily",
+        "python-missing-numpy-system-env",
+        "home/aheinen",
+        "venv/bin/python",
+        "network-inventory-scan-daily",
+        "shell-formatting",
+        "duplicate-run"
+      ]
+    },
+    "memory:memory/2026-04-06.md:1:16": {
+      "key": "memory:memory/2026-04-06.md:1:16",
+      "path": "memory/2026-04-06.md",
+      "startLine": 1,
+      "endLine": 16,
+      "source": "memory",
+      "snippet": "# 2026-04-06 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-04-03.md, 2026-04-04.md, 2026-04-05.md - **Apr 3:** Durable items remain the cron-delivery misconfiguration (`announce` without `delivery.to`), the network inventory drift notes (`Legion.lan`, `k8s6.lan` SSH), and the more honest short-term quant verdict: weaker than hoped, still research-grade. - **Apr 4:** `k8s-2025` reorg planning had already narrowed to small documentation/placement cleanup and was effectively presentation-ready. - **Apr 5:** That planning turned into an approved execution pass for `k8s-2025` docs: seven commits landed, broken links dropped fro",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-13T22:05:05.605Z",
+      "lastRecalledAt": "2026-04-13T22:05:05.605Z",
+      "queryHashes": [
+        "a66ec4ac7635"
+      ],
+      "recallDays": [
+        "2026-04-13"
+      ],
+      "conceptTags": [
+        "network",
+        "cron-delivery",
+        "delivery.to",
+        "legion.lan",
+        "k8s6.lan",
+        "short-term",
+        "research-grade",
+        "k8s-2025"
+      ]
+    }
+  }
+}
