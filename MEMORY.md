@@ -35,11 +35,7 @@
 
 ## Memory Housekeeping
 - Daily logs in `memory/YYYY-MM-DD.md`. Reviewed/distilled into this file periodically. Purge at 30 days.
-- Review status (as of 2026-04-21): newest daily logs present are `2026-04-20`, `2026-04-18`, and `2026-04-15`; the recent Apr 15-20 review window was checked and did not surface any new durable long-term changes beyond the Apr 5 `k8s-2025` remediation and the Apr 3 quant/network notes already captured here.
+- Review status (as of 2026-04-22): newest daily logs present are `2026-04-21`, `2026-04-20`, and `2026-04-18`; the recent Apr 18-21 review window was checked and did not surface any new durable long-term changes beyond the Apr 5 `k8s-2025` remediation and the Apr 3 quant/network notes already captured here.
 - Older-than-7-days status: remaining dated logs through `2026-04-10` have already been reviewed/distilled or are themselves memory-review summaries; spot checks on the non-review logs (`2026-03-28.md`, `2026-04-04.md`, `2026-04-05.md`) confirmed their durable takeaways are already captured here.
-- Purge status: no remaining dated daily log files are older than 30 days. Earlier files through `memory/2026-03-20.md` were already removed after distillation; the current oldest dated file is `memory/2026-03-22.md`.
+- Purge status: `memory/2026-03-22.md` was removed on 2026-04-22 after confirming it was only a prior review summary with no missing durable facts. The current oldest remaining dated file is `memory/2026-03-23.md`.
 - Other tracking: `memory/budget.md`, `memory/error-log.md`, `memory/k8s-2025-overview.md`
-
-## Recent Updates
-- **Apr 5:** `k8s-2025` documentation remediation landed on `main` (seven commits, broken links 19 → 0, clearer operator/docs structure). Remaining follow-up is now narrow: fix the stale Terraform target in `scripts/deploy-homeassistant-pxe.sh`, scrub old Terraform target names from a few docs, and run live Ansible/Terraform validation somewhere that actually has the binaries.
-- **Apr 3:** Network inventory still shows `k8s6.lan` not answering SSH and `172.16.1.16` (`Legion.lan`) as an unresolved stray. Honest rolling OOS validation made the short-term quant track look weaker, not stronger; still research material, not a real edge yet.
