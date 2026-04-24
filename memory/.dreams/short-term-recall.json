@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-13T22:05:05.605Z",
+  "updatedAt": "2026-04-23T16:00:34.579Z",
   "entries": {
     "memory:memory/2026-04-03.md:129:138": {
       "key": "memory:memory/2026-04-03.md:129:138",
@@ -102,18 +102,20 @@
       "endLine": 16,
       "source": "memory",
       "snippet": "# 2026-04-06 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-04-03.md, 2026-04-04.md, 2026-04-05.md - **Apr 3:** Durable items remain the cron-delivery misconfiguration (`announce` without `delivery.to`), the network inventory drift notes (`Legion.lan`, `k8s6.lan` SSH), and the more honest short-term quant verdict: weaker than hoped, still research-grade. - **Apr 4:** `k8s-2025` reorg planning had already narrowed to small documentation/placement cleanup and was effectively presentation-ready. - **Apr 5:** That planning turned into an approved execution pass for `k8s-2025` docs: seven commits landed, broken links dropped fro",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 1.6782614016300257,
       "maxScore": 1,
       "firstRecalledAt": "2026-04-13T22:05:05.605Z",
-      "lastRecalledAt": "2026-04-13T22:05:05.605Z",
+      "lastRecalledAt": "2026-04-23T16:00:34.579Z",
       "queryHashes": [
-        "a66ec4ac7635"
+        "a66ec4ac7635",
+        "72f9eca7020d"
       ],
       "recallDays": [
-        "2026-04-13"
+        "2026-04-13",
+        "2026-04-23"
       ],
       "conceptTags": [
         "network",
@@ -124,6 +126,68 @@
         "short-term",
         "research-grade",
         "k8s-2025"
+      ]
+    },
+    "memory:memory/2026-04-08.md:1:23": {
+      "key": "memory:memory/2026-04-08.md:1:23",
+      "path": "memory/2026-04-08.md",
+      "startLine": 1,
+      "endLine": 23,
+      "source": "memory",
+      "snippet": "# 2026-04-08 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-04-04.md, 2026-04-05.md, 2026-04-06.md - **Apr 4:** `k8s-2025` reorg planning had already narrowed to a small validation/cleanup tail and was presentation-ready. - **Apr 5:** That planning became real execution: seven documentation-remediation commits landed on `k8s-2025` `main`, broken links dropped from 19 to 0, and the repo docs became much more honest and navigable. - **Apr 6:** Previous memory review had already captured the Apr 5 durable outcome; no additional long-term project changes surfaced beyond that consolidation. **Older daily logs checked for purge/",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.669447465700056,
+      "maxScore": 0.669447465700056,
+      "firstRecalledAt": "2026-04-23T16:00:34.579Z",
+      "lastRecalledAt": "2026-04-23T16:00:34.579Z",
+      "queryHashes": [
+        "72f9eca7020d"
+      ],
+      "recallDays": [
+        "2026-04-23"
+      ],
+      "conceptTags": [
+        "k8s-2025",
+        "validation/cleanup",
+        "presentation-ready",
+        "documentation-remediation",
+        "long-term",
+        "review",
+        "automated",
+        "cdt"
+      ]
+    },
+    "memory:memory/2026-04-02.md:58:73": {
+      "key": "memory:memory/2026-04-02.md:58:73",
+      "path": "memory/2026-04-02.md",
+      "startLine": 58,
+      "endLine": 73,
+      "source": "memory",
+      "snippet": "## k8s-2025 Reorg Planning (4:15 AM CDT) ### Daily status report - **What was reviewed today:** targeted inventories of the `k8s-2025` top level, `ansible/playbooks/`, `ansible/job-templates/`, `scripts/`, a flat sample of `docs/`, plus specific review of `ansible/awx-job-templates.yml` schedule/template naming. - **What changed in the planning docs:** - `plans/k8s-2025-reorg-assessment.md` now includes stronger evidence about the overloaded playbook layout, the `maintenance/` catch-all problem, script/doc mixing, and a confirmed AWX schedule/template naming mismatch. - `plans/k8s-2025-reorg-proposal.md` now sharpens the recommended target layout for Ansible/AWX, docs/history, and scrip",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4873050034046173,
+      "maxScore": 0.4873050034046173,
+      "firstRecalledAt": "2026-04-23T16:00:34.579Z",
+      "lastRecalledAt": "2026-04-23T16:00:34.579Z",
+      "queryHashes": [
+        "72f9eca7020d"
+      ],
+      "recallDays": [
+        "2026-04-23"
+      ],
+      "conceptTags": [
+        "k8s-2025",
+        "ansible/playbooks",
+        "ansible/job-templates",
+        "ansible/awx-job-templates.yml",
+        "schedule/template",
+        "catch-all",
+        "script/doc",
+        "plans/k8s-2025-reorg-proposal.md"
       ]
     }
   }

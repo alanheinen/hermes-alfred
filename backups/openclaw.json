@@ -1,7 +1,7 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.4.12",
-    "lastTouchedAt": "2026-04-13T19:05:56.842Z"
+    "lastTouchedVersion": "2026.4.18",
+    "lastTouchedAt": "2026-04-23T14:30:46.391Z"
   },
   "wizard": {
     "lastRunAt": "2026-04-13T19:05:56.777Z",
@@ -110,7 +110,10 @@
         ],
         "experimental": {
           "sessionMemory": false
-        }
+        },
+        "provider": "local",
+        "fallback": "none",
+        "model": "text-embedding-3-small"
       },
       "compaction": {
         "mode": "default"
