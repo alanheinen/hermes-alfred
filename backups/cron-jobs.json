@@ -8,7 +8,7 @@
       "name": "Daily Memory Review & Cleanup",
       "enabled": true,
       "createdAtMs": 1774921680330,
-      "updatedAtMs": 1776751334192,
+      "updatedAtMs": 1777788098866,
       "schedule": {
         "kind": "cron",
         "expr": "0 1 * * *",
@@ -33,7 +33,7 @@
       "name": "quant-backtest-daily",
       "enabled": true,
       "createdAtMs": 1774921680360,
-      "updatedAtMs": 1776771082260,
+      "updatedAtMs": 1777807887898,
       "schedule": {
         "kind": "cron",
         "expr": "30 6 * * *",
@@ -43,7 +43,7 @@
       "wakeMode": "now",
       "payload": {
         "kind": "agentTurn",
-        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nRun the daily backtest for the siloed-quant-repo. Script: /home/aheinen/.openclaw/workspace/siloed-quant-repo/strategy_backtest.py. Venv: /home/aheinen/.openclaw/workspace/siloed-quant-repo/.venv. Save output CSV and PNG chart. Commit all results to the git repo at /home/aheinen/.openclaw/workspace/siloed-quant-repo/ with a descriptive commit message including today's date."
+        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-backtest-daily\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nRun the daily quant backtests in `/home/aheinen/.openclaw/workspace/siloed-quant-repo`.\n\nRequired scripts:\n1. `strategy_backtest.py`\n2. `simple_investor_strategies.py`\n\nEnvironment:\n- Preferred interpreter order:\n  1. `.venv/bin/python` if present and imports succeed\n  2. otherwise `python3` if required imports succeed\n- Fail plainly if dependencies are unavailable. Do not improvise around a broken environment.\n\nRequired behavior:\n- Run both scripts from the repo directory.\n- Save/update their CSV outputs.\n- Commit and push repo changes if outputs changed.\n- Keep the final summary short: which scripts ran, whether outputs changed, and commit hash if one was pushed.\n"
       },
       "delivery": {
         "mode": "none"
@@ -56,7 +56,7 @@
       "name": "daily-git-backup",
       "enabled": true,
       "createdAtMs": 1774921680388,
-      "updatedAtMs": 1776754888985,
+      "updatedAtMs": 1777791647938,
       "schedule": {
         "kind": "cron",
         "expr": "0 2 * * *",
@@ -79,7 +79,7 @@
       "name": "quant-meeting-daily",
       "enabled": true,
       "createdAtMs": 1774921680419,
-      "updatedAtMs": 1776769420057,
+      "updatedAtMs": 1777806304339,
       "schedule": {
         "kind": "cron",
         "expr": "0 6 * * *",
@@ -89,7 +89,7 @@
       "wakeMode": "now",
       "payload": {
         "kind": "agentTurn",
-        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nRun the daily quant meeting with a strict execution budget and focus on the short-term strategy track.\n\nHard constraints:\n- Target 30 minutes of real work, not sprawling exploration.\n- Keep token/cost usage modest.\n- Prefer inspecting existing repo artifacts and making one or two meaningful improvements over broad brainstorming.\n- Commit AND PUSH only if there are meaningful repo changes.\n- If there is no meaningful improvement to make today, say so plainly.\n- Avoid self-repair theater: do not monkeypatch, hot-fix around tool/runtime mistakes, or invent workaround code just to keep the run alive. Use the correct repo environment from the start. If a real blocker remains, report it plainly and stop.\n- Edit only the minimum useful files. Do not touch `issue_tracker.log` unless today produced a genuinely durable research finding worth recording there.\n\nPrimary priority: short-term S&P 500 strategy\n- Continue improving and testing short-horizon S&P 500 ideas in `/home/aheinen/.openclaw/workspace/siloed-quant-repo`.\n- Favor realism over flattering results:\n  - explicit rules\n  - sensible holding constraints\n  - transaction costs\n  - walk-forward validation\n- Prefer incremental work on existing artifacts (`short_term_strategy.py`, research CSVs, notes) over inventing an entirely new framework every day.\n- Environment rule (mandatory): use a deterministic repo-local Python environment, but do not depend specifically on `.venv`.\n  - Run directly from `/home/aheinen/.openclaw/workspace/siloed-quant-repo`.\n  - Preferred interpreter order:\n    1. `.venv/bin/python` if it exists and imports the required packages\n    2. otherwise `python3` from the host, but only if it successfully imports the repo's required packages\n  - Before running the research script, do a tiny dependency sanity check with the interpreter you plan to use.\n  - If neither interpreter can run the repo code with the required packages, report that plainly and stop.\n  - Do not create temp helper scripts outside the repo or do ad-hoc monkeypatch/self-repair theater to compensate for the wrong interpreter.\n\nSecondary priority: new strategy ideas\n- Brainstorm only a small number of genuinely distinct ideas if time permits.\n- Record only the worthwhile ones.\n- Do not spend most of the run on speculative ideation.\n\nMinimal rotation check only\n- Review the latest rotation backtest just enough to confirm nothing is obviously broken.\n- If nothing material changed, say so briefly and move on.\n\nSuggested workflow:\n1. Check repo status and review the latest short-term artifacts/results.\n2. Pick one focused improvement or test.\n3. Implement/run it directly from the repo using the first working interpreter from the required order above. Do not create temp scripts outside the repo path.\n4. Update only the relevant files. Avoid broad cleanup or incidental edits.\n5. Only update `issue_tracker.log` if there is a durable research conclusion, not just routine daily churn.\n6. Commit and push if meaningful changes were made.\n7. Write a concise plain-English Telegram report.\n\nTelegram report format for Al:\n- Write for an intelligent non-finance reader. Use plain English first and jargon second.\n- If you mention a metric, briefly translate what it means in normal language when helpful.\n- Prefer concrete comparisons to SPY over finance-bro shorthand.\n\n- Short-term strategy:\n  - what changed today\n  - whether the new result is better, worse, or basically unchanged vs yesterday\n  - one plain-English takeaway (for example: \"still not strong enough to trust with real money\")\n  - optional metrics only if material: CAGR, Sharpe, max drawdown, time in market\n- New ideas:\n  - 0-2 bullets max\n- Rotation strategy:\n  - one brief status bullet unless something broke\n- Repo changes:\n  - committed/pushed yes/no\n\nImportant:\n- Keep the final report concise.\n- Do not pad with panel-role dialogue or theatrical meeting transcripts.\n- Favor concrete research progress over narration about research progress.\n- Do not assume the reader knows what Sharpe, CAGR, drawdown, or walk-forward mean; either avoid the term or explain it briefly in plain English."
+        "message": "LOGGING REQUIREMENT:\n- Before doing anything else, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" START 100 \"begin\"`\n- Before finishing successfully, run: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" END 200 \"success\"`\n- If you hit an error you can still handle, log it with: `/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh \"quant-meeting-daily\" ERROR 500 \"brief-error-summary\"`\n- Log file: `/home/aheinen/.openclaw/logs/cron-jobs.log`\n- Use this exact apache-like format via the helper script; do not invent your own.\n\nRun the daily quant meeting with a strict execution budget and focus on the short-term strategy track.\n\nHard constraints:\n- Target 30 minutes of real work, not sprawling exploration.\n- Keep token/cost usage modest.\n- Prefer inspecting existing repo artifacts and making one or two meaningful improvements over broad brainstorming.\n- Commit AND PUSH only if there are meaningful repo changes.\n- If there is no meaningful improvement to make today, say so plainly.\n- Avoid self-repair theater: do not monkeypatch, hot-fix around tool/runtime mistakes, or invent workaround code just to keep the run alive. Use the correct repo environment from the start. If a real blocker remains, report it plainly and stop.\n- Edit only the minimum useful files. Do not touch `issue_tracker.log` unless today produced a genuinely durable research finding worth recording there.\n\nPrimary priorities:\n- Continue improving and testing short-horizon S&P 500 ideas in `/home/aheinen/.openclaw/workspace/siloed-quant-repo`.\n- Also maintain a simple-investor strategy track: three low-maintenance, automation-friendly ideas that a small investor could run with little weekly effort.\n- Favor realism over flattering results:\n  - explicit rules\n  - sensible holding constraints\n  - transaction costs\n  - walk-forward validation\n- Prefer incremental work on existing artifacts (`short_term_strategy.py`, research CSVs, notes) over inventing an entirely new framework every day.\n- Environment rule (mandatory): use a deterministic repo-local Python environment, but do not depend specifically on `.venv`.\n  - Run directly from `/home/aheinen/.openclaw/workspace/siloed-quant-repo`.\n  - Preferred interpreter order:\n    1. `.venv/bin/python` if it exists and imports the required packages\n    2. otherwise `python3` from the host, but only if it successfully imports the repo's required packages\n  - Before running the research script, do a tiny dependency sanity check with the interpreter you plan to use.\n  - If neither interpreter can run the repo code with the required packages, report that plainly and stop.\n  - Do not create temp helper scripts outside the repo or do ad-hoc monkeypatch/self-repair theater to compensate for the wrong interpreter.\n\nSecondary priority: new strategy ideas\n- Brainstorm only a small number of genuinely distinct ideas if time permits.\n- Record only the worthwhile ones.\n- Do not spend most of the run on speculative ideation.\n\nMinimal rotation check only\n- Review the latest rotation backtest just enough to confirm nothing is obviously broken.\n- If nothing material changed, say so briefly and move on.\n\nSuggested workflow:\n1. Check repo status and review the latest short-term artifacts/results.\n2. Run `simple_investor_strategies.py` and review the latest three simple-investor candidates first.\n3. Then pick one focused improvement or test, either in the short-term track or the simple-investor track.\n4. Implement/run it directly from the repo using the first working interpreter from the required order above. Do not create temp scripts outside the repo path.\n4. Update only the relevant files. Avoid broad cleanup or incidental edits.\n5. Only update `issue_tracker.log` if there is a durable research conclusion, not just routine daily churn.\n6. Commit and push if meaningful changes were made.\n7. Write a concise plain-English Telegram report.\n\nTelegram report format for Al:\n- Write for an intelligent non-finance reader. Use plain English first and jargon second.\n- If you mention a metric, briefly translate what it means in normal language when helpful.\n- Prefer concrete comparisons to SPY over finance-bro shorthand.\n\n- Simple investor strategies:\n  - status in one short line\n  - list the three current candidates briefly\n  - say which one looks best today\n  - plain-English takeaway: return leader vs drawdown leader vs easiest to automate\n- Short-term strategy:\n  - only the material change, or say no material change\n- New ideas:\n  - 0-2 bullets max\n- Rotation strategy:\n  - one brief status bullet unless something broke\n- Repo changes:\n  - committed/pushed yes/no\n\nImportant:\n- Keep the final report concise.\n- Do not pad with panel-role dialogue or theatrical meeting transcripts.\n- Favor concrete research progress over narration about research progress.\n- Do not assume the reader knows what Sharpe, CAGR, drawdown, or walk-forward mean; either avoid the term or explain it briefly in plain English."
       },
       "delivery": {
         "mode": "announce",
@@ -106,7 +106,7 @@
       "name": "daily-review-and-optimize",
       "enabled": true,
       "createdAtMs": 1774921680453,
-      "updatedAtMs": 1776774784435,
+      "updatedAtMs": 1777811551478,
       "schedule": {
         "kind": "cron",
         "expr": "30 7 * * *",
@@ -160,7 +160,7 @@
       "name": "network-inventory-scan-daily",
       "enabled": true,
       "createdAtMs": 1774975692144,
-      "updatedAtMs": 1776767483711,
+      "updatedAtMs": 1777804263310,
       "schedule": {
         "kind": "cron",
         "expr": "30 5 * * *",
@@ -187,7 +187,7 @@
       "name": "daily-telegram-summary",
       "enabled": true,
       "createdAtMs": 1775083037210,
-      "updatedAtMs": 1776775932987,
+      "updatedAtMs": 1777812787215,
       "schedule": {
         "kind": "cron",
         "expr": "50 7 * * *",
