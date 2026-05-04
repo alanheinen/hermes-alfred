@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-23T16:00:34.579Z",
+  "updatedAt": "2026-05-03T14:32:29.939Z",
   "entries": {
     "memory:memory/2026-04-03.md:129:138": {
       "key": "memory:memory/2026-04-03.md:129:138",
@@ -188,6 +188,254 @@
         "catch-all",
         "script/doc",
         "plans/k8s-2025-reorg-proposal.md"
+      ]
+    },
+    "memory:memory/2026-03-31.md:31:43": {
+      "key": "memory:memory/2026-03-31.md:31:43",
+      "path": "memory/2026-03-31.md",
+      "startLine": 31,
+      "endLine": 43,
+      "source": "memory",
+      "snippet": "- `STRATEGY_PAPER.md` reviewed again and still publication-ready; added validation note tied to the 2026-03-31 daily refresh. - `README.md` updated to reflect current repo state and to separate the short-term research track from the main rotation product. - `issue_tracker.log` extended/cleaned with today's research notes and conclusions. ### Short-term research track - Replaced older, overly flattering backtest logic in `short_term_strategy.py` with a stricter long/cash state-machine model: explicit entry/exit rules, minimum holding periods, daily return accounting, 5 bps per-side transaction costs, and walk-forward validation. - Added research artifacts: `short_term_literature_review.csv`,",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4555906802415847,
+      "maxScore": 0.4555906802415847,
+      "firstRecalledAt": "2026-05-03T14:32:29.939Z",
+      "lastRecalledAt": "2026-05-03T14:32:29.939Z",
+      "queryHashes": [
+        "abccc38c2fae"
+      ],
+      "recallDays": [
+        "2026-05-03"
+      ],
+      "conceptTags": [
+        "strategy-paper.md",
+        "publication-ready",
+        "readme.md",
+        "short-term",
+        "issue-tracker.log",
+        "extended/cleaned",
+        "short-term-strategy.py",
+        "long/cash"
+      ]
+    },
+    "memory:memory/2026-04-03.md:97:113": {
+      "key": "memory:memory/2026-04-03.md:97:113",
+      "path": "memory/2026-04-03.md",
+      "startLine": 97,
+      "endLine": 113,
+      "source": "memory",
+      "snippet": "- **Open questions / blockers:** final placement calls for the remaining `docs/` root files and whether conservative playbook filenames are worth renaming. - **Next recommended steps:** 1. decide final homes for the remaining `docs/` root files based on whether they function as runbooks, references, or audit outputs 2. leave AWX names alone unless a real inconsistency reappears 3. avoid renaming plain playbook filenames unless the gain in discoverability clearly outweighs the churn --- ## Quant Short-Term Validation (7:02 AM CDT) ### Daily status report - **What changed today:** `short_term_strategy.py` was tightened so walk-forward validation is now a real rolling 5-year train / ne",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4295451492071152,
+      "maxScore": 0.4295451492071152,
+      "firstRecalledAt": "2026-05-03T14:32:29.939Z",
+      "lastRecalledAt": "2026-05-03T14:32:29.939Z",
+      "queryHashes": [
+        "abccc38c2fae"
+      ],
+      "recallDays": [
+        "2026-05-03"
+      ],
+      "conceptTags": [
+        "short-term",
+        "short-term-strategy.py",
+        "walk-forward",
+        "5-year",
+        "open",
+        "questions",
+        "blockers",
+        "final"
+      ]
+    },
+    "memory:memory/2026-03-31.md:42:47": {
+      "key": "memory:memory/2026-03-31.md:42:47",
+      "path": "memory/2026-03-31.md",
+      "startLine": 42,
+      "endLine": 47,
+      "source": "memory",
+      "snippet": "- Conclusion: short-term work is now more rigorous/honest but not publishable as a standalone strategy yet; best treated as research appendix / exploratory sidecar. - New instruction from Al (9:12 AM America/Chicago): the quant team should now focus primarily on the short-term strategy, while “new business” should brainstorm genuinely new strategy ideas. Rotation strategy maintenance and documentation polish are backburnered unless something material breaks. - Security/ops cleanup (10:22 AM America/Chicago): switched git-backed OpenClaw config backups to a redacted workflow (`scripts/redact_openclaw_config.py` -> `backups/openclaw.json`), scrubbed tracked repo secrets from `k8s-2025` and wor",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4156394362449646,
+      "maxScore": 0.4156394362449646,
+      "firstRecalledAt": "2026-05-03T14:32:29.939Z",
+      "lastRecalledAt": "2026-05-03T14:32:29.939Z",
+      "queryHashes": [
+        "abccc38c2fae"
+      ],
+      "recallDays": [
+        "2026-05-03"
+      ],
+      "conceptTags": [
+        "backup",
+        "backups",
+        "short-term",
+        "rigorous/honest",
+        "america/chicago",
+        "security/ops",
+        "git-backed",
+        "backups/openclaw.json"
+      ]
+    },
+    "memory:memory/2026-04-03.md:111:128": {
+      "key": "memory:memory/2026-04-03.md:111:128",
+      "path": "memory/2026-04-03.md",
+      "startLine": 111,
+      "endLine": 128,
+      "source": "memory",
+      "snippet": "- **Honest verdict:** the stricter validation made the short-term track look weaker, not stronger. Rolling OOS average is about 2.4% CAGR / 0.56 Sharpe versus SPY around 14.5% CAGR / 1.15 Sharpe. Useful correction; not a usable edge yet. - **New ideas:** none today; the effort went into making the existing validation less fake. - **Rotation strategy:** quick sanity check only; latest rotation artifacts do not look obviously broken and there was no material change. - **Repo status:** committed and pushed as `ffa5e1b` — `research: make short-term walk-forward selection honest`. - **Environment note:** `python3` lacked `numpy`; reran with the repo virtualenv and completed successfully. --- **",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4027947038412094,
+      "maxScore": 0.4027947038412094,
+      "firstRecalledAt": "2026-05-03T14:32:29.939Z",
+      "lastRecalledAt": "2026-05-03T14:32:29.939Z",
+      "queryHashes": [
+        "abccc38c2fae"
+      ],
+      "recallDays": [
+        "2026-05-03"
+      ],
+      "conceptTags": [
+        "short-term",
+        "2.4",
+        "0.56",
+        "14.5",
+        "1.15",
+        "walk-forward",
+        "honest",
+        "verdict"
+      ]
+    },
+    "memory:memory/2026-03-28.md:1:21": {
+      "key": "memory:memory/2026-03-28.md:1:21",
+      "path": "memory/2026-03-28.md",
+      "startLine": 1,
+      "endLine": 21,
+      "source": "memory",
+      "snippet": "# 2026-03-28 ## Daily Review (8:30 AM EDT) - Workspace git: committed & pushed (MEMORY.md, budget, today's log) - **k8s-2025 divergence:** 21 local (auto-RCAs from Mar 27 network flap during drive replacement) vs 13 remote (Ansible/Proxmox work). Needs merge/rebase — flagging for Al, not touching it. - Memory files healthy. Budget est. ~$13-14. - No active issues. ## Usage Report (9 AM EDT) - Yesterday spend: ~$2.00 (moderate) - Est. balance: ~$12. 7-day avg burn: ~$4.14/day. ~2 days to $5 warning at avg burn. - ⚠️ Budget getting thin. Quiet weekend should help. Usage cron itself noted it's on Opus — worth switching to Sonnet. ## Quant Meeting (8 AM EDT) - **Strategy Paper:** Enhanced — u",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4014614999294281,
+      "maxScore": 0.4014614999294281,
+      "firstRecalledAt": "2026-05-03T14:32:29.939Z",
+      "lastRecalledAt": "2026-05-03T14:32:29.939Z",
+      "queryHashes": [
+        "abccc38c2fae"
+      ],
+      "recallDays": [
+        "2026-05-03"
+      ],
+      "conceptTags": [
+        "network",
+        "memory.md",
+        "k8s-2025",
+        "auto-rcas",
+        "ansible/proxmox",
+        "merge/rebase",
+        "13-14",
+        "2.00"
+      ]
+    },
+    "memory:memory/2026-04-01.md:1:16": {
+      "key": "memory:memory/2026-04-01.md:1:16",
+      "path": "memory/2026-04-01.md",
+      "startLine": 1,
+      "endLine": 16,
+      "source": "memory",
+      "snippet": "# 2026-04-01 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-03-28.md, 2026-03-30.md, 2026-03-31.md - **Mar 28:** Quant rotation paper still publication-ready; older budget anxiety from that day is no longer the main long-term story after the OpenAI Codex OAuth shift. - **Mar 30:** OpenAI-first auth/model cleanup remains the key platform change; cron cleanup/logging posture already preserved. - **Mar 31:** Captured the important new long-term items: stricter short-term quant research results, Al's focus shift toward short-term strategy work, secret/repo cleanup, SSH remotes, redacted config backups, and the two new daily pla",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.38632403314113617,
+      "maxScore": 0.38632403314113617,
+      "firstRecalledAt": "2026-05-03T14:32:29.939Z",
+      "lastRecalledAt": "2026-05-03T14:32:29.939Z",
+      "queryHashes": [
+        "abccc38c2fae"
+      ],
+      "recallDays": [
+        "2026-05-03"
+      ],
+      "conceptTags": [
+        "backup",
+        "backups",
+        "openai",
+        "publication-ready",
+        "long-term",
+        "openai-first",
+        "auth/model",
+        "cleanup/logging"
+      ]
+    },
+    "memory:memory/2026-04-02.md:46:62": {
+      "key": "memory:memory/2026-04-02.md:46:62",
+      "path": "memory/2026-04-02.md",
+      "startLine": 46,
+      "endLine": 62,
+      "source": "memory",
+      "snippet": "- `quant-meeting-daily` did produce research output despite the messy run state. - Best short-term candidate reported this morning is `pullback_trend_reentry` at roughly `4.40% CAGR / 0.68 Sharpe / -10.2% MaxDD`, with walk-forward averages around `4.90% CAGR / 1.09 Sharpe`; verdict remains “modest improvement, not a breakthrough.” - Network scan surfaced `Legion.lan` / `172.16.1.16` as a likely new/untracked workstation and noted SSH-reachability issues on `k8s6.lan`. - Recommended next actions when doing changes with approval: 1. add explicit Telegram `delivery.to` targets to announce-mode cron jobs (or switch to an explicit `message` send path) 2. tighten `quant-meeting-daily` so",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.3816070109605789,
+      "maxScore": 0.3816070109605789,
+      "firstRecalledAt": "2026-05-03T14:32:29.939Z",
+      "lastRecalledAt": "2026-05-03T14:32:29.939Z",
+      "queryHashes": [
+        "abccc38c2fae"
+      ],
+      "recallDays": [
+        "2026-05-03"
+      ],
+      "conceptTags": [
+        "network",
+        "quant-meeting-daily",
+        "short-term",
+        "pullback-trend-reentry",
+        "4.40",
+        "0.68",
+        "10.2",
+        "walk-forward"
+      ]
+    },
+    "memory:memory/2026-03-31.md:15:35": {
+      "key": "memory:memory/2026-03-31.md:15:35",
+      "path": "memory/2026-03-31.md",
+      "startLine": 15,
+      "endLine": 35,
+      "source": "memory",
+      "snippet": "- ✅ Replaced stale cron status (“6 crons, all Sonnet”) with current infrastructure state: removed obsolete jobs, staggered schedules, added shared cron logging helper, backup snapshots live `openclaw.json`. - ✅ Added **Mar 30** long-term update covering auth cleanup, default/fallback model routing, and reduced cost exposure. - ✅ Removed outdated wording tied to the pre–Mar 30 API-key-first setup. **Files purged:** None - No daily logs are older than 30 days yet. - Earliest remaining daily log is 2026-03-16.md, so the purge window has not opened. **Status:** Memory system current through Mar 30. Long-term memory now reflects the OpenAI Codex OAuth shift and cleaned-up cron infrastructure wi",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.37852796018123624,
+      "maxScore": 0.37852796018123624,
+      "firstRecalledAt": "2026-05-03T14:32:29.939Z",
+      "lastRecalledAt": "2026-05-03T14:32:29.939Z",
+      "queryHashes": [
+        "abccc38c2fae"
+      ],
+      "recallDays": [
+        "2026-05-03"
+      ],
+      "conceptTags": [
+        "backup",
+        "openai",
+        "openclaw.json",
+        "long-term",
+        "default/fallback",
+        "api-key-first",
+        "cleaned-up",
+        "replaced"
       ]
     }
   }
