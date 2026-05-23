@@ -1,51 +1,82 @@
 #!/usr/bin/env bash
 set -euo pipefail
-updated=no
-backup_refreshed=no
-workspace_changes=no
-commit_hash=
-pull_status=0
-push_status=0
+LOG=/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh
+$LOG "daily-git-backup" START 100 "begin"
 
-pull_output=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1) || pull_status=$?
-if [ "$pull_status" -ne 0 ]; then
-  if printf '%s' "$pull_output" | grep -Eqi 'timed out|timeout|temporar|TLS|Connection reset|Connection refused|Could not resolve host|Failed to connect|remote end hung up|502|503|504|network'; then
-    sleep 5
-    pull_status=0
-    pull_output=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1) || pull_status=$?
+TRANSIENT_RE='(Could not resolve host|Connection timed out|Operation timed out|timed out|Connection reset|remote end hung up|TLS|SSL|502|503|504|proxy|Temporary failure|network is unreachable|Name or service not known|failed to connect|connection refused|EOF)'
+
+K8S_UPDATED=unknown
+BACKUP_REFRESHED=no
+WORKSPACE_CHANGES=no
+COMMIT_HASH=
+
+cleanup() {
+  rc=$?
+  if [ $rc -ne 0 ]; then
+    $LOG "daily-git-backup" ERROR 500 "job-failed"
   fi
-fi
-if [ "$pull_status" -ne 0 ]; then
-  printf '%s\n' "$pull_output" >&2
-  exit "$pull_status"
-fi
-if printf '%s' "$pull_output" | grep -q 'Already up to date.'; then
-  updated=no
-else
-  updated=yes
-fi
+  exit $rc
+}
+trap cleanup EXIT
 
-python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py /home/aheinen/.openclaw/openclaw.json /home/aheinen/.openclaw/workspace/backups/openclaw.json
-backup_refreshed=yes
+run_git_pull() {
+  local before after out rc
+  before=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 rev-parse HEAD)
+  set +e
+  out=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1)
+  rc=$?
+  set -e
+  if [ $rc -ne 0 ] && printf '%s' "$out" | grep -Eiq "$TRANSIENT_RE"; then
+    sleep 5
+    set +e
+    out=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1)
+    rc=$?
+    set -e
+  fi
+  if [ $rc -ne 0 ]; then
+    printf '%s\n' "$out" >&2
+    return $rc
+  fi
+  after=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 rev-parse HEAD)
+  if [ "$before" != "$after" ]; then K8S_UPDATED=yes; else K8S_UPDATED=no; fi
+}
 
-cd /home/aheinen/.openclaw/workspace
-git add -A
-if ! git diff --cached --quiet; then
-  workspace_changes=yes
-  msg="chore: daily backup $(date +%F)"
-  git commit -m "$msg" >/tmp/daily_git_backup_commit.txt 2>&1
-  commit_hash=$(git rev-parse --short HEAD)
-  push_output=$(git push 2>&1) || push_status=$?
-  if [ "$push_status" -ne 0 ]; then
-    if printf '%s' "$push_output" | grep -Eqi 'timed out|timeout|temporar|TLS|Connection reset|Connection refused|Could not resolve host|Failed to connect|remote end hung up|502|503|504|network'; then
+run_backup() {
+  python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py \
+    /home/aheinen/.openclaw/openclaw.json \
+    /home/aheinen/.openclaw/workspace/backups/openclaw.json
+  BACKUP_REFRESHED=yes
+}
+
+run_workspace_backup() {
+  local out rc
+  cd /home/aheinen/.openclaw/workspace
+  git add -A
+  if ! git diff --cached --quiet; then
+    WORKSPACE_CHANGES=yes
+    git commit -m "Daily backup refresh"
+    COMMIT_HASH=$(git rev-parse --short HEAD)
+    set +e
+    out=$(git push 2>&1)
+    rc=$?
+    set -e
+    if [ $rc -ne 0 ] && printf '%s' "$out" | grep -Eiq "$TRANSIENT_RE"; then
       sleep 5
-      push_status=0
-      push_output=$(git push 2>&1) || push_status=$?
+      set +e
+      out=$(git push 2>&1)
+      rc=$?
+      set -e
+    fi
+    if [ $rc -ne 0 ]; then
+      printf '%s\n' "$out" >&2
+      return $rc
     fi
   fi
-  if [ "$push_status" -ne 0 ]; then
-    printf '%s\n' "$push_output" >&2
-    exit "$push_status"
-  fi
-fi
-printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=%s\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\n' "$updated" "$backup_refreshed" "$workspace_changes" "$commit_hash"
+}
+
+run_git_pull
+run_backup
+run_workspace_backup
+
+$LOG "daily-git-backup" END 200 "success"
+printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=%s\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\n' "$K8S_UPDATED" "$BACKUP_REFRESHED" "$WORKSPACE_CHANGES" "$COMMIT_HASH"
