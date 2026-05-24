@@ -1,82 +1,64 @@
 #!/usr/bin/env bash
 set -euo pipefail
-LOG=/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh
-$LOG "daily-git-backup" START 100 "begin"
+/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh "daily-git-backup" START 100 "begin"
 
-TRANSIENT_RE='(Could not resolve host|Connection timed out|Operation timed out|timed out|Connection reset|remote end hung up|TLS|SSL|502|503|504|proxy|Temporary failure|network is unreachable|Name or service not known|failed to connect|connection refused|EOF)'
+k8s_updated="no"
+workspace_changes="no"
+commit_hash=""
 
-K8S_UPDATED=unknown
-BACKUP_REFRESHED=no
-WORKSPACE_CHANGES=no
-COMMIT_HASH=
-
-cleanup() {
-  rc=$?
-  if [ $rc -ne 0 ]; then
-    $LOG "daily-git-backup" ERROR 500 "job-failed"
-  fi
-  exit $rc
-}
-trap cleanup EXIT
-
-run_git_pull() {
-  local before after out rc
-  before=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 rev-parse HEAD)
-  set +e
-  out=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1)
-  rc=$?
-  set -e
-  if [ $rc -ne 0 ] && printf '%s' "$out" | grep -Eiq "$TRANSIENT_RE"; then
+pull_status=0
+pull_output_1="$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1)" || pull_status=$?
+if [ "$pull_status" -ne 0 ]; then
+  if printf '%s' "$pull_output_1" | grep -Eiq 'timed out|timeout|temporar|TLS|Connection reset|Connection refused|Could not resolve host|remote end hung up|502|503|504|proxy|network|unable to access'; then
     sleep 5
-    set +e
-    out=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1)
-    rc=$?
-    set -e
+    pull_status2=0
+    pull_output_2="$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1)" || pull_status2=$?
+    if [ "$pull_status2" -ne 0 ]; then
+      /home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh "daily-git-backup" ERROR 500 "k8s pull retry failed"
+      printf 'K8S_PULL_STATUS=error\nK8S_PULL_OUTPUT<<EOF\n%s\n--- RETRY ---\n%s\nEOF\n' "$pull_output_1" "$pull_output_2"
+      exit 1
+    fi
+    pull_output="$pull_output_2"
+  else
+    /home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh "daily-git-backup" ERROR 500 "k8s pull failed"
+    printf 'K8S_PULL_STATUS=error\nK8S_PULL_OUTPUT<<EOF\n%s\nEOF\n' "$pull_output_1"
+    exit 1
   fi
-  if [ $rc -ne 0 ]; then
-    printf '%s\n' "$out" >&2
-    return $rc
-  fi
-  after=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 rev-parse HEAD)
-  if [ "$before" != "$after" ]; then K8S_UPDATED=yes; else K8S_UPDATED=no; fi
-}
+else
+  pull_output="$pull_output_1"
+fi
+if ! printf '%s' "$pull_output" | grep -q 'Already up to date.'; then
+  k8s_updated="yes"
+fi
 
-run_backup() {
-  python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py \
-    /home/aheinen/.openclaw/openclaw.json \
-    /home/aheinen/.openclaw/workspace/backups/openclaw.json
-  BACKUP_REFRESHED=yes
-}
+python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py /home/aheinen/.openclaw/openclaw.json /home/aheinen/.openclaw/workspace/backups/openclaw.json
 
-run_workspace_backup() {
-  local out rc
-  cd /home/aheinen/.openclaw/workspace
-  git add -A
-  if ! git diff --cached --quiet; then
-    WORKSPACE_CHANGES=yes
-    git commit -m "Daily backup refresh"
-    COMMIT_HASH=$(git rev-parse --short HEAD)
-    set +e
-    out=$(git push 2>&1)
-    rc=$?
-    set -e
-    if [ $rc -ne 0 ] && printf '%s' "$out" | grep -Eiq "$TRANSIENT_RE"; then
+cd /home/aheinen/.openclaw/workspace
+git add -A
+if ! git diff --cached --quiet; then
+  workspace_changes="yes"
+  msg="chore: daily backup $(date +%F)"
+  git commit -m "$msg"
+  commit_hash="$(git rev-parse --short HEAD)"
+  push_status=0
+  push_output_1="$(git push 2>&1)" || push_status=$?
+  if [ "$push_status" -ne 0 ]; then
+    if printf '%s' "$push_output_1" | grep -Eiq 'timed out|timeout|temporar|TLS|Connection reset|Connection refused|Could not resolve host|remote end hung up|502|503|504|proxy|network|unable to access'; then
       sleep 5
-      set +e
-      out=$(git push 2>&1)
-      rc=$?
-      set -e
-    fi
-    if [ $rc -ne 0 ]; then
-      printf '%s\n' "$out" >&2
-      return $rc
+      push_status2=0
+      push_output_2="$(git push 2>&1)" || push_status2=$?
+      if [ "$push_status2" -ne 0 ]; then
+        /home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh "daily-git-backup" ERROR 500 "workspace push retry failed"
+        printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=yes\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\nPUSH_STATUS=error\nPUSH_OUTPUT<<EOF\n%s\n--- RETRY ---\n%s\nEOF\n' "$k8s_updated" "$workspace_changes" "$commit_hash" "$push_output_1" "$push_output_2"
+        exit 1
+      fi
+    else
+      /home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh "daily-git-backup" ERROR 500 "workspace push failed"
+      printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=yes\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\nPUSH_STATUS=error\nPUSH_OUTPUT<<EOF\n%s\nEOF\n' "$k8s_updated" "$workspace_changes" "$commit_hash" "$push_output_1"
+      exit 1
     fi
   fi
-}
+fi
 
-run_git_pull
-run_backup
-run_workspace_backup
-
-$LOG "daily-git-backup" END 200 "success"
-printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=%s\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\n' "$K8S_UPDATED" "$BACKUP_REFRESHED" "$WORKSPACE_CHANGES" "$COMMIT_HASH"
+/home/aheinen/.openclaw/workspace/scripts/log_cron_job.sh "daily-git-backup" END 200 "success"
+printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=yes\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\n' "$k8s_updated" "$workspace_changes" "$commit_hash"
