@@ -1,52 +1,55 @@
 #!/usr/bin/env bash
 set -euo pipefail
-updated=no
-backup_refreshed=no
-workspace_changes=no
-commit_hash=
-pull_status=0
-push_status=0
+K8S_REPO=/home/aheinen/.openclaw/workspace/k8s-2025
+WS_REPO=/home/aheinen/.openclaw/workspace
+SRC_CFG=/home/aheinen/.openclaw/openclaw.json
+DST_CFG=/home/aheinen/.openclaw/workspace/backups/openclaw.json
 
-pull_output=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1) || pull_status=$?
-if [ "$pull_status" -ne 0 ]; then
-  if printf '%s' "$pull_output" | grep -Eiq 'timed out|timeout|temporary failure|could not resolve host|connection reset|connection timed out|remote end hung up|TLS|502|503|504|network|proxy|server unavailable'; then
-    sleep 5
-    pull_status=0
-    pull_output=$(git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only 2>&1) || pull_status=$?
-  fi
+k8s_before=$(git -C "$K8S_REPO" rev-parse HEAD)
+k8s_updated=no
+pull_rc=0
+pull_output=$(git -C "$K8S_REPO" pull --ff-only 2>&1) || pull_rc=$?
+if [ "$pull_rc" -ne 0 ]; then
+  case "$pull_output" in
+    *"Could not resolve host"*|*"Connection timed out"*|*"Operation timed out"*|*"Failed to connect"*|*"Connection reset"*|*"TLS handshake timeout"*|*"The requested URL returned error: 5"*|*"remote end hung up unexpectedly"*|*"HTTP code = 5"*|*"server error"*)
+      sleep 5
+      git -C "$K8S_REPO" pull --ff-only
+      ;;
+    *)
+      printf '%s\n' "$pull_output" >&2
+      exit "$pull_rc"
+      ;;
+  esac
 fi
-if [ "$pull_status" -ne 0 ]; then
-  printf '%s\n' "$pull_output" >&2
-  exit "$pull_status"
-fi
-if printf '%s' "$pull_output" | grep -q 'Already up to date.'; then
-  updated=no
-else
-  updated=yes
-fi
+k8s_after=$(git -C "$K8S_REPO" rev-parse HEAD)
+[ "$k8s_before" != "$k8s_after" ] && k8s_updated=yes || true
 
-python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py /home/aheinen/.openclaw/openclaw.json /home/aheinen/.openclaw/workspace/backups/openclaw.json
+python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py "$SRC_CFG" "$DST_CFG"
 backup_refreshed=yes
 
-cd /home/aheinen/.openclaw/workspace
+cd "$WS_REPO"
 git add -A
-if ! git diff --cached --quiet; then
+post_status=$(git status --porcelain)
+workspace_changes=no
+commit_hash=
+if [ -n "$post_status" ]; then
   workspace_changes=yes
-  commit_msg="daily backup: $(date +%F)"
-  git commit -m "$commit_msg"
+  msg="backup: refresh redacted config and daily maintenance"
+  git commit -m "$msg"
   commit_hash=$(git rev-parse --short HEAD)
-  push_output=$(git push 2>&1) || push_status=$?
-  if [ "$push_status" -ne 0 ]; then
-    if printf '%s' "$push_output" | grep -Eiq 'timed out|timeout|temporary failure|could not resolve host|connection reset|connection timed out|remote end hung up|TLS|502|503|504|network|proxy|server unavailable'; then
-      sleep 5
-      push_status=0
-      push_output=$(git push 2>&1) || push_status=$?
-    fi
-  fi
-  if [ "$push_status" -ne 0 ]; then
-    printf '%s\n' "$push_output" >&2
-    exit "$push_status"
+  push_rc=0
+  push_output=$(git push 2>&1) || push_rc=$?
+  if [ "$push_rc" -ne 0 ]; then
+    case "$push_output" in
+      *"Could not resolve host"*|*"Connection timed out"*|*"Operation timed out"*|*"Failed to connect"*|*"Connection reset"*|*"TLS handshake timeout"*|*"The requested URL returned error: 5"*|*"remote end hung up unexpectedly"*|*"HTTP code = 5"*|*"server error"*)
+        sleep 5
+        git push
+        ;;
+      *)
+        printf '%s\n' "$push_output" >&2
+        exit "$push_rc"
+        ;;
+    esac
   fi
 fi
-
-printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=%s\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\n' "$updated" "$backup_refreshed" "$workspace_changes" "$commit_hash"
+printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=%s\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\n' "$k8s_updated" "$backup_refreshed" "$workspace_changes" "$commit_hash"
