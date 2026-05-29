@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-11T10:31:19.240Z",
+  "updatedAt": "2026-05-28T12:52:09.691Z",
   "entries": {
     "memory:memory/2026-04-03.md:129:138": {
       "key": "memory:memory/2026-04-03.md:129:138",
@@ -467,6 +467,316 @@
         "the",
         "apr",
         "k8s"
+      ]
+    },
+    "memory:memory/2026-05-10.md:1:24": {
+      "key": "memory:memory/2026-05-10.md:1:24",
+      "path": "memory/2026-05-10.md",
+      "startLine": 1,
+      "endLine": 24,
+      "source": "memory",
+      "snippet": "# 2026-05-10 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-05-07.md, 2026-05-08.md, 2026-05-09.md - **May 7-9:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes and existing quant summaries already preserved there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-05-02.md - Remaining dated logs in that older range are already reviewed/distilled or are themselves memory-review summaries. - `2026-05-02.md` is itself a memory-review summary and did not surface any missing d",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4755489557981491,
+      "maxScore": 0.4755489557981491,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "7-9",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "reviewed/distilled",
+        "memory-review",
+        "review",
+        "automated"
+      ]
+    },
+    "memory:memory/2026-05-13.md:1:26": {
+      "key": "memory:memory/2026-05-13.md:1:26",
+      "path": "memory/2026-05-13.md",
+      "startLine": 1,
+      "endLine": 26,
+      "source": "memory",
+      "snippet": "# 2026-05-13 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-05-10.md, 2026-05-11.md, 2026-05-12.md - **May 10-12:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes and existing quant summaries already preserved there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-05-05.md - Remaining dated logs in that older range are already reviewed/distilled or are themselves memory-review summaries. - `2026-05-05.md` is itself a memory-review summary and did not surface any missing",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.47122452855110164,
+      "maxScore": 0.47122452855110164,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "10-12",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "reviewed/distilled",
+        "memory-review",
+        "review",
+        "automated"
+      ]
+    },
+    "memory:memory/2026-05-02.md:1:24": {
+      "key": "memory:memory/2026-05-02.md:1:24",
+      "path": "memory/2026-05-02.md",
+      "startLine": 1,
+      "endLine": 24,
+      "source": "memory",
+      "snippet": "# 2026-05-02 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-04-29.md, 2026-04-30.md, 2026-05-01.md - **Apr 29-May 1:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes already captured there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-04-24.md - Existing review/distillation markers remain in place across the older dated logs. - `2026-04-24.md` is itself a memory-review summary and did not surface any missing durable facts. - Earlier spot checks on the non-review logs",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.46889781057834623,
+      "maxScore": 0.46889781057834623,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "29-may",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "review/distillation",
+        "memory-review",
+        "non-review",
+        "review"
+      ]
+    },
+    "memory:memory/2026-05-04.md:1:24": {
+      "key": "memory:memory/2026-05-04.md:1:24",
+      "path": "memory/2026-05-04.md",
+      "startLine": 1,
+      "endLine": 24,
+      "source": "memory",
+      "snippet": "# 2026-05-04 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-05-01.md, 2026-05-02.md, 2026-05-03.md - **May 1-3:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes and existing quant summaries already preserved there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-04-25.md - Existing review/distillation markers remain in place across the older dated logs. - `2026-04-25.md` is itself a memory-review summary and did not surface any missing durable facts. - Earlier spot chec",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4686368942260742,
+      "maxScore": 0.4686368942260742,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "1-3",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "review/distillation",
+        "memory-review",
+        "review",
+        "automated"
+      ]
+    },
+    "memory:memory/2026-05-15.md:1:26": {
+      "key": "memory:memory/2026-05-15.md:1:26",
+      "path": "memory/2026-05-15.md",
+      "startLine": 1,
+      "endLine": 26,
+      "source": "memory",
+      "snippet": "# 2026-05-15 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-05-12.md, 2026-05-13.md, 2026-05-14.md - **May 12-14:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes and existing quant summaries already preserved there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-05-07.md - Remaining dated logs in that older range are already reviewed/distilled or are themselves memory-review summaries. - `2026-05-07.md` is itself a memory-review summary and did not surface any missing",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4675167083740234,
+      "maxScore": 0.4675167083740234,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "12-14",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "reviewed/distilled",
+        "memory-review",
+        "review",
+        "automated"
+      ]
+    },
+    "memory:memory/2026-05-14.md:1:26": {
+      "key": "memory:memory/2026-05-14.md:1:26",
+      "path": "memory/2026-05-14.md",
+      "startLine": 1,
+      "endLine": 26,
+      "source": "memory",
+      "snippet": "# 2026-05-14 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-05-11.md, 2026-05-12.md, 2026-05-13.md - **May 11-13:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes and existing quant summaries already preserved there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-05-06.md - Remaining dated logs in that older range are already reviewed/distilled or are themselves memory-review summaries. - `2026-05-06.md` is itself a memory-review summary and did not surface any missing",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4663164764642715,
+      "maxScore": 0.4663164764642715,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "11-13",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "reviewed/distilled",
+        "memory-review",
+        "review",
+        "automated"
+      ]
+    },
+    "memory:memory/2026-05-08.md:1:24": {
+      "key": "memory:memory/2026-05-08.md:1:24",
+      "path": "memory/2026-05-08.md",
+      "startLine": 1,
+      "endLine": 24,
+      "source": "memory",
+      "snippet": "# 2026-05-08 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-05-05.md, 2026-05-06.md, 2026-05-07.md - **May 5-7:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes and existing quant summaries already preserved there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-04-30.md - Remaining dated logs in that older range are already reviewed/distilled or are themselves memory-review summaries. - `2026-04-30.md` is itself a memory-review summary and did not surface any missing d",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4662906497716903,
+      "maxScore": 0.4662906497716903,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "5-7",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "reviewed/distilled",
+        "memory-review",
+        "review",
+        "automated"
+      ]
+    },
+    "memory:memory/2026-05-01.md:1:24": {
+      "key": "memory:memory/2026-05-01.md:1:24",
+      "path": "memory/2026-05-01.md",
+      "startLine": 1,
+      "endLine": 24,
+      "source": "memory",
+      "snippet": "# 2026-05-01 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-04-28.md, 2026-04-29.md, 2026-04-30.md - **Apr 28-30:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes already captured there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-04-23.md - Existing review/distillation markers remain in place across the older dated logs. - `2026-04-23.md` already contained the durable Apr 23 memory-search, TUI watchdog, dsp01, and patch-automation notes that are preserved in `MEMOR",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.46538823843002314,
+      "maxScore": 0.46538823843002314,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "28-30",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "review/distillation",
+        "memory-search",
+        "patch-automation",
+        "review"
+      ]
+    },
+    "memory:memory/2026-05-16.md:1:26": {
+      "key": "memory:memory/2026-05-16.md:1:26",
+      "path": "memory/2026-05-16.md",
+      "startLine": 1,
+      "endLine": 26,
+      "source": "memory",
+      "snippet": "# 2026-05-16 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-05-13.md, 2026-05-14.md, 2026-05-15.md - **May 13-15:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes and existing quant summaries already preserved there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-05-08.md - Remaining dated logs in that older range are already reviewed/distilled or are themselves memory-review summaries. - `2026-05-08.md` is itself a memory-review summary and did not surface any missing",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4652271032333374,
+      "maxScore": 0.4652271032333374,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "13-15",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "reviewed/distilled",
+        "memory-review",
+        "review",
+        "automated"
+      ]
+    },
+    "memory:memory/2026-05-03.md:1:24": {
+      "key": "memory:memory/2026-05-03.md:1:24",
+      "path": "memory/2026-05-03.md",
+      "startLine": 1,
+      "endLine": 24,
+      "source": "memory",
+      "snippet": "# 2026-05-03 — Daily Memory Review (Automated, 1:00 AM CDT) ## Memory Maintenance Summary **Recent daily logs reviewed:** 2026-04-30.md, 2026-05-01.md, 2026-05-02.md - **Apr 30-May 2:** Re-checks were consistent. No additional durable project, infrastructure, or quant changes needed promotion into `MEMORY.md` beyond the Apr 23 infrastructure notes already captured there. **Older daily logs checked for purge/review status (older than 7 days):** through 2026-04-25.md - Existing review/distillation markers remain in place across the older dated logs. - `2026-04-25.md` is itself a memory-review summary and did not surface any missing durable facts. - Earlier spot checks on the non-review logs",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4651242762804031,
+      "maxScore": 0.4651242762804031,
+      "firstRecalledAt": "2026-05-28T12:52:09.691Z",
+      "lastRecalledAt": "2026-05-28T12:52:09.691Z",
+      "queryHashes": [
+        "893a6ab7dab7"
+      ],
+      "recallDays": [
+        "2026-05-28"
+      ],
+      "conceptTags": [
+        "30-may",
+        "re-checks",
+        "memory.md",
+        "purge/review",
+        "review/distillation",
+        "memory-review",
+        "non-review",
+        "review"
       ]
     }
   }
