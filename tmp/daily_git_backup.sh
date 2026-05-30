@@ -1,55 +1,51 @@
 #!/usr/bin/env bash
 set -euo pipefail
-K8S_REPO=/home/aheinen/.openclaw/workspace/k8s-2025
-WS_REPO=/home/aheinen/.openclaw/workspace
-SRC_CFG=/home/aheinen/.openclaw/openclaw.json
-DST_CFG=/home/aheinen/.openclaw/workspace/backups/openclaw.json
 
-k8s_before=$(git -C "$K8S_REPO" rev-parse HEAD)
-k8s_updated=no
-pull_rc=0
-pull_output=$(git -C "$K8S_REPO" pull --ff-only 2>&1) || pull_rc=$?
-if [ "$pull_rc" -ne 0 ]; then
-  case "$pull_output" in
-    *"Could not resolve host"*|*"Connection timed out"*|*"Operation timed out"*|*"Failed to connect"*|*"Connection reset"*|*"TLS handshake timeout"*|*"The requested URL returned error: 5"*|*"remote end hung up unexpectedly"*|*"HTTP code = 5"*|*"server error"*)
-      sleep 5
-      git -C "$K8S_REPO" pull --ff-only
-      ;;
-    *)
-      printf '%s\n' "$pull_output" >&2
-      exit "$pull_rc"
-      ;;
-  esac
-fi
-k8s_after=$(git -C "$K8S_REPO" rev-parse HEAD)
-[ "$k8s_before" != "$k8s_after" ] && k8s_updated=yes || true
-
-python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py "$SRC_CFG" "$DST_CFG"
-backup_refreshed=yes
-
-cd "$WS_REPO"
-git add -A
-post_status=$(git status --porcelain)
-workspace_changes=no
-commit_hash=
-if [ -n "$post_status" ]; then
-  workspace_changes=yes
-  msg="backup: refresh redacted config and daily maintenance"
-  git commit -m "$msg"
-  commit_hash=$(git rev-parse --short HEAD)
-  push_rc=0
-  push_output=$(git push 2>&1) || push_rc=$?
-  if [ "$push_rc" -ne 0 ]; then
-    case "$push_output" in
-      *"Could not resolve host"*|*"Connection timed out"*|*"Operation timed out"*|*"Failed to connect"*|*"Connection reset"*|*"TLS handshake timeout"*|*"The requested URL returned error: 5"*|*"remote end hung up unexpectedly"*|*"HTTP code = 5"*|*"server error"*)
-        sleep 5
-        git push
-        ;;
-      *)
-        printf '%s\n' "$push_output" >&2
-        exit "$push_rc"
-        ;;
-    esac
+updated_k8s=no
+pull_out=$(mktemp)
+if git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only >"$pull_out" 2>&1; then
+  :
+else
+  if grep -Eqi 'timed out|timeout|temporary failure|could not resolve host|connection reset|connection timed out|remote end hung up|502|503|504|TLS|network|Connection closed by remote host' "$pull_out"; then
+    sleep 5
+    git -C /home/aheinen/.openclaw/workspace/k8s-2025 pull --ff-only >>"$pull_out" 2>&1
+  else
+    cat "$pull_out"
+    exit 1
   fi
 fi
-printf 'K8S_UPDATED=%s\nBACKUP_REFRESHED=%s\nWORKSPACE_CHANGES=%s\nCOMMIT_HASH=%s\n' "$k8s_updated" "$backup_refreshed" "$workspace_changes" "$commit_hash"
+if grep -q 'Already up to date\.' "$pull_out"; then
+  updated_k8s=no
+else
+  updated_k8s=yes
+fi
+printf 'K8S_UPDATED=%s\n' "$updated_k8s"
+cat "$pull_out"
+
+python3 /home/aheinen/.openclaw/workspace/scripts/redact_openclaw_config.py /home/aheinen/.openclaw/openclaw.json /home/aheinen/.openclaw/workspace/backups/openclaw.json
+printf 'BACKUP_REFRESHED=yes\n'
+
+cd /home/aheinen/.openclaw/workspace
+git add -A
+if git diff --cached --quiet; then
+  printf 'WORKSPACE_CHANGED=no\n'
+else
+  printf 'WORKSPACE_CHANGED=yes\n'
+  msg="Daily backup $(date +%F)"
+  git commit -m "$msg"
+  commit_hash=$(git rev-parse --short HEAD)
+  printf 'COMMIT_HASH=%s\n' "$commit_hash"
+  push_out=$(mktemp)
+  if git push >"$push_out" 2>&1; then
+    :
+  else
+    if grep -Eqi 'timed out|timeout|temporary failure|could not resolve host|connection reset|connection timed out|remote end hung up|502|503|504|TLS|network|Connection closed by remote host' "$push_out"; then
+      sleep 5
+      git push >>"$push_out" 2>&1
+    else
+      cat "$push_out"
+      exit 1
+    fi
+  fi
+  cat "$push_out"
+fi

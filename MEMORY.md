@@ -28,7 +28,6 @@
 - **OpenClaw memory search repair (Apr 23):** `memory_search` on clawdbot.lan had silently broken because embeddings auto-selected Bedrock without a working AWS credential chain. Switched embeddings to the local provider, let the local model download, forced a full reindex, and verified semantic memory search was healthy again.
 - **OpenClaw TUI watchdog regression (Apr 23):** The `streaming watchdog: no stream updates for 30s` warning appears to be a TUI-side bug. It likely refreshes only on visible chat deltas instead of any active-run progress signal (tool events, lifecycle events, quiet deltas). Preferred first move is update/restart OpenClaw before carrying a local patch.
 - **dsp01 kiosk monitor fix (Apr 23):** Fixed PIR/X11 monitor state detection in the live script and in `k8s-2025/ansible/roles/dsp01/files/monitor_control.py`; committed in `k8s-2025` as `2edacd9` (`Fix dsp01 PIR monitor state detection on X11`).
-- **Patch automation follow-up (Apr 23):** Next infrastructure review on deck is `k8s-2025` inventory plus AWX patch automation, so every patchable SSH-reachable host can be patched daily with reboot detection and workload-aware reboot orchestration.
 
 ## Quant Backtest (siloed-quant-repo)
 - **Rotation strategy:** Weekly MA150 inflation guard, 1994–present. ~12.39% CAGR / 0.73 Sharpe / -55.2% MaxDD / +187 bps over SPY. Publication-ready paper: STRATEGY_PAPER.md (enhanced Mar 28 with updated metrics + ASCII decision flowchart).
@@ -39,7 +38,7 @@
 
 ## Memory Housekeeping
 - Daily logs in `memory/YYYY-MM-DD.md`. Reviewed/distilled into this file periodically. Purge at 30 days.
-- Review status (as of 2026-05-29): newest daily logs reviewed are `2026-05-28`, `2026-05-27`, and `2026-05-26`; those re-checks added no new durable project, infrastructure, or quant facts beyond the Apr 23 items already captured above.
-- Older-than-7-days status: remaining dated logs through `2026-05-21` have already been reviewed/distilled or are themselves memory-review summaries. The older dated range on disk still does not appear to be hiding any neglected durable facts.
-- Purge status: `memory/2026-04-28.md` was re-checked and deleted on 2026-05-29 because it was older than 30 days and already fully distilled; `memory/2026-04-29.md` is now the oldest remaining dated file on disk.
+- Review status (as of 2026-05-30): newest daily logs reviewed are `2026-05-29`, `2026-05-28`, and `2026-05-27`; those re-checks added no new durable project, infrastructure, or quant facts beyond the Apr 23 items already captured above.
+- Older-than-7-days status: remaining dated logs through `2026-05-22` have already been reviewed/distilled or are themselves memory-review summaries. The older dated range on disk still does not appear to be hiding any neglected durable facts.
+- Purge status: `memory/2026-04-29.md` was re-checked and deleted on 2026-05-30 because it was older than 30 days and already fully distilled; `memory/2026-04-30.md` is now the oldest remaining dated file on disk.
 - Other tracking: `memory/budget.md`, `memory/error-log.md`, `memory/k8s-2025-overview.md`
