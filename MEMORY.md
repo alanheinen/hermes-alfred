@@ -38,7 +38,7 @@
 
 ## Memory Housekeeping
 - Daily logs in `memory/YYYY-MM-DD.md`. Reviewed/distilled into this file periodically. Purge at 30 days.
-- Review status (as of 2026-07-02): newest daily logs reviewed are `2026-07-01`, `2026-06-30`, and `2026-06-29`; those re-checks added no new durable project, infrastructure, or quant facts beyond the Apr 23 items already captured above.
-- Older-than-7-days status: remaining dated logs through `2026-06-24` have already been reviewed/distilled or are themselves memory-review summaries. No missing durable facts surfaced from that older reviewed range.
-- Purge status: `memory/2026-06-01.md` was re-checked and deleted on 2026-07-02 because it was older than 30 days and already fully distilled; `memory/2026-06-02.md` is now the oldest remaining dated file on disk.
+- Review status (as of 2026-07-03): newest daily logs reviewed are `2026-07-02`, `2026-07-01`, and `2026-06-30`; those re-checks added no new durable project, infrastructure, or quant facts beyond the Apr 23 items already captured above.
+- Older-than-7-days status: remaining dated logs through `2026-06-25` have already been reviewed/distilled or are themselves memory-review summaries. No missing durable facts surfaced from that older reviewed range.
+- Purge status: `memory/2026-06-02.md` was re-checked and deleted on 2026-07-03 because it was older than 30 days and already fully distilled; `memory/2026-06-04.md` is now the oldest remaining dated file on disk.
 - Other tracking: `memory/budget.md`, `memory/error-log.md`, `memory/k8s-2025-overview.md`
