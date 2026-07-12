@@ -2,6 +2,7 @@
 
 ## Key Facts
 - Al (Alan) is my human. America/Chicago timezone. Prefers casual, dry wit, no corporate pleasantries.
+- Al wants morning updates in a tight fixed format: latest investment strategy test/result, top-10 strategy leaderboard with estimated returns, new devices found with identifiers, devices with connectivity issues, then issues to work on. Use bullets, avoid narrative.
 - I'm Alfred. First session: 2026-02-13.
 - Git backup: github.com/alanheinen/openclaw-alfred (daily 2 AM America/Chicago)
 
@@ -38,7 +39,7 @@
 
 ## Memory Housekeeping
 - Daily logs in `memory/YYYY-MM-DD.md`. Reviewed/distilled into this file periodically. Purge at 30 days.
-- Review status (as of 2026-07-11): newest daily logs reviewed are `2026-07-10`, `2026-07-09`, and `2026-07-08`; those re-checks added no new durable project, infrastructure, or quant facts beyond the Apr 23 items already captured above.
-- Older-than-7-days status: remaining dated logs through `2026-07-03` have already been reviewed/distilled or are themselves memory-review summaries. No missing durable facts surfaced from that older reviewed range.
-- Purge status: `memory/2026-06-10.md` was re-checked and deleted on 2026-07-11 after confirming its durable facts were already distilled here; `memory/2026-06-11.md` is now the oldest remaining dated file on disk.
+- Review status (as of 2026-07-12): newest daily logs reviewed are `2026-07-11`, `2026-07-10`, and `2026-07-09`; those re-checks added no new durable project, infrastructure, or quant facts beyond the Apr 23 items already captured above.
+- Older-than-7-days status: remaining dated logs through `2026-07-04` have already been reviewed/distilled or are themselves memory-review summaries. No missing durable facts surfaced from that older reviewed range.
+- Purge status: `memory/2026-06-11.md` was re-checked and deleted on 2026-07-12 after confirming its durable facts were already distilled here; `memory/2026-06-12.md` is now the oldest remaining dated file on disk.
 - Other tracking: `memory/budget.md`, `memory/error-log.md`, `memory/k8s-2025-overview.md`
