@@ -233,7 +233,7 @@
   "gateway": {
     "port": 18789,
     "mode": "local",
-    "bind": "loopback",
+    "bind": "lan",
     "auth": {
       "mode": "token",
       "token": "REDACTED"
@@ -241,6 +241,12 @@
     "tailscale": {
       "mode": "off",
       "resetOnExit": false
+    },
+    "controlUi": {
+      "allowedOrigins": [
+        "http://172.16.1.185:18789",
+        "http://clawdbot.lan:18789"
+      ]
     },
     "nodes": {
       "denyCommands": [
