@@ -160,3 +160,11 @@ custom_providers:
   base_url: http://172.16.1.16:11434
   api_key: REDACTED
   api_mode: chat_completions
+  models:
+  - qwen3.5:27b
+  - gemma4:e4b
+  - gemma4:26b
+  - gemma4:31b
+  - llama3.1:8b
+  - mistral:latest
+  - gemma3:latest
