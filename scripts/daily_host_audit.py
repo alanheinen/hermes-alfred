@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect bounded, read-only log, security, and patch evidence from AWX hosts."""
+"""Collect bounded, non-remediating log, security, and patch evidence from AWX hosts."""
 
 from __future__ import annotations
 
@@ -29,6 +29,7 @@ JSON_OUTPUT = OUTPUT_DIR / "host-audit-latest.json"
 MD_OUTPUT = OUTPUT_DIR / "host-audit-latest.md"
 STALE_DAYS = 14
 MAX_WORKERS = 8
+REMOTE_EXEC_TIMEOUT = 480
 
 EXPECTED_DENIED = {
     "homeassistant.lan",
@@ -50,87 +51,8 @@ EXPECTED_NO_SSH = {
 }
 EXPECTED_EXCLUSIONS = EXPECTED_DENIED | EXPECTED_NO_SSH
 
-REMOTE_CODE = r'''
-import datetime as dt
-import glob
-import gzip
-import json
-import os
-import pathlib
-import subprocess
-
-
-def run(argv, limit=120, timeout=25):
-    try:
-        p = subprocess.run(argv, text=True, capture_output=True, timeout=timeout)
-        lines = (p.stdout + ("\n" + p.stderr if p.stderr else "")).splitlines()
-        return {"rc": p.returncode, "lines": lines[-limit:]}
-    except Exception as exc:
-        return {"rc": 255, "lines": [f"collector error: {type(exc).__name__}: {exc}"]}
-
-
-def read_apt_history():
-    rows = []
-    mtimes = []
-    for name in glob.glob("/var/log/apt/history.log*"):
-        try:
-            mtimes.append(os.path.getmtime(name))
-            opener = gzip.open if name.endswith(".gz") else open
-            with opener(name, "rt", errors="replace") as handle:
-                rows.extend(
-                    line.rstrip() for line in handle
-                    if line.startswith(("Start-Date:", "End-Date:", "Commandline:", "Upgrade:", "Install:"))
-                )
-        except OSError:
-            pass
-    return rows[-100:], max(mtimes, default=None)
-
-os_release = {}
-try:
-    for line in pathlib.Path("/etc/os-release").read_text(errors="replace").splitlines():
-        if "=" in line:
-            key, value = line.split("=", 1)
-            os_release[key] = value.strip().strip('"')
-except OSError:
-    pass
-
-apt_history, apt_history_mtime = read_apt_history()
-package_manager = "apt" if pathlib.Path("/usr/bin/apt").exists() else "dnf" if pathlib.Path("/usr/bin/dnf").exists() else "unknown"
-if package_manager == "apt":
-    pending = run(["apt", "list", "--upgradable"], limit=220)
-    pending_lines = [line for line in pending["lines"] if "/" in line and not line.startswith("Listing")]
-    pending_count = len(pending_lines)
-    pending_sample = pending_lines[:20]
-elif package_manager == "dnf":
-    pending = run(["dnf", "-q", "check-update"], limit=220)
-    pending_lines = [line for line in pending["lines"] if line and not line.startswith(("Last metadata", "Obsoleting"))]
-    pending_count = len(pending_lines)
-    pending_sample = pending_lines[:20]
-else:
-    pending_count = None
-    pending_sample = []
-
-result = {
-    "collected_at": dt.datetime.now(dt.timezone.utc).isoformat(),
-    "hostname": run(["hostname", "-f"], limit=3)["lines"],
-    "os": {"id": os_release.get("ID"), "version": os_release.get("VERSION_ID"), "pretty": os_release.get("PRETTY_NAME")},
-    "kernel": run(["uname", "-r"], limit=3)["lines"],
-    "boot": run(["uptime", "-s"], limit=3)["lines"],
-    "package_manager": package_manager,
-    "apt_history": apt_history,
-    "last_patch_epoch": apt_history_mtime,
-    "pending_updates": pending_count,
-    "pending_sample": pending_sample,
-    "reboot_required": pathlib.Path("/var/run/reboot-required").exists(),
-    "failed_units": run(["systemctl", "--failed", "--no-legend", "--plain"], limit=50),
-    "journal_warnings": run(["journalctl", "--since", "24 hours ago", "-p", "0..4", "--no-pager", "-o", "short-iso", "-n", "160"], limit=160),
-    "auth_log": run(["journalctl", "--since", "24 hours ago", "-u", "ssh", "-u", "sshd", "--no-pager", "-o", "short-iso", "-n", "180"], limit=180),
-    "kernel_warnings": run(["journalctl", "-k", "--since", "24 hours ago", "-p", "0..4", "--no-pager", "-o", "short-iso", "-n", "100"], limit=100),
-    "disk": run(["df", "-P", "-x", "tmpfs", "-x", "devtmpfs"], limit=80),
-    "listeners": run(["ss", "-lntupH"], limit=120),
-}
-print(json.dumps(result))
-'''
+REMOTE_CODE_PATH = Path(__file__).with_name("host_audit_remote.py")
+REMOTE_CODE = REMOTE_CODE_PATH.read_text()
 REMOTE_PAYLOAD = base64.b64encode(REMOTE_CODE.encode()).decode()
 
 SECRET_RE = re.compile(
@@ -233,7 +155,8 @@ def audit_host(host: dict[str, Any], known_hosts: str) -> dict[str, Any]:
         commands.append(["python3", "-c", remote_python])
         for remote_command in commands:
             run = subprocess.run(
-                base + [shlex.join(remote_command)], text=True, capture_output=True, timeout=75
+                base + [shlex.join(remote_command)], text=True, capture_output=True,
+                timeout=REMOTE_EXEC_TIMEOUT,
             )
             if run.returncode:
                 failures.append(redact_line(run.stderr.strip().splitlines()[-1] if run.stderr.strip() else "audit command failed"))
@@ -252,7 +175,10 @@ def summarize_host(
     name: str, target: str, port: str, user: str, privileged: bool, evidence: dict[str, Any]
 ) -> dict[str, Any]:
     def lines(key: str) -> list[str]:
-        return [redact_line(line) for line in evidence.get(key, {}).get("lines", []) if line.strip()]
+        value = evidence.get(key, {})
+        if not isinstance(value, dict) or value.get("status") in {"error", "unavailable"}:
+            return []
+        return [redact_line(line) for line in value.get("lines", []) if line.strip()]
 
     auth = lines("auth_log")
     failures = [line for line in auth if AUTH_FAILURE_RE.search(line)]
@@ -264,6 +190,54 @@ def summarize_host(
         line for line in lines("failed_units")
         if "0 loaded units listed" not in line and "UNIT LOAD ACTIVE SUB DESCRIPTION" not in line
     ]
+    package_result = evidence.get("package_audit", {})
+    package_unknown = (
+        isinstance(package_result, dict)
+        and package_result.get("status") in {"error", "unavailable"}
+    )
+    package_audit = lines("package_audit")
+    package_vulnerability_count: int | None = None if package_unknown else 0
+    package_vulnerable_package_count: int | None = None if package_unknown else 0
+    for line in package_audit:
+        match = re.search(r"(\d+) problem\(s\) in (\d+) (?:installed )?package\(s\) found", line)
+        if match:
+            package_vulnerability_count = int(match.group(1))
+            package_vulnerable_package_count = int(match.group(2))
+    unavailable_checks = sorted(
+        key
+        for key, value in evidence.items()
+        if key not in {"package_audit", "service_inventory"}
+        and isinstance(value, dict)
+        and value.get("status") == "unavailable"
+    )
+    def error_paths(value: Any, prefix: str = "") -> list[str]:
+        if not isinstance(value, dict):
+            return []
+        if value.get("status") == "error":
+            return [prefix]
+        paths: list[str] = []
+        for key, nested in value.items():
+            nested_prefix = f"{prefix}.{key}" if prefix else key
+            paths.extend(error_paths(nested, nested_prefix))
+        return paths
+
+    def nested_result(path: str) -> dict[str, Any]:
+        value: Any = evidence
+        for part in path.split("."):
+            value = value.get(part, {}) if isinstance(value, dict) else {}
+        return value if isinstance(value, dict) else {}
+
+    collection_errors = sorted(error_paths(evidence))
+    collection_error_sample = {
+        key: [redact_line(line) for line in nested_result(key).get("lines", [])[-10:] if line.strip()]
+        for key in collection_errors
+    }
+    service_result = evidence.get("service_inventory", {})
+    service_inventory_count = (
+        None
+        if isinstance(service_result, dict) and service_result.get("status") == "error"
+        else len(lines("service_inventory"))
+    )
     disk_high: list[str] = []
     for line in lines("disk"):
         fields = line.split()
@@ -292,8 +266,15 @@ def summarize_host(
         "patch_age_days": patch_age_days,
         "pending_updates": evidence.get("pending_updates"),
         "pending_sample": [redact_line(x) for x in evidence.get("pending_sample", [])[:10]],
-        "reboot_required": bool(evidence.get("reboot_required")),
+        "reboot_required": evidence.get("reboot_required"),
         "failed_units": failed_units[:20],
+        "unavailable_checks": unavailable_checks,
+        "collection_errors": collection_errors,
+        "collection_error_sample": collection_error_sample,
+        "package_vulnerability_count": package_vulnerability_count,
+        "package_vulnerable_package_count": package_vulnerable_package_count,
+        "package_audit_sample": package_audit[-40:],
+        "service_inventory_count": service_inventory_count,
         "disk_high": disk_high[:20],
         "journal_warning_count": len(warnings),
         "journal_warning_sample": warnings[-30:],
@@ -402,6 +383,22 @@ def write_markdown(report: dict[str, Any]) -> None:
     uncovered = [name for name, schedules in report["awx_patch"]["enabled_coverage"].items() if not schedules]
     auth = [f"{host['name']}={host['auth_failure_count']}" for host in reachable if host["auth_failure_count"]]
     units = [host["name"] for host in reachable if host["failed_units"]]
+    package_vulnerabilities = [
+        f"{host['name']}={host.get('package_vulnerability_count', 0)} in "
+        f"{host.get('package_vulnerable_package_count', 0)} packages"
+        for host in reachable
+        if host.get("package_vulnerability_count")
+    ]
+    unavailable = [
+        f"{host['name']}={','.join(host.get('unavailable_checks', []))}"
+        for host in reachable
+        if host.get("unavailable_checks")
+    ]
+    collection_errors = [
+        f"{host['name']}={','.join(host.get('collection_errors', []))}"
+        for host in reachable
+        if host.get("collection_errors")
+    ]
     disks = [host["name"] for host in reachable if host["disk_high"]]
     reboots = [host["name"] for host in reachable if host["reboot_required"]]
 
@@ -416,6 +413,9 @@ def write_markdown(report: dict[str, Any]) -> None:
         f"- No enabled AWX patch schedule coverage: {', '.join(sorted(uncovered)) or 'none'}",
         f"- Reboot required: {', '.join(reboots) or 'none'}",
         f"- Failed systemd units: {', '.join(units) or 'none'}",
+        f"- Package vulnerabilities: {', '.join(package_vulnerabilities) or 'none'}",
+        f"- Unavailable platform-specific checks: {', '.join(unavailable) or 'none'}",
+        f"- Collection errors: {', '.join(collection_errors) or 'none'}",
         f"- Filesystems at least 90% full: {', '.join(disks) or 'none'}",
         f"- SSH authentication failures in 24h: {', '.join(auth) or 'none'}",
         "",
