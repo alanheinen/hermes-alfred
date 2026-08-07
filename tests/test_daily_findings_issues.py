@@ -99,20 +99,25 @@ class DailyFindingsIssuesTests(unittest.TestCase):
 
     def test_validation_rejects_run_specific_ids_and_missing_reproducible_commands(self):
         module = load_module()
-        bad = {
-            "finding_id": "host:frigate.lan:pending-reboot-2026-08-07",
-            "workflow_label": "needs-remediation",
-            "title": "Frigate requires a reboot",
-            "what": "Reboot required.",
-            "collected_at": "2026-08-07 07:12 CDT",
-            "evidence": [{"command": "", "output": "yes"}],
-            "why_it_matters": "Kernel fixes are inactive.",
-            "suggested_remediation": "Reboot through AWX.",
-            "blast_radius": "Recording interruption.",
-        }
+        for finding_id in (
+            "host:frigate.lan:pending-reboot-2026-08-07",
+            "host:frigate.lan:pending-reboot-20260807",
+        ):
+            bad = {
+                "finding_id": finding_id,
+                "workflow_label": "needs-remediation",
+                "title": "Frigate requires a reboot",
+                "what": "Reboot required.",
+                "collected_at": "2026-08-07 07:12 CDT",
+                "evidence": [{"command": "", "output": "yes"}],
+                "why_it_matters": "Kernel fixes are inactive.",
+                "suggested_remediation": "Reboot through AWX.",
+                "blast_radius": "Recording interruption.",
+            }
 
-        with self.assertRaisesRegex(ValueError, "stable finding_id"):
-            module.validate_finding(bad)
+            with self.subTest(finding_id=finding_id):
+                with self.assertRaisesRegex(ValueError, "stable finding_id"):
+                    module.validate_finding(bad)
 
     def test_open_issue_with_same_id_is_updated_in_place_without_commenting_still_present(self):
         module = load_module()

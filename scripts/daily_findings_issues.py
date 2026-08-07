@@ -17,7 +17,10 @@ from pathlib import Path
 REPORTER_MARKER = "<!-- reporter: hermes-daily-ops -->"
 WORKFLOW_LABELS = {"needs-remediation", "awaiting-operator", "blocked"}
 FINDING_ID_RE = re.compile(r"^[a-z0-9][a-z0-9.-]*:[a-z0-9][a-z0-9._-]*:[a-z0-9][a-z0-9._-]*$")
-RUN_SPECIFIC_RE = re.compile(r"(?:^|[-_:])(?:20\d{2}(?:[-_]\d{1,2})?|run[-_]?\d+)(?:$|[-_:])", re.IGNORECASE)
+RUN_SPECIFIC_RE = re.compile(
+    r"(?:^|[-_:])(?:20\d{6}|20\d{2}(?:[-_]\d{1,2})?|run[-_]?\d+)(?:$|[-_:])",
+    re.IGNORECASE,
+)
 
 
 class GitHubClient:
