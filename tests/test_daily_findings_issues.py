@@ -313,15 +313,20 @@ class DailyFindingsIssuesTests(unittest.TestCase):
                 {"complete": True, "findings": [finding], "resolutions": [resolution]}
             )
 
-    def test_validation_rejects_non_boolean_complete_and_non_list_labels(self):
+    def test_validation_rejects_non_boolean_complete_and_malformed_containers(self):
         module = load_module()
         finding = sample_finding()
-        finding["labels"] = "severity:medium"
 
         with self.assertRaisesRegex(ValueError, "complete must be boolean"):
             module.validate_payload({"complete": "false", "collection_failure": finding})
-        with self.assertRaisesRegex(ValueError, "labels must be a list"):
-            module.validate_finding(finding)
+        for labels in ("severity:medium", ["severity:medium", ""]):
+            with self.subTest(labels=labels):
+                with self.assertRaisesRegex(ValueError, "labels must be a list of nonempty strings"):
+                    module.validate_finding(dict(finding, labels=labels))
+        with self.assertRaisesRegex(ValueError, "findings must be a list"):
+            module.validate_payload({"complete": True, "findings": {}, "resolutions": []})
+        with self.assertRaisesRegex(ValueError, "evidence items must be objects"):
+            module.validate_finding(dict(finding, evidence=["not-an-object"]))
 
     def test_reconcile_refuses_to_adopt_another_reporters_marker(self):
         module = load_module()

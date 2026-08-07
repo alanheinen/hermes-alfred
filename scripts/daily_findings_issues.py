@@ -95,14 +95,18 @@ def load_token() -> str:
 
 
 def validate_finding(finding: dict) -> None:
+    if not isinstance(finding, dict):
+        raise ValueError("finding items must be objects")
     finding_id = finding.get("finding_id", "")
     if not FINDING_ID_RE.fullmatch(finding_id) or RUN_SPECIFIC_RE.search(finding_id):
         raise ValueError(f"stable finding_id required: {finding_id!r}")
     if finding.get("workflow_label") not in WORKFLOW_LABELS:
         raise ValueError("exactly one valid workflow_label is required")
     labels = finding.get("labels", [])
-    if not isinstance(labels, list) or any(not isinstance(label, str) for label in labels):
-        raise ValueError("labels must be a list of strings")
+    if not isinstance(labels, list) or any(
+        not isinstance(label, str) or not label.strip() for label in labels
+    ):
+        raise ValueError("labels must be a list of nonempty strings")
     extra_workflow_labels = WORKFLOW_LABELS.intersection(labels)
     if extra_workflow_labels:
         raise ValueError("exactly one workflow label is allowed")
@@ -120,11 +124,15 @@ def validate_finding(finding: dict) -> None:
     if not isinstance(evidence, list) or not evidence:
         raise ValueError("reproducible evidence is required")
     for item in evidence:
+        if not isinstance(item, dict):
+            raise ValueError("evidence items must be objects")
         if not str(item.get("command", "")).strip() or not str(item.get("output", "")).strip():
             raise ValueError("every evidence item requires command and output")
 
 
 def validate_resolution(resolution: dict) -> None:
+    if not isinstance(resolution, dict):
+        raise ValueError("resolution items must be objects")
     finding_id = resolution.get("finding_id", "")
     if not FINDING_ID_RE.fullmatch(finding_id) or RUN_SPECIFIC_RE.search(finding_id):
         raise ValueError(f"stable finding_id required: {finding_id!r}")
@@ -136,6 +144,8 @@ def validate_resolution(resolution: dict) -> None:
     if not isinstance(evidence, list) or not evidence:
         raise ValueError("resolution evidence is required")
     for item in evidence:
+        if not isinstance(item, dict):
+            raise ValueError("resolution evidence items must be objects")
         if not str(item.get("command", "")).strip() or not str(item.get("output", "")).strip():
             raise ValueError("every resolution evidence item requires command and output")
 
@@ -253,11 +263,17 @@ def render_issue_body(finding: dict) -> str:
 
 
 def validate_payload(payload: dict) -> dict[str, int]:
+    if not isinstance(payload, dict):
+        raise ValueError("payload must be an object")
     if not isinstance(payload.get("complete"), bool):
         raise ValueError("complete must be boolean")
     if payload.get("complete"):
         findings = payload.get("findings", [])
         resolutions = payload.get("resolutions", [])
+        if not isinstance(findings, list):
+            raise ValueError("findings must be a list")
+        if not isinstance(resolutions, list):
+            raise ValueError("resolutions must be a list")
         for finding in findings:
             validate_finding(finding)
         for resolution in resolutions:
