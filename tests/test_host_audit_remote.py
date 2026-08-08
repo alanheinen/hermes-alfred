@@ -187,18 +187,75 @@ class DailyCollectorIntegrationTests(unittest.TestCase):
 
 
 class LinuxCollectionTests(unittest.TestCase):
-    def test_truenas_does_not_invoke_disabled_package_manager(self):
+    def test_truenas_uses_midclt_without_apt_or_fictitious_patch_age(self):
         module = load_module()
         setattr(module, "read_os_release", lambda: {"ID": "truenas", "PRETTY_NAME": "TrueNAS"})
-        runner = FakeRunner({})
+        runner = FakeRunner({
+            ("midclt", "call", "system.info"): {
+                "rc": 0,
+                "lines": ['{"version":"26.0.0-MASTER+20260806-020140"}'],
+            },
+            ("midclt", "call", "update.status"): {
+                "rc": 0,
+                "lines": ['{"code":"NORMAL","error":null,"status":{"current_version":{"train":"TrueNAS-26-Nightlies","profile":"DEVELOPER","matches_profile":true},"new_version":{"version":"26.0.0-MASTER+20260808-020148"}}}'],
+            },
+            ("midclt", "call", "update.available_versions"): {
+                "rc": 0,
+                "lines": ['[{"train":"TrueNAS-26-Nightlies","version":{"version":"26.0.0-MASTER+20260808-020148"}}]'],
+            },
+        })
 
         result = module.collect_linux(run_command=runner)
+        daily = load_path("daily_host_audit_truenas", DAILY_MODULE_PATH)
+        summary = daily.summarize_host("nas.lan", "172.16.1.9", "22", "root", True, result)
 
-        self.assertIsNone(result["pending_updates"])
-        self.assertEqual(result["update_check"]["status"], "unavailable")
+        self.assertEqual(result["pending_updates"], 1)
+        self.assertEqual(result["update_check"]["status"], "success")
+        self.assertEqual(result["appliance_update"]["current_train"], "TrueNAS-26-Nightlies")
+        self.assertEqual(result["appliance_update"]["current_version"], "26.0.0-MASTER+20260806-020140")
+        self.assertEqual(result["appliance_update"]["new_version"], "26.0.0-MASTER+20260808-020148")
+        self.assertEqual(result["last_patch_epoch"], None)
+        self.assertEqual(result["apt_history"], [])
+        self.assertIsNone(result["reboot_required"])
+        self.assertIsNone(summary["patch_age_days"])
+        self.assertEqual(summary["appliance_update"], result["appliance_update"])
         invoked = {command[0] for command in runner.commands}
+        self.assertIn("midclt", invoked)
         self.assertNotIn("apt", invoked)
         self.assertNotIn("dnf", invoked)
+
+    def test_truenas_malformed_or_error_update_payload_fails_closed(self):
+        module = load_module()
+        setattr(module, "read_os_release", lambda: {"ID": "truenas", "PRETTY_NAME": "TrueNAS"})
+        malformed = FakeRunner({
+            ("midclt", "call", "system.info"): {"rc": 0, "lines": ["{}"]},
+            ("midclt", "call", "update.status"): {"rc": 0, "lines": ["{}"]},
+            ("midclt", "call", "update.available_versions"): {"rc": 0, "lines": ["[]"]},
+        })
+
+        malformed_result = module.collect_linux(run_command=malformed)
+
+        self.assertIsNone(malformed_result["pending_updates"])
+        self.assertEqual("error", malformed_result["update_check"]["status"])
+        self.assertIsNone(malformed_result["appliance_update"])
+
+        status_error = FakeRunner({
+            ("midclt", "call", "system.info"): {
+                "rc": 0,
+                "lines": ['{"version":"26.0.0"}'],
+            },
+            ("midclt", "call", "update.status"): {
+                "rc": 0,
+                "lines": ['{"code":"ERROR","error":"feed unavailable","status":{}}'],
+            },
+            ("midclt", "call", "update.available_versions"): {"rc": 0, "lines": ["[]"]},
+        })
+
+        error_result = module.collect_linux(run_command=status_error)
+
+        self.assertIsNone(error_result["pending_updates"])
+        self.assertEqual("error", error_result["update_check"]["status"])
+        self.assertIsNone(error_result["appliance_update"])
 
     def test_linux_command_failures_are_errors_not_zero_or_valid_evidence(self):
         module = load_module()

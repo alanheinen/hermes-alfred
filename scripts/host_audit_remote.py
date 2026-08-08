@@ -59,6 +59,63 @@ def first_line(result: CommandResult) -> str | None:
     return next((line.strip() for line in result.get("lines", []) if line.strip()), None)
 
 
+def parse_json_command(command: str, result: CommandResult, expected_type: type) -> tuple[Any, CommandResult | None]:
+    checked = require_success(command, result)
+    if checked.get("status") == "error":
+        return None, checked
+    payload_lines = [line.strip() for line in result.get("lines", []) if line.strip()]
+    if len(payload_lines) != 1:
+        return None, command_error(command, {"rc": result.get("rc"), "lines": ["expected exactly one JSON value"]})
+    try:
+        value = json.loads(payload_lines[0])
+    except (json.JSONDecodeError, TypeError):
+        return None, command_error(command, {"rc": result.get("rc"), "lines": ["invalid JSON response"]})
+    if not isinstance(value, expected_type):
+        return None, command_error(command, {"rc": result.get("rc"), "lines": [f"expected JSON {expected_type.__name__}"]})
+    return value, None
+
+
+def truenas_update_schema_error(
+    system_info: dict[str, Any],
+    update_status: dict[str, Any],
+    available_versions: list[Any],
+) -> str | None:
+    if not isinstance(system_info.get("version"), str) or not system_info["version"].strip():
+        return "system.info omitted current version"
+    if update_status.get("code") != "NORMAL" or update_status.get("error") is not None:
+        return "update.status reported an error"
+    status = update_status.get("status")
+    if not isinstance(status, dict):
+        return "update.status omitted status object"
+    current = status.get("current_version")
+    if not isinstance(current, dict):
+        return "update.status omitted current version metadata"
+    if not isinstance(current.get("train"), str) or not current["train"].strip():
+        return "update.status omitted current train"
+    if not isinstance(current.get("profile"), str) or not current["profile"].strip():
+        return "update.status omitted current profile"
+    if not isinstance(current.get("matches_profile"), bool):
+        return "update.status omitted profile-match state"
+    new = status.get("new_version")
+    if new is not None and (
+        not isinstance(new, dict)
+        or not isinstance(new.get("version"), str)
+        or not new["version"].strip()
+    ):
+        return "update.status returned malformed new-version metadata"
+    for row in available_versions:
+        if not isinstance(row, dict) or not isinstance(row.get("train"), str):
+            return "update.available_versions returned malformed train metadata"
+        version = row.get("version")
+        if (
+            not isinstance(version, dict)
+            or not isinstance(version.get("version"), str)
+            or not version["version"].strip()
+        ):
+            return "update.available_versions returned malformed version metadata"
+    return None
+
+
 def read_apt_history() -> tuple[list[str], float | None]:
     rows: list[str] = []
     mtimes: list[float] = []
@@ -91,7 +148,6 @@ def read_os_release() -> dict[str, str]:
 
 def collect_linux(run_command: CommandRunner) -> dict[str, Any]:
     os_release = read_os_release()
-    apt_history, apt_history_mtime = read_apt_history()
     package_manager = (
         "truenas"
         if os_release.get("ID", "").lower() == "truenas"
@@ -101,6 +157,11 @@ def collect_linux(run_command: CommandRunner) -> dict[str, Any]:
         if pathlib.Path("/usr/bin/dnf").exists()
         else "unknown"
     )
+    apt_history, apt_history_mtime = (
+        ([], None) if package_manager == "truenas" else read_apt_history()
+    )
+    appliance_update: dict[str, Any] | None = None
+    reboot_required: bool | None = pathlib.Path("/var/run/reboot-required").exists()
 
     hostname_raw = run_command(["hostname", "-f"], limit=3)
     kernel_raw = run_command(["uname", "-r"], limit=3)
@@ -139,9 +200,70 @@ def collect_linux(run_command: CommandRunner) -> dict[str, Any]:
             pending_count = len(pending_lines)
             pending_sample = pending_lines[:20]
     elif package_manager == "truenas":
-        update_check = unavailable("TrueNAS updates are managed by the appliance update service")
-        pending_count = None
-        pending_sample = []
+        reboot_required = None
+        system_info_raw = run_command(["midclt", "call", "system.info"], limit=20)
+        update_status_raw = run_command(["midclt", "call", "update.status"], limit=40)
+        available_versions_raw = run_command(
+            ["midclt", "call", "update.available_versions"], limit=80
+        )
+        system_info, system_error = parse_json_command("midclt call system.info", system_info_raw, dict)
+        update_status, status_error = parse_json_command("midclt call update.status", update_status_raw, dict)
+        available_versions, versions_error = parse_json_command(
+            "midclt call update.available_versions", available_versions_raw, list
+        )
+        update_error = system_error or status_error or versions_error
+        if not update_error:
+            assert isinstance(system_info, dict)
+            assert isinstance(update_status, dict)
+            assert isinstance(available_versions, list)
+            schema_error = truenas_update_schema_error(system_info, update_status, available_versions)
+            if schema_error:
+                update_error = command_error(
+                    "TrueNAS update evidence validation",
+                    {"rc": 0, "lines": [schema_error]},
+                )
+        if update_error:
+            update_check = update_error
+            pending_count = None
+            pending_sample = []
+        else:
+            assert isinstance(system_info, dict)
+            assert isinstance(update_status, dict)
+            assert isinstance(available_versions, list)
+            status_value = update_status.get("status")
+            status = status_value if isinstance(status_value, dict) else {}
+            current_value = status.get("current_version")
+            current = current_value if isinstance(current_value, dict) else {}
+            new_value = status.get("new_version")
+            new = new_value if isinstance(new_value, dict) else {}
+            current_version = system_info.get("version")
+            new_version = new.get("version")
+            normalized_versions = [
+                {
+                    "train": row.get("train"),
+                    "version": (row.get("version") or {}).get("version")
+                    if isinstance(row.get("version"), dict)
+                    else None,
+                }
+                for row in available_versions[:20]
+                if isinstance(row, dict)
+            ]
+            appliance_update = {
+                "current_version": current_version,
+                "current_train": current.get("train"),
+                "profile": current.get("profile"),
+                "matches_profile": current.get("matches_profile"),
+                "code": update_status.get("code"),
+                "new_version": new_version,
+                "available_versions": normalized_versions,
+            }
+            pending_count = int(bool(new_version and new_version != current_version))
+            pending_sample = (
+                [f"{current_version or 'unknown'} -> {new_version} ({current.get('train') or 'unknown train'})"]
+                if pending_count
+                else []
+            )
+            update_check = {"rc": 0, "status": "success", "lines": pending_sample}
     else:
         update_check = unavailable("apt and dnf are not available")
         pending_count = None
@@ -209,7 +331,7 @@ def collect_linux(run_command: CommandRunner) -> dict[str, Any]:
         "last_patch_epoch": apt_history_mtime,
         "pending_updates": pending_count,
         "pending_sample": pending_sample,
-        "reboot_required": pathlib.Path("/var/run/reboot-required").exists(),
+        "reboot_required": reboot_required,
         "failed_units": failed_units,
         "journal_warnings": journal_warnings,
         "auth_log": auth_log,
@@ -219,6 +341,7 @@ def collect_linux(run_command: CommandRunner) -> dict[str, Any]:
         "package_audit": unavailable("native package-vulnerability audit is not configured"),
         "service_inventory": unavailable("systemd service inventory is represented by failed_units"),
         "update_check": update_check,
+        "appliance_update": appliance_update,
         "system_checks": system_checks,
     }
 

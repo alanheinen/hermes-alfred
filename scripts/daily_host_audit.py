@@ -266,6 +266,7 @@ def summarize_host(
         "patch_age_days": patch_age_days,
         "pending_updates": evidence.get("pending_updates"),
         "pending_sample": [redact_line(x) for x in evidence.get("pending_sample", [])[:10]],
+        "appliance_update": evidence.get("appliance_update"),
         "reboot_required": evidence.get("reboot_required"),
         "failed_units": failed_units[:20],
         "unavailable_checks": unavailable_checks,
