@@ -31,6 +31,15 @@ STALE_DAYS = 14
 MAX_WORKERS = 8
 REMOTE_EXEC_TIMEOUT = 480
 
+# Playbooks that patch a hypervisor's guests via `delegate_to` rather than
+# targeting them as play hosts. Only runs of these can credit a guest that AWX
+# recorded no host summary for; see collect_awx_patch_data.
+GUEST_PATCH_PLAYBOOKS = {"ansible/playbooks/operate/patch-rolling.yml"}
+GUEST_PATCH_TASKS = {
+    "Full-upgrade guest VMs",
+    "Patch guest LXC containers (pct exec, no direct SSH connection)",
+}
+
 EXPECTED_DENIED = {
     "homeassistant.lan",
     "kvm-vm01.lan",
@@ -291,7 +300,81 @@ def summarize_host(
     }
 
 
-def collect_awx_patch_data(awx: Awx, reachable_names: set[str]) -> dict[str, Any]:
+def patches_delegated_guests(playbook: Any) -> bool:
+    """Whether a job ran a playbook that patches guests by delegation.
+
+    Matches the basename as well as the full project-relative path, so a
+    project whose playbooks move under a different prefix does not silently
+    stop crediting guests.
+    """
+    if not isinstance(playbook, str) or not playbook:
+        return False
+    known_names = {name.rsplit("/", 1)[-1] for name in GUEST_PATCH_PLAYBOOKS}
+    return playbook in GUEST_PATCH_PLAYBOOKS or playbook.rsplit("/", 1)[-1] in known_names
+
+
+def hypervisor_guest_map(hosts: list[dict[str, Any]]) -> dict[str, list[str]]:
+    """Map each hypervisor to the guests a rolling patch run upgrades on it.
+
+    Source of truth is the `hypervisor_guests` host variable that AWX syncs
+    from k8s-2025's inventory. Only `patch: true` guests are included - the
+    rest (Home Assistant OS, for one) reboot with their host but are never
+    apt-upgraded, so they must not be credited with a patch run.
+    """
+    mapping: dict[str, list[str]] = {}
+    for host in hosts:
+        guests = parse_vars(host.get("variables")).get("hypervisor_guests")
+        if not isinstance(guests, list):
+            continue
+        names = sorted({
+            guest["hostname"] for guest in guests
+            if isinstance(guest, dict)
+            and guest.get("patch") is True
+            and isinstance(guest.get("hostname"), str)
+            and guest.get("hostname")
+        })
+        if names:
+            mapping[host["name"]] = names
+    return mapping
+
+
+def successful_delegated_guest_patches(
+    awx: Awx, job_id: int, guest_map: dict[str, list[str]],
+) -> dict[str, str]:
+    """Return guests with an explicit successful patch-task item event.
+
+    The rolling playbook deliberately ignores guest task failures so one bad
+    guest does not strand the rest of the fleet. Consequently, a clean AWX
+    host summary is not guest-success evidence. The item event is: it records
+    the hypervisor play host, the exact terminal patch task, the guest item,
+    and whether that item succeeded.
+    """
+    events = awx.all(
+        f"/jobs/{job_id}/job_events/?task__icontains=guest&page_size=200&order_by=counter"
+    )
+    successful: dict[str, str] = {}
+    for event in events:
+        if event.get("event") != "runner_item_on_ok":
+            continue
+        data = event.get("event_data")
+        if not isinstance(data, dict) or data.get("task") not in GUEST_PATCH_TASKS:
+            continue
+        hypervisor = data.get("host")
+        result = data.get("res")
+        item = result.get("item") if isinstance(result, dict) else None
+        guest = item.get("hostname") if isinstance(item, dict) else None
+        if not isinstance(hypervisor, str) or not isinstance(guest, str):
+            continue
+        if guest in guest_map.get(hypervisor, []):
+            successful[guest] = hypervisor
+    return successful
+
+
+def collect_awx_patch_data(
+    awx: Awx,
+    reachable_names: set[str],
+    hosts: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     templates = awx.all("/unified_job_templates/?page_size=200")
     patch_templates = {
         row["id"]: row for row in templates
@@ -330,10 +413,13 @@ def collect_awx_patch_data(awx: Awx, reachable_names: set[str]) -> dict[str, Any
             "reachable_covered": sorted(reachable_names & covered),
         })
 
+    guest_map = hypervisor_guest_map(hosts or [])
+
     cutoff = dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=45)
     recent_jobs = awx.all("/unified_jobs/?name__icontains=patch&page_size=200&order_by=-finished", max_pages=5)
     recent_patch_jobs: list[dict[str, Any]] = []
     host_last_awx_patch: dict[str, str] = {}
+    guest_evidence: dict[str, dict[str, Any]] = {}
     for job in recent_jobs:
         finished = job.get("finished")
         if not finished:
@@ -361,11 +447,58 @@ def collect_awx_patch_data(awx: Awx, reachable_names: set[str]) -> dict[str, Any
             for summary in summaries
             if summary.get("dark") or summary.get("failures")
         ]
-        for summary in summaries:
-            name = summary.get("host_name")
-            if name in reachable_names and not summary.get("dark") and not summary.get("failures"):
-                if finished > host_last_awx_patch.get(name, ""):
-                    host_last_awx_patch[name] = finished
+        clean_hosts = [
+            summary.get("host_name") for summary in summaries
+            if not summary.get("dark") and not summary.get("failures")
+        ]
+        for name in clean_hosts:
+            if name in reachable_names and finished > host_last_awx_patch.get(name, ""):
+                host_last_awx_patch[name] = finished
+
+        # Guests are patched with `delegate_to` from their hypervisor's play,
+        # so AWX records no guest host summary. The playbook also deliberately
+        # ignores guest failures to keep one bad guest from stranding the
+        # fleet, so even a clean hypervisor summary is insufficient. Credit
+        # therefore requires an explicit successful item event from the final
+        # VM/LXC patch task, tied back to the declared guest and hypervisor.
+        if not guest_map or not any(name in guest_map for name in clean_hosts):
+            continue
+        playbook = job.get("playbook")
+        if playbook is None:
+            try:
+                playbook = awx.get(f"/jobs/{job['id']}/").get("playbook")
+            except Exception:
+                continue
+        job_row["playbook"] = playbook
+        if not patches_delegated_guests(playbook):
+            continue
+        try:
+            successful_guests = successful_delegated_guest_patches(awx, job["id"], guest_map)
+        except Exception:
+            continue
+        for guest, name in successful_guests.items():
+            if name not in clean_hosts or guest not in reachable_names:
+                continue
+            if finished > host_last_awx_patch.get(guest, ""):
+                host_last_awx_patch[guest] = finished
+            if finished > guest_evidence.get(guest, {}).get("finished", ""):
+                guest_evidence[guest] = {
+                    "finished": finished,
+                    "job": job["id"],
+                    "job_name": job["name"],
+                    "hypervisor": name,
+                    "playbook": playbook,
+                    "source": "successful_patch_task_item_event",
+                }
+
+    # A guest declared patchable but with no evidence in the window is the
+    # failure this attribution exists to make visible - previously it was
+    # indistinguishable from a guest that was simply never patched.
+    declared_guests = {guest for guests in guest_map.values() for guest in guests}
+    guests_without_evidence = sorted(
+        guest for guest in declared_guests & reachable_names
+        if guest not in guest_evidence
+    )
 
     return {
         "groups": groups,
@@ -373,6 +506,8 @@ def collect_awx_patch_data(awx: Awx, reachable_names: set[str]) -> dict[str, Any
         "recent_jobs": recent_patch_jobs,
         "enabled_coverage": enabled_coverage,
         "last_successful_host_run": host_last_awx_patch,
+        "delegated_guest_evidence": guest_evidence,
+        "guests_without_delegated_evidence": guests_without_evidence,
     }
 
 
@@ -382,6 +517,7 @@ def write_markdown(report: dict[str, Any]) -> None:
     excluded = [host for host in report["hosts"] if host["status"] == "expected_excluded"]
     stale = [host["name"] for host in reachable if host.get("patch_age_days") is None or host["patch_age_days"] > STALE_DAYS]
     uncovered = [name for name, schedules in report["awx_patch"]["enabled_coverage"].items() if not schedules]
+    no_guest_evidence = report["awx_patch"].get("guests_without_delegated_evidence", [])
     auth = [f"{host['name']}={host['auth_failure_count']}" for host in reachable if host["auth_failure_count"]]
     units = [host["name"] for host in reachable if host["failed_units"]]
     package_vulnerabilities = [
@@ -412,6 +548,7 @@ def write_markdown(report: dict[str, Any]) -> None:
         f"- Unexpected unreachable: {', '.join(host['name'] for host in unexpected) or 'none'}",
         f"- Patch evidence older than {STALE_DAYS} days or unavailable: {', '.join(stale) or 'none'}",
         f"- No enabled AWX patch schedule coverage: {', '.join(sorted(uncovered)) or 'none'}",
+        f"- Patchable guests with no per-run AWX evidence: {', '.join(no_guest_evidence) or 'none'}",
         f"- Reboot required: {', '.join(reboots) or 'none'}",
         f"- Failed systemd units: {', '.join(units) or 'none'}",
         f"- Package vulnerabilities: {', '.join(package_vulnerabilities) or 'none'}",
@@ -445,7 +582,7 @@ def main() -> int:
             "expected_no_ssh": sorted(EXPECTED_NO_SSH),
         },
         "hosts": audited,
-        "awx_patch": collect_awx_patch_data(awx, reachable_names),
+        "awx_patch": collect_awx_patch_data(awx, reachable_names, hosts),
     }
     JSON_OUTPUT.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     os.chmod(JSON_OUTPUT, 0o600)
