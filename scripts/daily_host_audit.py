@@ -35,6 +35,10 @@ REMOTE_EXEC_TIMEOUT = 480
 # targeting them as play hosts. Only runs of these can credit a guest that AWX
 # recorded no host summary for; see collect_awx_patch_data.
 GUEST_PATCH_PLAYBOOKS = {"ansible/playbooks/operate/patch-rolling.yml"}
+GUEST_PATCH_TASKS = {
+    "Full-upgrade guest VMs",
+    "Patch guest LXC containers (pct exec, no direct SSH connection)",
+}
 
 EXPECTED_DENIED = {
     "homeassistant.lan",
@@ -334,6 +338,38 @@ def hypervisor_guest_map(hosts: list[dict[str, Any]]) -> dict[str, list[str]]:
     return mapping
 
 
+def successful_delegated_guest_patches(
+    awx: Awx, job_id: int, guest_map: dict[str, list[str]],
+) -> dict[str, str]:
+    """Return guests with an explicit successful patch-task item event.
+
+    The rolling playbook deliberately ignores guest task failures so one bad
+    guest does not strand the rest of the fleet. Consequently, a clean AWX
+    host summary is not guest-success evidence. The item event is: it records
+    the hypervisor play host, the exact terminal patch task, the guest item,
+    and whether that item succeeded.
+    """
+    events = awx.all(
+        f"/jobs/{job_id}/job_events/?task__icontains=guest&page_size=200&order_by=counter"
+    )
+    successful: dict[str, str] = {}
+    for event in events:
+        if event.get("event") != "runner_item_on_ok":
+            continue
+        data = event.get("event_data")
+        if not isinstance(data, dict) or data.get("task") not in GUEST_PATCH_TASKS:
+            continue
+        hypervisor = data.get("host")
+        result = data.get("res")
+        item = result.get("item") if isinstance(result, dict) else None
+        guest = item.get("hostname") if isinstance(item, dict) else None
+        if not isinstance(hypervisor, str) or not isinstance(guest, str):
+            continue
+        if guest in guest_map.get(hypervisor, []):
+            successful[guest] = hypervisor
+    return successful
+
+
 def collect_awx_patch_data(
     awx: Awx,
     reachable_names: set[str],
@@ -420,20 +456,11 @@ def collect_awx_patch_data(
                 host_last_awx_patch[name] = finished
 
         # Guests are patched with `delegate_to` from their hypervisor's play,
-        # so AWX records a host summary for the hypervisor and none at all for
-        # the guest. Reading summaries alone therefore credits one.lan but not
-        # the k8s1.lan living on it, which left seven hosts showing a
-        # 17-day-stale timestamp after two successful rolling runs.
-        #
-        # Delegation also makes the inference sound: a delegated task that
-        # fails is attributed to the play host, so a hypervisor summary with no
-        # failures and no dark hosts means its guest tasks succeeded too.
-        # Credit is still deliberately narrow - it needs the run to have used
-        # the playbook that actually patches guests, the hypervisor's own
-        # summary to be clean, and the guest to be declared `patch: true` in
-        # that hypervisor's `hypervisor_guests`. Anything else records nothing
-        # rather than guessing, which is the direction to fail in: a missing
-        # timestamp is visible, a wrong one is not.
+        # so AWX records no guest host summary. The playbook also deliberately
+        # ignores guest failures to keep one bad guest from stranding the
+        # fleet, so even a clean hypervisor summary is insufficient. Credit
+        # therefore requires an explicit successful item event from the final
+        # VM/LXC patch task, tied back to the declared guest and hypervisor.
         if not guest_map or not any(name in guest_map for name in clean_hosts):
             continue
         playbook = job.get("playbook")
@@ -445,20 +472,24 @@ def collect_awx_patch_data(
         job_row["playbook"] = playbook
         if not patches_delegated_guests(playbook):
             continue
-        for name in clean_hosts:
-            for guest in guest_map.get(name, []):
-                if guest not in reachable_names:
-                    continue
-                if finished > host_last_awx_patch.get(guest, ""):
-                    host_last_awx_patch[guest] = finished
-                if finished > guest_evidence.get(guest, {}).get("finished", ""):
-                    guest_evidence[guest] = {
-                        "finished": finished,
-                        "job": job["id"],
-                        "job_name": job["name"],
-                        "hypervisor": name,
-                        "playbook": playbook,
-                    }
+        try:
+            successful_guests = successful_delegated_guest_patches(awx, job["id"], guest_map)
+        except Exception:
+            continue
+        for guest, name in successful_guests.items():
+            if name not in clean_hosts or guest not in reachable_names:
+                continue
+            if finished > host_last_awx_patch.get(guest, ""):
+                host_last_awx_patch[guest] = finished
+            if finished > guest_evidence.get(guest, {}).get("finished", ""):
+                guest_evidence[guest] = {
+                    "finished": finished,
+                    "job": job["id"],
+                    "job_name": job["name"],
+                    "hypervisor": name,
+                    "playbook": playbook,
+                    "source": "successful_patch_task_item_event",
+                }
 
     # A guest declared patchable but with no evidence in the window is the
     # failure this attribution exists to make visible - previously it was

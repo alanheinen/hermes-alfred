@@ -29,10 +29,11 @@ def recent(days_ago=3):
 class FakeAwx:
     """Only the endpoints collect_awx_patch_data touches."""
 
-    def __init__(self, jobs, summaries, job_detail=None):
+    def __init__(self, jobs, summaries, job_detail=None, guest_events=None):
         self.jobs = jobs
         self.summaries = summaries
         self.job_detail = job_detail or {}
+        self.guest_events = guest_events or {}
         self.detail_calls = []
 
     def get(self, path):
@@ -49,6 +50,8 @@ class FakeAwx:
             return []
         if path.startswith("/unified_jobs/"):
             return self.jobs
+        if path.startswith("/jobs/") and "job_events" in path:
+            return self.guest_events.get(int(path.split("/")[2]), [])
         if path.startswith("/jobs/") and "job_host_summaries" in path:
             return self.summaries.get(int(path.split("/")[2]), [])
         raise AssertionError(f"unexpected all: {path}")
@@ -118,12 +121,97 @@ class HypervisorGuestMapTests(unittest.TestCase):
 
 
 class DelegatedGuestAttributionTests(unittest.TestCase):
-    def collect(self, jobs, summaries, job_detail=None, reachable=None, hosts=HOSTS):
-        awx = FakeAwx(jobs, summaries, job_detail)
+    def collect(
+        self, jobs, summaries, job_detail=None, reachable=None, hosts=HOSTS,
+        guest_events=None,
+    ):
+        if guest_events is None:
+            guest_map = audit.hypervisor_guest_map(hosts)
+            guest_events = {}
+            for job in jobs:
+                events = []
+                for summary in summaries.get(job["id"], []):
+                    if summary.get("dark") or summary.get("failures"):
+                        continue
+                    hypervisor = summary.get("host_name")
+                    for guest in guest_map.get(hypervisor, []):
+                        events.append({
+                            "event": "runner_item_on_ok",
+                            "event_data": {
+                                "host": hypervisor,
+                                "task": "Full-upgrade guest VMs",
+                                "res": {"item": {"hostname": guest}},
+                            },
+                        })
+                guest_events[job["id"]] = events
+        awx = FakeAwx(jobs, summaries, job_detail, guest_events)
         reachable = reachable or {
             "one.lan", "vm01.lan", "k8s1.lan", "k8s6.lan", "pbs.lan", "frigate.lan",
         }
         return awx, audit.collect_awx_patch_data(awx, reachable, hosts)
+
+    def test_ignored_delegated_failure_is_not_credited_from_clean_host_summary(self):
+        jobs = [{
+            "id": 2673, "name": "Patch - Rolling Fleet Patch", "type": "job",
+            "status": "successful", "finished": AUGUST_9,
+            "playbook": "ansible/playbooks/operate/patch-rolling.yml",
+        }]
+        summaries = {2673: [{"host_name": "one.lan", "dark": 0, "failures": 0}]}
+        guest_events = {2673: [{
+            "event": "runner_item_on_failed",
+            "event_data": {
+                "host": "one.lan",
+                "task": "Full-upgrade guest VMs",
+                "res": {"item": {"hostname": "k8s1.lan"}, "failed": True},
+            },
+        }]}
+
+        _, data = self.collect(jobs, summaries, guest_events=guest_events)
+
+        self.assertNotIn("k8s1.lan", data["last_successful_host_run"])
+        self.assertNotIn("k8s1.lan", data["delegated_guest_evidence"])
+        self.assertIn("k8s1.lan", data["guests_without_delegated_evidence"])
+
+    def test_success_event_for_wrong_task_or_hypervisor_is_not_credited(self):
+        jobs = [{
+            "id": 2673, "name": "Patch - Rolling Fleet Patch", "type": "job",
+            "status": "successful", "finished": AUGUST_9,
+            "playbook": "ansible/playbooks/operate/patch-rolling.yml",
+        }]
+        summaries = {2673: [{"host_name": "one.lan", "dark": 0, "failures": 0}]}
+        guest_events = {2673: [
+            {
+                "event": "runner_item_on_ok",
+                "event_data": {
+                    "host": "one.lan", "task": "Update apt cache on guest VMs",
+                    "res": {"item": {"hostname": "k8s1.lan"}},
+                },
+            },
+            {
+                "event": "runner_item_on_ok",
+                "event_data": {
+                    "host": "vm01.lan", "task": "Full-upgrade guest VMs",
+                    "res": {"item": {"hostname": "k8s1.lan"}},
+                },
+            },
+        ]}
+
+        _, data = self.collect(jobs, summaries, guest_events=guest_events)
+
+        self.assertNotIn("k8s1.lan", data["last_successful_host_run"])
+
+    def test_missing_event_api_data_fails_closed(self):
+        jobs = [{
+            "id": 2673, "name": "Patch - Rolling Fleet Patch", "type": "job",
+            "status": "successful", "finished": AUGUST_9,
+            "playbook": "ansible/playbooks/operate/patch-rolling.yml",
+        }]
+        summaries = {2673: [{"host_name": "one.lan", "dark": 0, "failures": 0}]}
+
+        _, data = self.collect(jobs, summaries, guest_events={2673: []})
+
+        self.assertNotIn("k8s1.lan", data["last_successful_host_run"])
+        self.assertIn("k8s1.lan", data["guests_without_delegated_evidence"])
 
     def test_august_9_workflow_credits_guests_patched_by_delegation(self):
         jobs = [{
@@ -160,6 +248,7 @@ class DelegatedGuestAttributionTests(unittest.TestCase):
                 "job_name": "Patch - Rolling Fleet Patch",
                 "hypervisor": "one.lan",
                 "playbook": "ansible/playbooks/operate/patch-rolling.yml",
+                "source": "successful_patch_task_item_event",
             },
             data["delegated_guest_evidence"]["k8s1.lan"],
         )
