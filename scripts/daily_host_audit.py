@@ -60,6 +60,16 @@ EXPECTED_NO_SSH = {
 }
 EXPECTED_EXCLUSIONS = EXPECTED_DENIED | EXPECTED_NO_SSH
 
+# Hostnames are compared case-insensitively. DNS is case-insensitive, and the
+# AWX inventory carries the OPNsense appliance under two spellings from two
+# eras: a hand-created OPNsense.lan and an imported opnsense.lan. Only the
+# former was listed above, so the latter fell through as unexpectedly
+# unreachable, the audit exited 1, and the whole daily layer withheld its
+# findings and resolutions - see security-findings#833. One capital letter
+# suppressed a day of security reporting.
+EXPECTED_DENIED_CI = {n.lower() for n in EXPECTED_DENIED}
+EXPECTED_EXCLUSIONS_CI = {n.lower() for n in EXPECTED_EXCLUSIONS}
+
 REMOTE_CODE_PATH = Path(__file__).with_name("host_audit_remote.py")
 REMOTE_CODE = REMOTE_CODE_PATH.read_text()
 REMOTE_PAYLOAD = base64.b64encode(REMOTE_CODE.encode()).decode()
@@ -135,11 +145,12 @@ def ssh_base(target: str, port: str, user: str, known_hosts: str) -> list[str]:
 
 def audit_host(host: dict[str, Any], known_hosts: str) -> dict[str, Any]:
     name = host["name"]
-    if name in EXPECTED_EXCLUSIONS:
+    name_ci = name.lower()
+    if name_ci in EXPECTED_EXCLUSIONS_CI:
         return {
             "name": name,
             "status": "expected_excluded",
-            "reason": "denied_by_design" if name in EXPECTED_DENIED else "no_ssh_by_design",
+            "reason": "denied_by_design" if name_ci in EXPECTED_DENIED_CI else "no_ssh_by_design",
         }
 
     variables = parse_vars(host.get("variables"))
