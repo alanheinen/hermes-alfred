@@ -2,9 +2,11 @@
 
 import datetime as dt
 import importlib.util
+import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "daily_host_audit.py"
@@ -411,6 +413,52 @@ class PlaybookMatchingTests(unittest.TestCase):
             123,
         ):
             self.assertFalse(audit.patches_delegated_guests(value), value)
+
+
+class AuditHostTimeoutTests(unittest.TestCase):
+    def test_probe_timeouts_are_attributed_to_host_instead_of_escaping(self):
+        host = {
+            "name": "slow-probe.lan",
+            "variables": {"ansible_host": "192.0.2.10", "ansible_user": "audit"},
+        }
+
+        def time_out_probe(command, **kwargs):
+            raise subprocess.TimeoutExpired(command, kwargs["timeout"])
+
+        with patch.object(audit.subprocess, "run", side_effect=time_out_probe):
+            result = audit.audit_host(host, "/tmp/test-known-hosts")
+
+        self.assertEqual(result["status"], "unexpected_unreachable")
+        self.assertEqual(result["name"], "slow-probe.lan")
+        self.assertEqual(len(result["errors"]), 3)
+        self.assertTrue(
+            all(error == "SSH probe timed out after 12 seconds" for error in result["errors"])
+        )
+
+    def test_remote_audit_timeout_is_attributed_and_other_users_are_tried(self):
+        host = {
+            "name": "slow-audit.lan",
+            "variables": {"ansible_host": "192.0.2.11", "ansible_user": "root"},
+        }
+        probe_ok = subprocess.CompletedProcess(["ssh"], 0, "", "")
+
+        with patch.object(
+            audit.subprocess,
+            "run",
+            side_effect=[
+                probe_ok,
+                subprocess.TimeoutExpired(["ssh", "remote-audit"], audit.REMOTE_EXEC_TIMEOUT),
+                subprocess.TimeoutExpired(["ssh", "true"], 12),
+            ],
+        ):
+            result = audit.audit_host(host, "/tmp/test-known-hosts")
+
+        self.assertEqual(result["status"], "unexpected_unreachable")
+        self.assertIn(
+            f"remote audit timed out after {audit.REMOTE_EXEC_TIMEOUT} seconds",
+            result["errors"],
+        )
+        self.assertIn("SSH probe timed out after 12 seconds", result["errors"])
 
 
 if __name__ == "__main__":

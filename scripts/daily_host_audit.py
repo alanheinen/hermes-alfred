@@ -29,6 +29,7 @@ JSON_OUTPUT = OUTPUT_DIR / "host-audit-latest.json"
 MD_OUTPUT = OUTPUT_DIR / "host-audit-latest.md"
 STALE_DAYS = 14
 MAX_WORKERS = 8
+SSH_PROBE_TIMEOUT = 12
 REMOTE_EXEC_TIMEOUT = 480
 
 # Playbooks that patch a hypervisor's guests via `delegate_to` rather than
@@ -164,7 +165,14 @@ def audit_host(host: dict[str, Any], known_hosts: str) -> dict[str, Any]:
     failures: list[str] = []
     for user in users:
         base = ssh_base(target, port, user, known_hosts)
-        probe = subprocess.run(base + ["true"], text=True, capture_output=True, timeout=12)
+        try:
+            probe = subprocess.run(
+                base + ["true"], text=True, capture_output=True,
+                timeout=SSH_PROBE_TIMEOUT,
+            )
+        except subprocess.TimeoutExpired:
+            failures.append(f"SSH probe timed out after {SSH_PROBE_TIMEOUT} seconds")
+            continue
         if probe.returncode:
             failures.append(redact_line(probe.stderr.strip().splitlines()[-1] if probe.stderr.strip() else "SSH failed"))
             continue
@@ -174,10 +182,14 @@ def audit_host(host: dict[str, Any], known_hosts: str) -> dict[str, Any]:
             commands.append(["sudo", "-n", "python3", "-c", remote_python])
         commands.append(["python3", "-c", remote_python])
         for remote_command in commands:
-            run = subprocess.run(
-                base + [shlex.join(remote_command)], text=True, capture_output=True,
-                timeout=REMOTE_EXEC_TIMEOUT,
-            )
+            try:
+                run = subprocess.run(
+                    base + [shlex.join(remote_command)], text=True, capture_output=True,
+                    timeout=REMOTE_EXEC_TIMEOUT,
+                )
+            except subprocess.TimeoutExpired:
+                failures.append(f"remote audit timed out after {REMOTE_EXEC_TIMEOUT} seconds")
+                continue
             if run.returncode:
                 failures.append(redact_line(run.stderr.strip().splitlines()[-1] if run.stderr.strip() else "audit command failed"))
                 continue
