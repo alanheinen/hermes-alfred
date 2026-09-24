@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import ipaddress
 import json
 import os
 import re
@@ -12,9 +13,23 @@ import subprocess
 import urllib.parse
 import urllib.request
 from pathlib import Path
+from typing import Any
 
 
 REPORTER_MARKER = "<!-- reporter: hermes-daily-ops -->"
+ACCEPTED_RISK_REPORTER_MARKER = "<!-- reporter: security-scan-accepted-risks -->"
+ACCEPTED_RISK_REPORT_MARKER = "<!-- finding-id: meta:accepted-risks:suppression-report -->"
+ACCEPTED_RISK_SET_RE = re.compile(r"<!-- accepted-risk-set:\s*([^\r\n]*?)\s*-->")
+ACCEPTED_RULE_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+ACCEPTED_NUCLEI_ID_RE = re.compile(
+    r"^nuclei:((?:\d{1,3}\.){3}\d{1,3})::([a-z0-9][a-z0-9-]*)$"
+)
+ACCEPTED_HOST_ID_RE = re.compile(
+    r"^(?:host|storage):([a-z0-9][a-z0-9.-]*):([a-z0-9][a-z0-9-]*)$"
+)
+ACCEPTED_NMAP_ID_RE = re.compile(
+    r"^nmap:port:((?:\d{1,3}\.){3}\d{1,3}):([1-9]\d{0,4})$"
+)
 WORKFLOW_LABELS = {"needs-remediation", "awaiting-operator", "blocked"}
 FINDING_ID_RE = re.compile(r"^[a-z0-9][a-z0-9.-]*:[a-z0-9][a-z0-9._-]*:[a-z0-9][a-z0-9._-]*$")
 RUN_SPECIFIC_RE = re.compile(
@@ -154,7 +169,95 @@ def issue_marker(finding_id: str) -> str:
     return f"<!-- finding-id: {finding_id} -->"
 
 
-def reconcile(client, payload: dict) -> dict[str, int]:
+def _unique_json_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate accepted-risk-set key: {key}")
+        result[key] = value
+    return result
+
+
+def valid_exact_accepted_finding_id(finding_id: str) -> bool:
+    match = ACCEPTED_NUCLEI_ID_RE.fullmatch(finding_id)
+    if match:
+        try:
+            return ipaddress.ip_address(match.group(1)).version == 4
+        except ValueError:
+            return False
+    if ACCEPTED_HOST_ID_RE.fullmatch(finding_id):
+        return True
+    match = ACCEPTED_NMAP_ID_RE.fullmatch(finding_id)
+    if not match or int(match.group(2)) > 65535:
+        return False
+    try:
+        return ipaddress.ip_address(match.group(1)).version == 4
+    except ValueError:
+        return False
+
+
+def accepted_risk_finding_ids(issues: list[dict], repo: str) -> set[str]:
+    """Load exact accepted finding IDs from the scanner-owned standing report.
+
+    Missing state fails open so findings remain reportable. Present but forged
+    or malformed state aborts reconciliation before any issue mutations: a
+    damaged allowlist must never become either silent over-suppression or a
+    mass reopen event.
+    """
+    matches = [
+        issue
+        for issue in issues
+        if ACCEPTED_RISK_REPORT_MARKER in (issue.get("body") or "")
+    ]
+    if not matches:
+        return set()
+    if len(matches) > 1:
+        raise ValueError("multiple accepted-risk suppression reports found")
+    issue = matches[0]
+    body = issue.get("body") or ""
+    expected_owner = repo.split("/", 1)[0]
+    if (
+        ACCEPTED_RISK_REPORTER_MARKER not in body
+        or (issue.get("user") or {}).get("login") != expected_owner
+    ):
+        raise ValueError("accepted-risk suppression report is not owned by the trusted reporter")
+    state_matches = ACCEPTED_RISK_SET_RE.findall(body)
+    state_residue = ACCEPTED_RISK_SET_RE.sub("", body)
+    occurrences = len(state_matches) + len(
+        re.findall(r"\baccepted-risk-set\b", state_residue, flags=re.IGNORECASE)
+    )
+    if occurrences != 1 or len(state_matches) != 1:
+        raise ValueError("accepted-risk-set marker must occur exactly once")
+    try:
+        index = json.loads(state_matches[0], object_pairs_hook=_unique_json_object)
+    except (json.JSONDecodeError, ValueError) as exc:
+        raise ValueError(f"accepted-risk-set marker is invalid: {exc}") from exc
+    if not isinstance(index, dict):
+        raise ValueError("accepted-risk-set must be an object")
+    accepted: dict[str, str] = {}
+    for rule_id, finding_ids in index.items():
+        if (
+            not isinstance(rule_id, str)
+            or not ACCEPTED_RULE_ID_RE.fullmatch(rule_id)
+            or not isinstance(finding_ids, list)
+            or not finding_ids
+        ):
+            raise ValueError("accepted-risk-set entries must map rule IDs to nonempty lists")
+        if any(not isinstance(finding_id, str) for finding_id in finding_ids):
+            raise ValueError("accepted-risk-set finding IDs must use a supported exact format")
+        if len(finding_ids) != len(set(finding_ids)):
+            raise ValueError(f"accepted-risk-set contains duplicate finding IDs for {rule_id}")
+        for finding_id in finding_ids:
+            if not valid_exact_accepted_finding_id(finding_id):
+                raise ValueError("accepted-risk-set finding IDs must use a supported exact format")
+            previous = accepted.get(finding_id)
+            if previous and previous != rule_id:
+                raise ValueError(f"accepted finding_id belongs to multiple rules: {finding_id}")
+            accepted[finding_id] = rule_id
+    return set(accepted)
+
+
+def reconcile(client, payload: dict) -> dict[str, Any]:
     validate_payload(payload)
     if payload.get("complete"):
         findings = payload.get("findings", [])
@@ -168,10 +271,20 @@ def reconcile(client, payload: dict) -> dict[str, int]:
             raise ValueError("collection_failure must be blocked")
         findings = [failure]
 
-    counts = {"created": 0, "updated": 0, "reopened": 0, "closed": 0}
+    counts: dict[str, Any] = {
+        "created": 0,
+        "updated": 0,
+        "reopened": 0,
+        "closed": 0,
+    }
     issues = client.list_issues()
+    accepted_finding_ids = accepted_risk_finding_ids(issues, client.repo)
+    suppressed_ids = []
     for finding in findings:
         validate_finding(finding)
+        if finding["finding_id"] in accepted_finding_ids:
+            suppressed_ids.append(finding["finding_id"])
+            continue
         marker = issue_marker(finding["finding_id"])
         marker_matches = [issue for issue in issues if marker in (issue.get("body") or "")]
         foreign_matches = [
@@ -241,6 +354,12 @@ def reconcile(client, payload: dict) -> dict[str, int]:
                 client.comment_issue(issue["number"], comment)
                 client.update_issue(issue["number"], state="closed")
                 counts["closed"] += 1
+    if suppressed_ids:
+        return {
+            **counts,
+            "suppressed": len(suppressed_ids),
+            "suppressed_ids": sorted(suppressed_ids),
+        }
     return counts
 
 

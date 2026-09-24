@@ -14,6 +14,7 @@ MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "daily_findings_
 
 class FakeClient:
     def __init__(self, issues=None):
+        self.repo = "alanheinen/k8s-2025-security-findings"
         self.issues = list(issues or [])
         self.actions = []
 
@@ -162,6 +163,135 @@ class DailyFindingsIssuesTests(unittest.TestCase):
         self.assertEqual(client.actions[1][0:2], ("comment", 42))
         self.assertIn("recurred", client.actions[1][2].lower())
         self.assertIn("2026-08-07 07:12 CDT", client.actions[1][2])
+
+    def test_closed_accepted_risk_stays_closed_and_is_reported_as_suppressed(self):
+        module = load_module()
+        finding = sample_finding()
+        finding["finding_id"] = "storage:nas.lan:unsupported-update-train"
+        client = FakeClient(
+            [
+                {
+                    "number": 822,
+                    "state": "open",
+                    "user": {"login": "alanheinen"},
+                    "body": (
+                        "<!-- reporter: security-scan-accepted-risks -->\n"
+                        "<!-- finding-id: meta:accepted-risks:suppression-report -->\n"
+                        "<!-- accepted-risk-set: "
+                        '{"truenas-nightly-update-window":'
+                        '["storage:nas.lan:unsupported-update-train"]} -->\n'
+                    ),
+                    "labels": [{"name": "tool:nuclei"}],
+                },
+                {
+                    "number": 818,
+                    "state": "closed",
+                    "user": {"login": "alanheinen"},
+                    "body": (
+                        "<!-- finding-id: storage:nas.lan:unsupported-update-train -->\n"
+                        "<!-- reporter: hermes-daily-ops -->\nold"
+                    ),
+                    "labels": [{"name": "awaiting-operator"}],
+                },
+            ]
+        )
+
+        result = module.reconcile(
+            client,
+            {"complete": True, "findings": [finding], "resolutions": []},
+        )
+
+        self.assertEqual(result["suppressed"], 1)
+        self.assertEqual(
+            result["suppressed_ids"],
+            ["storage:nas.lan:unsupported-update-train"],
+        )
+        self.assertEqual(client.actions, [])
+
+    def test_accepted_risk_index_rejects_unowned_or_malformed_report_state(self):
+        module = load_module()
+        base: dict[str, object] = {
+            "number": 822,
+            "state": "open",
+            "user": {"login": "mallory"},
+            "body": (
+                "<!-- reporter: security-scan-accepted-risks -->\n"
+                "<!-- finding-id: meta:accepted-risks:suppression-report -->\n"
+                "<!-- accepted-risk-set: {} -->\n"
+            ),
+        }
+        with self.assertRaisesRegex(ValueError, "not owned"):
+            module.reconcile(
+                FakeClient([base]),
+                {"complete": True, "findings": [sample_finding()], "resolutions": []},
+            )
+
+        malformed = dict(base, user={"login": "alanheinen"})
+        malformed["body"] = str(malformed["body"]).replace("{}", "not-json")
+        with self.assertRaisesRegex(ValueError, "accepted-risk-set"):
+            module.reconcile(
+                FakeClient([malformed]),
+                {"complete": True, "findings": [sample_finding()], "resolutions": []},
+            )
+
+    def test_accepted_risk_index_rejects_malformed_patterns_and_duplicate_state(self):
+        module = load_module()
+
+        def report(state):
+            return {
+                "number": 822,
+                "state": "open",
+                "user": {"login": "alanheinen"},
+                "body": (
+                    "<!-- reporter: security-scan-accepted-risks -->\n"
+                    "<!-- finding-id: meta:accepted-risks:suppression-report -->\n"
+                    f"<!-- accepted-risk-set: {state} -->\n"
+                ),
+            }
+
+        invalid_states = (
+            '{"rule":["not-a-finding-id"]}',
+            '{"rule":["host:x:?"]}',
+            '{"rule":["host:x:[ab]"]}',
+            '{"rule":["host:x:y","host:x:y"]}',
+            '{"rule":["host:x:y"],"rule":["host:x:z"]}',
+            '{"one":["host:x:y"],"two":["host:x:y"]}',
+            '{"rule":["nuclei:*::ssh-password-auth"]}',
+            '{"rule":["nmap:port:172.16.1.1:70000"]}',
+            '{"rule":[{}]}',
+        )
+        for state in invalid_states:
+            with self.subTest(state=state):
+                client = FakeClient([report(state)])
+                with self.assertRaisesRegex(ValueError, "accepted"):
+                    module.reconcile(
+                        client,
+                        {"complete": True, "findings": [sample_finding()], "resolutions": []},
+                    )
+                self.assertEqual(client.actions, [])
+
+    def test_exact_accepted_risk_finding_id_formats(self):
+        module = load_module()
+
+        valid = (
+            "nuclei:172.16.1.19::snmpv1-community-detect-string",
+            "host:frigate.lan:pending-reboot",
+            "storage:nas.lan:unsupported-update-train",
+            "nmap:port:172.16.1.95:9000",
+        )
+        invalid = (
+            "nuclei:999.16.1.19::snmpv1-community-detect-string",
+            "host:*:pending-reboot",
+            "storage:nas.lan:unsupported_update_train",
+            "nmap:port:172.16.1.95:65536",
+        )
+
+        for finding_id in valid:
+            with self.subTest(finding_id=finding_id):
+                self.assertTrue(module.valid_exact_accepted_finding_id(finding_id))
+        for finding_id in invalid:
+            with self.subTest(finding_id=finding_id):
+                self.assertFalse(module.valid_exact_accepted_finding_id(finding_id))
 
     def test_incomplete_collection_only_reconciles_one_blocked_pipeline_issue(self):
         module = load_module()
