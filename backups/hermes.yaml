@@ -168,3 +168,16 @@ custom_providers:
   - llama3.1:8b
   - mistral:latest
   - gemma3:latest
+known_plugin_toolsets:
+  acp:
+  - homeassistant
+  webhook:
+  - homeassistant
+_left_core_scoped:
+- homeassistant
+plugins:
+  enabled:
+  - homeassistant
+  disabled: []
+_left_core_installed:
+- homeassistant
