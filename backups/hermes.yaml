@@ -186,3 +186,4 @@ telemetry:
   shared_metrics:
     enabled: false
     send: false
+    offer_version: 2
