@@ -138,8 +138,28 @@ class DailyFindingsIssuesTests(unittest.TestCase):
 
         self.assertEqual(result, {"created": 0, "updated": 1, "reopened": 0, "closed": 0})
         self.assertEqual(client.actions[0][0:2], ("update", 41))
-        self.assertEqual(client.actions[0][2]["labels"], ["severity:medium", "needs-remediation"])
+        self.assertEqual(client.actions[0][2]["labels"], ["severity:medium", "blocked"])
         self.assertFalse(any(action[0] == "comment" for action in client.actions))
+
+    def test_closed_awaiting_operator_issue_keeps_that_workflow_label_when_reopened(self):
+        module = load_module()
+        client = FakeClient(
+            [
+                {
+                    "number": 42,
+                    "state": "closed",
+                    "title": "Awaiting a decision",
+                    "body": "<!-- finding-id: host:frigate.lan:pending-reboot -->\n<!-- reporter: hermes-daily-ops -->\nold",
+                    "labels": [{"name": "awaiting-operator"}, {"name": "severity:medium"}],
+                }
+            ]
+        )
+
+        result = module.reconcile(client, {"complete": True, "findings": [sample_finding()], "resolutions": []})
+
+        self.assertEqual(result, {"created": 0, "updated": 0, "reopened": 1, "closed": 0})
+        self.assertEqual(client.actions[0][0:2], ("update", 42))
+        self.assertEqual(client.actions[0][2]["labels"], ["severity:medium", "awaiting-operator"])
 
     def test_closed_issue_with_same_id_is_reopened_and_recurrence_is_commented(self):
         module = load_module()

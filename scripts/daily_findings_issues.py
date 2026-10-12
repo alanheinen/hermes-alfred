@@ -169,6 +169,20 @@ def issue_marker(finding_id: str) -> str:
     return f"<!-- finding-id: {finding_id} -->"
 
 
+def workflow_label_for_refresh(existing_labels: list[str], requested_label: str) -> str:
+    """Keep operator-owned workflow state when an actionable finding recurs."""
+    existing_workflow = WORKFLOW_LABELS.intersection(existing_labels)
+    if len(existing_workflow) > 1:
+        raise ValueError(f"issue has multiple workflow labels: {sorted(existing_workflow)}")
+    existing_label = next(iter(existing_workflow), None)
+    if requested_label == "needs-remediation" and existing_label in {
+        "awaiting-operator",
+        "blocked",
+    }:
+        return existing_label
+    return requested_label
+
+
 def _unique_json_object(pairs):
     result = {}
     for key, value in pairs:
@@ -305,8 +319,12 @@ def reconcile(client, payload: dict) -> dict[str, Any]:
                 label["name"] if isinstance(label, dict) else label for label in issue.get("labels", [])
             ]
             preserved_labels = [label for label in existing_labels if label not in WORKFLOW_LABELS]
+            workflow_label = workflow_label_for_refresh(
+                existing_labels,
+                finding["workflow_label"],
+            )
             labels = list(
-                dict.fromkeys([*preserved_labels, *requested_labels, finding["workflow_label"]])
+                dict.fromkeys([*preserved_labels, *requested_labels, workflow_label])
             )
             fields = {"title": finding["title"], "body": body, "labels": labels}
             if issue.get("state") == "closed":
