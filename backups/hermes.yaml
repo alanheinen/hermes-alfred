@@ -177,6 +177,7 @@ _left_core_scoped:
 - homeassistant
 plugins:
   enabled:
+  - herdr-agent-state
   - hermes-session-reset-policy
   - homeassistant
   disabled: []
